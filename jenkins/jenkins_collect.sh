@@ -20,18 +20,11 @@ do
     newdir=${newdir//:/.}
     echo mv $olddir $newdir
     mv $olddir $newdir
-    mv $newdir/CAFAna/lib $newdir/$lib
     # will overwrite each other but should all be identical
     mv $newdir/CAFAna/ups $TAG/
     sed -i s/vXX.YY/$TAG/g ${TAG}/ups/cafanacore.table
-    for k in `find $newdir/CAFAna -name '*.h'`
-    do
-        fname=${k/$newdir/}
-        mkdir -p $TAG/include/`dirname $fname`
-        echo cp $k $TAG/include/$fname
-        cp $k $TAG/include/$fname
-    done
-    for k in `find $newdir/CAFAna -name '*.h' -o -name '*.cxx' -o -name '*.cc'`
+    cp -r $newdir/CAFAna/inc $TAG/include
+    for k in `find $newdir/CAFAna -name '*.h' -o -name '*.cxx'`
     do
         fname=${k/$newdir/}
         mkdir -p $TAG/src/`dirname $fname`
