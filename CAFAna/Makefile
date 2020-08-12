@@ -11,12 +11,12 @@ SRCS := $(wildcard Core/*.cxx)
 HDRS := $(wildcard Core/*.h)
 OBJS := $(patsubst %.cxx,tmp/%.o,$(SRCS))
 
-all: prereqs ${OBJS} ${BINS} lib/Core/libCAFAnaCore.so
+all: prereqs ${OBJS} lib/Core/libCAFAnaCoreExt.so
 
 tmp/%.o: %.cxx ${HDRS}
 	g++ $< ${CFLAGS} -c -fpic -o $@
 
-lib/Core/libCAFAnaCore.so: ${OBJS}
+lib/Core/libCAFAnaCoreExt.so: ${OBJS}
 	g++ -shared -o $@ tmp/Core/*.o ${LDFLAGS}
 
 prereqs:
