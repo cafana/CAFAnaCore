@@ -6,4 +6,4 @@ all:
 	make -C build -j install
 
 clean:
-	make -C build -j clean
+	if [ -e build ]; then make -C build -j clean; rm -r build; fi
