@@ -1,7 +1,6 @@
 ############   top level config
 cmake_minimum_required(VERSION 3.14)
 project(CAFAna)
-set(VERSION "v00.01")
 
 set(CMAKE_CXX_STANDARD 17)
 
