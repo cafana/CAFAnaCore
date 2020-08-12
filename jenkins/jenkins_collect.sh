@@ -10,6 +10,8 @@ mkdir $TAG
 
 ls
 
+once=no
+
 for olddir in 'OS='*
 do
     newdir=$TAG/${olddir/CAFAna/}
@@ -20,17 +22,21 @@ do
     newdir=${newdir//:/.}
     echo mv $olddir $newdir
     mv $olddir $newdir
-    # will overwrite each other but should all be identical
-    mv $newdir/CAFAna/ups $TAG/
-    sed -i s/vXX.YY/$TAG/g ${TAG}/ups/cafanacore.table
-    cp -r $newdir/inc $TAG/include
-    for k in `find $newdir/CAFAna -name '*.h' -o -name '*.cxx'`
-    do
-        fname=${k/$newdir/}
-        mkdir -p $TAG/src/`dirname $fname`
-        echo mv $k $TAG/src/$fname
-        mv $k $TAG/src/$fname
-    done
+    # All versions should be the same
+    if [ $once != yes ]
+    then
+        once=yes
+        mv $newdir/CAFAna/ups $TAG/
+        sed -i s/vXX.YY/$TAG/g ${TAG}/ups/cafanacore.table
+        mv $newdir/inc $TAG/include
+        for k in `find $newdir/CAFAna -name '*.h' -o -name '*.cxx'`
+        do
+            fname=${k/$newdir/}
+            mkdir -p $TAG/src/`dirname $fname`
+            echo mv $k $TAG/src/$fname
+            mv $k $TAG/src/$fname
+        done
+    fi
     rm -r $newdir/CAFAna
     rm -r $newdir/build
     rm -r $newdir/inc
