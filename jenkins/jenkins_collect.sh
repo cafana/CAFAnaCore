@@ -32,6 +32,8 @@ do
         mv $k $TAG/src/$fname
     done
     rm -r $newdir/CAFAna
+    rm -r $newdir/build
+    rm -r $newdir/inc
 done
 
 cp -r jenkins/version ${TAG}.version
