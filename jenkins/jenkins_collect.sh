@@ -23,7 +23,7 @@ do
     mv $newdir/CAFAna/lib $newdir/$lib
     # will overwrite each other but should all be identical
     mv $newdir/CAFAna/ups $TAG/
-    sed -i s/vXX.YY/$TAG/g ${TAG}/ups/osclib.table
+    sed -i s/vXX.YY/$TAG/g ${TAG}/ups/cafanacore.table
     for k in `find $newdir/CAFAna -name '*.h'`
     do
         fname=${k/$newdir/}
