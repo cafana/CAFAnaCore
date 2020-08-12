@@ -23,7 +23,7 @@ do
     # will overwrite each other but should all be identical
     mv $newdir/CAFAna/ups $TAG/
     sed -i s/vXX.YY/$TAG/g ${TAG}/ups/cafanacore.table
-    cp -r $newdir/CAFAna/inc $TAG/include
+    cp -r $newdir/inc $TAG/include
     for k in `find $newdir/CAFAna -name '*.h' -o -name '*.cxx'`
     do
         fname=${k/$newdir/}
