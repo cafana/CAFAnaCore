@@ -16,6 +16,9 @@ else
     setup cmake v3_14_3
 fi
 
+export PRODUCTS=/cvmfs/nova.opensciencegrid.org/externals/:$PRODUCTS
+setup osclib v00.03 -q ${QUALIFIER}:stan
+setup srproxy v00.12 -q ${QUALIFIER}:py2
 
 make clean # don't trust my build system
 time make || exit 2
