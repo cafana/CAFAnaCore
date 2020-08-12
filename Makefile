@@ -3,7 +3,7 @@
 
 all:
 	if [ ! -e build ]; then mkdir -p build; cd build; cmake ..; fi
-	make -C build install
+	make -C build -j install
 
 clean:
-	make -C build clean
+	make -C build -j clean
