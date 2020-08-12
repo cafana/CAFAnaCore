@@ -1,4 +1,4 @@
-set(LIBRARY CAFAnaCore)
+set(LIBRARY CAFAnaCoreExt)
 
 file(GLOB HEADER_FILES *.h)
 file(GLOB SOURCES *.cxx)
