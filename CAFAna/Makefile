@@ -11,19 +11,19 @@ SRCS := $(wildcard Core/*.cxx)
 HDRS := $(wildcard Core/*.h)
 OBJS := $(patsubst %.cxx,tmp/%.o,$(SRCS))
 
-all: prereqs ${OBJS} lib/Core/libCAFAnaCoreExt.so
+all: prereqs ${OBJS} lib/libCAFAnaCoreExt.so
 
 tmp/%.o: %.cxx ${HDRS}
 	g++ $< ${CFLAGS} -c -fpic -o $@
 
-lib/Core/libCAFAnaCoreExt.so: ${OBJS}
+lib/libCAFAnaCoreExt.so: ${OBJS}
 	g++ -shared -o $@ tmp/Core/*.o ${LDFLAGS}
 
 prereqs:
 	@echo Checking all necessary env vars are set
 	test ${ROOT_INC} # ROOT_INC
 	mkdir -p tmp/Core
-	mkdir -p lib/Core
+	mkdir -p lib
 
 clean:
 	rm -r tmp lib
