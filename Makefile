@@ -2,8 +2,8 @@
 # never remember that it's make *install*
 
 all:
-	if [ ! -e build ]; then mkdir -p build; cd build; cmake ..; fi
-	make -C build -j install
+	if [ ! -e build ]; then mkdir -p build; cd build; cmake -GNinja ..; fi
+	ninja -C build -j`nproc --all` install
 
 clean:
-	if [ -e build ]; then make -C build -j clean; rm -r build; fi
+	if [ -e build ]; then ninja -C build clean; rm -r build; fi
