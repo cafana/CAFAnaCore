@@ -1,0 +1,79 @@
+FILE=TABLE
+PRODUCT=cafanacore
+VERSION=vXX.YY
+
+FLAVOR=ANY
+QUALIFIERS = "debug:e17"
+
+ACTION=SETUP
+  setupEnv()
+  proddir()
+
+  # for get-directory-name
+  setupRequired(cetpkgsupport)
+  setupRequired(root v6_16_00 -qe17:debug)
+
+  EnvSet(CAFANACORE_VERSION, ${UPS_PROD_VERSION} )
+  EnvSet(CAFANACORE_INC, ${UPS_PROD_DIR}/include )
+  EnvSet(CAFANACORE_FQ_DIR, ${CAFANACORE_DIR}`get-directory-name subdir`.`echo ${UPS_PROD_QUALIFIERS} | tr ':' '.'` )
+  EnvSet(CAFANACORE_LIB, ${CAFANACORE_FQ_DIR}/lib )
+  pathPrepend(LD_LIBRARY_PATH, ${CAFANACORE_LIB})
+
+
+FLAVOR=ANY
+QUALIFIERS = "prof:e17"
+
+ACTION=SETUP
+  setupEnv()
+  proddir()
+
+  # for get-directory-name
+  setupRequired(cetpkgsupport)
+  setupRequired(root v6_16_00 -qe17:prof)
+
+  EnvSet(CAFANACORE_VERSION, ${UPS_PROD_VERSION} )
+  EnvSet(CAFANACORE_INC, ${UPS_PROD_DIR}/include )
+  EnvSet(CAFANACORE_FQ_DIR, ${CAFANACORE_DIR}`get-directory-name subdir`.`echo ${UPS_PROD_QUALIFIERS} | tr ':' '.'` )
+  EnvSet(CAFANACORE_LIB, ${CAFANACORE_FQ_DIR}/lib )
+  pathPrepend(LD_LIBRARY_PATH, ${CAFANACORE_LIB})
+
+
+
+
+
+
+
+FLAVOR=ANY
+QUALIFIERS = "debug:e19"
+
+ACTION=SETUP
+  setupEnv()
+  proddir()
+
+  # for get-directory-name
+  setupRequired(cetpkgsupport)
+  setupRequired(root v6_18_04d -qe19:debug:py2)
+
+  EnvSet(CAFANACORE_VERSION, ${UPS_PROD_VERSION} )
+  EnvSet(CAFANACORE_INC, ${UPS_PROD_DIR}/include )
+  EnvSet(CAFANACORE_FQ_DIR, ${CAFANACORE_DIR}`get-directory-name subdir`.`echo ${UPS_PROD_QUALIFIERS} | tr ':' '.'` )
+  EnvSet(CAFANACORE_LIB, ${CAFANACORE_FQ_DIR}/lib )
+  pathPrepend(LD_LIBRARY_PATH, ${CAFANACORE_LIB})
+
+
+FLAVOR=ANY
+QUALIFIERS = "prof:e19"
+
+ACTION=SETUP
+  setupEnv()
+  proddir()
+
+  # for get-directory-name
+  setupRequired(cetpkgsupport)
+  setupRequired(root v6_18_04d -qe19:prof:py2)
+
+  EnvSet(CAFANACORE_VERSION, ${UPS_PROD_VERSION} )
+  EnvSet(CAFANACORE_INC, ${UPS_PROD_DIR}/include )
+  EnvSet(CAFANACORE_FQ_DIR, ${CAFANACORE_DIR}`get-directory-name subdir`.`echo ${UPS_PROD_QUALIFIERS} | tr ':' '.'` )
+  EnvSet(CAFANACORE_LIB, ${CAFANACORE_FQ_DIR}/lib )
+  pathPrepend(LD_LIBRARY_PATH, ${CAFANACORE_LIB})

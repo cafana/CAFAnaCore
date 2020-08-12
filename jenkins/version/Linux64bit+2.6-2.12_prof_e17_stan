@@ -1,0 +1,9 @@
+FILE = version
+PRODUCT = cafanacore
+VERSION = vXX.YY
+
+FLAVOR = Linux64bit+2.6-2.12
+QUALIFIERS = "prof:e17"
+  PROD_DIR = cafanacore/vXX.YY/
+  UPS_DIR = ups
+  TABLE_FILE = cafanacore.table
