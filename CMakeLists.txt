@@ -13,6 +13,7 @@ set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
 
 # non-negotiable dependencies
 find_package(OscLib REQUIRED)
+find_package(SRProxy REQUIRED)
 find_package(ROOT REQUIRED)
 
 # ROOT does things differently depending on whether it's built for C++17 or not :-\
@@ -50,6 +51,8 @@ set(TARGET_BINDIR bin)
 include_directories(
         ${CMAKE_SOURCE_DIR}
         ${ROOT_INCLUDE_DIRS}
+        ${OSCLIB_INC}
+        ${SRPROXY_INC}
 )
 
 # by default make the bin/ and lib/ dirs in the top of the source dir.
