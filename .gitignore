@@ -1,3 +1,4 @@
 *~
-CAFAna/lib
-CAFAna/tmp
+lib/
+inc/
+build/
