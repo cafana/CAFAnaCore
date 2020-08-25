@@ -16,6 +16,9 @@ set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
 find_package(OscLib REQUIRED)
 find_package(SRProxy REQUIRED)
 find_package(ROOT REQUIRED)
+find_package(Stan REQUIRED)
+find_package(Eigen REQUIRED)
+find_package(Boost REQUIRED)
 
 # ROOT does things differently depending on whether it's built for C++17 or not :-\
 string(REGEX REPLACE ".*c\\+\\+([0-9][0-9]).*" "\\1" ROOT_CXX_STANDARD ${ROOT_CXX_FLAGS})
@@ -54,6 +57,9 @@ include_directories(
         ${ROOT_INCLUDE_DIRS}
         ${OSCLIB_INC}
         ${SRPROXY_INC}
+        ${STAN_MATH_INC}
+        ${EIGEN_INC}
+        ${BOOST_INC}
 )
 
 # by default make the bin/ and lib/ dirs in the top of the source dir.
