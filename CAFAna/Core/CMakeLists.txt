@@ -1,6 +1,6 @@
 set(LIBRARY CAFAnaCoreExt)
 
-file(GLOB HEADER_FILES *.h)
+file(GLOB HEADER_FILES *.h *.txx)
 file(GLOB SOURCES *.cxx)
 
 add_library(${LIBRARY} SHARED
