@@ -140,11 +140,4 @@ namespace ana
     return *this;
   }
 
-  //----------------------------------------------------------------------
-  void SpectrumDestructorHelper(const Spectrum* spect,
-                                const std::set<SpectrumLoaderBase*>& loaders)
-  {
-    for(SpectrumLoaderBase* loader: loaders) loader->RemoveSpectrum(&spect);
-  }
-
 }

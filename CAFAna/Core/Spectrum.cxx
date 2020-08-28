@@ -74,17 +74,13 @@ namespace ana
     return *this;
   }
 
-  // The literal destructor needs to be in this file for vtable reasons, but
-  // the actual work references SpectrumLoader directly so has to be in
-  // SpectrumConstructors.txx
-  extern void SpectrumDestructorHelper(const Spectrum* spect,
-                                       const std::set<SpectrumLoaderBase*>& spectra);
-
   //----------------------------------------------------------------------
   Spectrum::~Spectrum()
   {
-    // TODO build system insists this symbol be found at link time
-    //    SpectrumDestructorHelper(this, fLoaderCount);
+    // TODO - this needs to happen, but - at least for now - we're not allowing
+    // ourselves to see a declaration of SpectrumLoader
+
+    // for(SpectrumLoaderBase* loader: loaders) loader->RemoveSpectrum(&spect);
   }
 
   //----------------------------------------------------------------------
