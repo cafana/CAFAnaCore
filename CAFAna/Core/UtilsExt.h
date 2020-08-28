@@ -4,6 +4,7 @@
 // of it, but it differs between the experiments. While it's split we need a
 // different filename
 
+#include <memory>
 #include <string>
 
 class TH1;
@@ -19,6 +20,20 @@ class TH3D;
 namespace ana
 {
   class Binning;
+  class Spectrum;
+  class Ratio;
+
+  enum EBinType
+  {
+    kBinContent, ///< Regular histogram
+    kBinDensity  ///< Divide bin contents by bin widths
+  };
+
+  /// For use as an argument to \ref Spectrum::ToTH1
+  enum EExposureType{
+    kPOT,
+    kLivetime
+  };
 
   /// Return a different string each time, for creating histograms
   std::string UniqueName();
@@ -34,6 +49,8 @@ namespace ana
   protected:
     bool fBackup;
   };
+
+  bool AlmostEqual(double a, double b, double eps = .0001); // allow 0.01% error by default
 
   /// Utility function to avoid need to switch on bins.IsSimple()
   TH1D* MakeTH1D(const char* name, const char* title, const Binning& bins);
@@ -51,4 +68,43 @@ namespace ana
                  const Binning& binsx,
                  const Binning& binsy,
                  const Binning& binsz);
+
+
+  /// \brief For use with \ref Var2D
+  ///
+  /// Re-expand a histogram flattened by \ref Var2D into a 2D histogram for
+  /// plotting purposes. The binning scheme must match that used in the
+  /// original Var.
+  TH2* ToTH2(const Spectrum& s, double exposure, ana::EExposureType expotype,
+             const Binning& binsx, const Binning& binsy,
+	     ana::EBinType bintype = ana::EBinType::kBinContent);
+
+  /// Same as ToTH2, but with 3 dimensions
+  TH3* ToTH3(const Spectrum& s, double exposure, ana::EExposureType expotype,
+             const Binning& binsx, const Binning& binsy, const Binning& binsz,
+	     ana::EBinType bintype = ana::EBinType::kBinContent);
+
+  /// \brief For use with \ref Var2D
+  ///
+  /// Re-expand a flatenned histogram into a 2D histogram for
+  /// plotting purposes. The binning scheme must match that used in the
+  /// original Var.
+  TH2* ToTH2(const Ratio& r, const Binning& binsx, const Binning& binsy);
+
+  /// Same as ToTH2, but with 3 dimensions
+  TH3* ToTH3(const Ratio& r, const Binning& binsx,
+	     const Binning& binsy, const Binning& binsz);
+
+  /// Helper for ana::ToTH2
+  TH2* ToTH2Helper(std::unique_ptr<TH1> h1,
+		   const Binning& binsx,
+		   const Binning& binsy,
+		   ana::EBinType bintype = ana::EBinType::kBinContent);
+
+  /// Helper for ana::ToTH3
+  TH3* ToTH3Helper(std::unique_ptr<TH1> h1,
+		   const Binning& binsx,
+		   const Binning& binsy,
+		   const Binning& binsz,
+		   ana::EBinType bintype = ana::EBinType::kBinContent);
 }
