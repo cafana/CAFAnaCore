@@ -131,7 +131,7 @@ namespace ana
 
     /// Expert constructor for ReweightableSpectrum et al
     Spectrum(Hist&& hist,
-             const HistAxis& axis,
+             const LabelsAndBins& axis,
              double pot,
              double livetime)
       : fHist(std::move(hist)), fPOT(pot), fLivetime(livetime), fAxis(axis)
