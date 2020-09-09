@@ -114,11 +114,8 @@ namespace ana
     fLivetime(rhs.fLivetime),
     fAxis(rhs.fAxis)
   {
-    for(SpectrumLoaderBase* loader: rhs.fLoaderCount){
-      loader->ReplaceSpectrum(&rhs, this);
-      fLoaderCount.insert(loader);
-    }
-    rhs.fLoaderCount.clear();
+    std::swap(fReferences, rhs.fReferences);
+    for(Spectrum** ref: fReferences) *ref = this;
   }
 
   //----------------------------------------------------------------------
@@ -131,11 +128,8 @@ namespace ana
     fLivetime = rhs.fLivetime;
     fAxis = rhs.fAxis;
 
-    for(SpectrumLoaderBase* loader: rhs.fLoaderCount){
-      loader->ReplaceSpectrum(&rhs, this);
-      fLoaderCount.insert(loader);
-    }
-    rhs.fLoaderCount.clear();
+    std::swap(fReferences, rhs.fReferences);
+    for(Spectrum** ref: fReferences) *ref = this;
 
     return *this;
   }

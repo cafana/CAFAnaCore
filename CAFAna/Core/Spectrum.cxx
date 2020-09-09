@@ -56,7 +56,7 @@ namespace ana
     fLivetime(rhs.fLivetime),
     fAxis(rhs.fAxis)
   {
-    assert(rhs.fLoaderCount.empty()); // Copying with pending loads is unexpected
+    assert(rhs.fReferences.empty()); // Copying with pending loads is unexpected
   }
 
   //----------------------------------------------------------------------
@@ -69,7 +69,7 @@ namespace ana
     fLivetime = rhs.fLivetime;
     fAxis = rhs.fAxis;
 
-    assert(fLoaderCount.empty()); // Copying with pending loads is unexpected
+    assert(fReferences.empty()); // Copying with pending loads is unexpected
 
     return *this;
   }
@@ -77,10 +77,8 @@ namespace ana
   //----------------------------------------------------------------------
   Spectrum::~Spectrum()
   {
-    // TODO - this needs to happen, but - at least for now - we're not allowing
-    // ourselves to see a declaration of SpectrumLoader
-
-    // for(SpectrumLoaderBase* loader: loaders) loader->RemoveSpectrum(&spect);
+    // Unregister self from anything that might still want to fill us
+    for(Spectrum** ref: fReferences) *ref = 0;
   }
 
   //----------------------------------------------------------------------
@@ -371,12 +369,16 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  void Spectrum::RemoveLoader(SpectrumLoaderBase* p)
-  { fLoaderCount.erase(p); }
+  void Spectrum::RemoveLoader(Spectrum** ref)
+  {
+    fReferences.erase(ref);
+  }
 
   //----------------------------------------------------------------------
-  void Spectrum::AddLoader(SpectrumLoaderBase* p)
-  { fLoaderCount.insert(p); }
+  void Spectrum::AddLoader(Spectrum** ref)
+  {
+    fReferences.insert(ref);
+  }
 
   //----------------------------------------------------------------------
   Spectrum& Spectrum::PlusEqualsHelper(const Spectrum& rhs, int sign)

@@ -26,11 +26,7 @@ namespace ana
   //----------------------------------------------------------------------
   ReweightableSpectrum::~ReweightableSpectrum()
   {
-    /* TODO TODO TODO 
-    for(SpectrumLoaderBase* loader: fLoaderCount){
-      loader->RemoveReweightableSpectrum(this);
-    }
-    */
+    for(ReweightableSpectrum** ref: fReferences) *ref = 0;
   }
 
   //----------------------------------------------------------------------
@@ -43,7 +39,7 @@ namespace ana
     fPOT = rhs.fPOT;
     fLivetime = rhs.fLivetime;
 
-    assert( rhs.fLoaderCount.empty() ); // Copying with pending loads is unexpected
+    assert( rhs.fReferences.empty() ); // Copying with pending loads is unexpected
   }
 
   //----------------------------------------------------------------------
@@ -60,7 +56,7 @@ namespace ana
     fPOT = rhs.fPOT;
     fLivetime = rhs.fLivetime;
 
-    assert( fLoaderCount.empty() ); // Copying with pending loads is unexpected
+    assert( fReferences.empty() ); // Copying with pending loads is unexpected
 
     return *this;
   }
@@ -268,12 +264,16 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  void ReweightableSpectrum::RemoveLoader(SpectrumLoaderBase* p)
-  { fLoaderCount.erase(p); }
+  void ReweightableSpectrum::RemoveLoader(ReweightableSpectrum** ref)
+  {
+    fReferences.erase(ref);
+  }
 
   //----------------------------------------------------------------------
-  void ReweightableSpectrum::AddLoader(SpectrumLoaderBase* p)
-  { fLoaderCount.insert(p); }
+  void ReweightableSpectrum::AddLoader(ReweightableSpectrum** ref)
+  {
+    fReferences.insert(ref);
+  }
 
   //----------------------------------------------------------------------
   void ReweightableSpectrum::SaveTo(TDirectory* dir, const std::string& name) const

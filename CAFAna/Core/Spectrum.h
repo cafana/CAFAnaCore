@@ -34,13 +34,15 @@ namespace ana
   class SystShifts;
   extern const SystShifts kNoShift;
 
+  template<class T> class SpectrumSinkBase;
+
   /// Representation of a spectrum in any variable, with associated POT
   class Spectrum
   {
   public:
     friend class SpectrumLoaderBase;
-    friend class SpectrumLoader;
-    friend class NullLoader;
+    friend class SpectrumSink;
+    friend class SpectrumSinkBase<Spectrum>;
     friend class Ratio;
 
     enum ESparse{kDense, kSparse};
@@ -264,8 +266,8 @@ namespace ana
     /// Helper for constructors
     Spectrum(const LabelsAndBins& axis, ESparse sparse = kDense);
 
-    void RemoveLoader(SpectrumLoaderBase*);
-    void AddLoader(SpectrumLoaderBase*);
+    void RemoveLoader(Spectrum**);
+    void AddLoader(Spectrum**);
 
     /// Helper for operator+= and operator-=
     Spectrum& PlusEqualsHelper(const Spectrum& rhs, int sign);
@@ -274,8 +276,8 @@ namespace ana
     double fPOT;
     double fLivetime;
 
-    /// This count is maintained by SpectrumLoader, as a sanity check
-    std::set<SpectrumLoaderBase*> fLoaderCount;
+    /// Things that point at this Spectrum. Maintained by SpectrumLoader
+    std::set<Spectrum**> fReferences;
 
     LabelsAndBins fAxis;
   };

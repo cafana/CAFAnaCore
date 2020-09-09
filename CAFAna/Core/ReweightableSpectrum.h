@@ -19,9 +19,8 @@ namespace ana
   class ReweightableSpectrum
   {
   public:
-    friend class SpectrumLoaderBase;
-    friend class SpectrumLoader;
-    friend class NullLoader;
+    friend class ReweightableSpectrumSink;
+    friend class SpectrumSinkBase<ReweightableSpectrum>;
 
     template<class T>
     ReweightableSpectrum(SpectrumLoaderBase& loader,
@@ -102,8 +101,8 @@ namespace ana
 
     ReweightableSpectrum& PlusEqualsHelper(const ReweightableSpectrum& rhs, int sign);
 
-    void RemoveLoader(SpectrumLoaderBase*);
-    void AddLoader(SpectrumLoaderBase*);
+    void RemoveLoader(ReweightableSpectrum**);
+    void AddLoader(ReweightableSpectrum**);
 
     void _SaveTo(TDirectory* dir,
                  const std::string& name,
@@ -119,7 +118,8 @@ namespace ana
 
     std::string fTrueLabel;
 
-    /// This count is maintained by SpectrumLoader, as a sanity check
-    std::set<SpectrumLoaderBase*> fLoaderCount;
+    /// Things that point at this ReweightableSpectrum. Maintained by
+    /// SpectrumLoader
+    std::set<ReweightableSpectrum**> fReferences;
   };
 }
