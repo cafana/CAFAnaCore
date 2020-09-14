@@ -263,6 +263,12 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+  void Spectrum::Scale(const stan::math::var& c)
+  {
+    fHist.Scale(c);
+  }
+
+  //----------------------------------------------------------------------
   double Spectrum::Integral(double exposure, double* err,
 			    EExposureType expotype) const
   {

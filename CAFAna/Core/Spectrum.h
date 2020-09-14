@@ -231,6 +231,7 @@ namespace ana
 
     /// Multiply this spectrum by a constant c
     void Scale(double c);
+    void Scale(const stan::math::var& v);
 
     // Arithmetic operators are as if these are unlike samples, each a
     // contribution to one total, not seperate sources of stats for the same

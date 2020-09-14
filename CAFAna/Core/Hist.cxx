@@ -310,6 +310,35 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+  void Hist::Scale(const stan::math::var& s)
+  {
+    assert(Initialized());
+    switch (fType){
+    case kSparse:
+      fDataStan = fDataSparse * s;
+      fDataSparse.resize(0);
+      break;
+
+    case kDense:
+      fDataStan = fData * s;
+      fData.resize(0);
+      break;
+
+    case kDenseStan:
+      fDataStan *= s;
+      break;
+
+    default:
+      abort(); // unreachable
+    }
+
+    fType = kDenseStan;
+
+    if(s != 1) fSqrtErrs = false;
+    fSumSq *= s.val();
+  }
+
+  //----------------------------------------------------------------------
   void Hist::ResetErrors()
   {
     fSumSq.resize(0);

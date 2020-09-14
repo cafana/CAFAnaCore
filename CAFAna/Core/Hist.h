@@ -59,6 +59,7 @@ namespace ana
 
     void Fill(const Binning& bins, double x, double w);
     void Scale(double s);
+    void Scale(const stan::math::var& s);
     void ResetErrors();
 
     double GetBinContent(int i) const;
