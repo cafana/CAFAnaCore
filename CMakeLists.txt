@@ -21,6 +21,10 @@ find_package(Stan REQUIRED)
 find_package(Eigen REQUIRED)
 find_package(Boost REQUIRED)
 
+# pthread / std::thread
+find_package(Threads REQUIRED)
+link_libraries(Threads::Threads)
+
 # ROOT does things differently depending on whether it's built for C++17 or not :-\
 string(REGEX REPLACE ".*c\\+\\+([0-9][0-9]).*" "\\1" ROOT_CXX_STANDARD ${ROOT_CXX_FLAGS})
 if(ROOT_CXX_STANDARD LESS_EQUAL 14)
