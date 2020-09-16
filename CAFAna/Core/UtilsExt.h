@@ -4,6 +4,7 @@
 // of it, but it differs between the experiments. While it's split we need a
 // different filename
 
+#include <cxxabi.h>
 #include <memory>
 #include <string>
 
@@ -107,4 +108,15 @@ namespace ana
 		   const Binning& binsy,
 		   const Binning& binsz,
 		   ana::EBinType bintype = ana::EBinType::kBinContent);
+
+  /// utility method to figure out exactly what kind of object I am
+  template<class T> std::string DemangledTypeName(T* obj)
+  {
+    return abi::__cxa_demangle(typeid(*obj).name(), 0, 0, 0);
+  }
+
+  template<class T> constexpr char* DemangledTypeName()
+  {
+    return abi::__cxa_demangle(typeid(T).name(), 0, 0, 0); 
+  }
 }

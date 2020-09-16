@@ -2,6 +2,11 @@
 
 #include "CAFAna/Core/LabelsAndBins.h"
 
+#include "CAFAna/Core/FwdDeclare.h"
+
+#include "CAFAna/Core/MultiVar.h"
+#include "CAFAna/Core/Var.h"
+
 #include <string>
 
 namespace ana
@@ -94,36 +99,9 @@ namespace ana
     std::vector<T> fVars;
   };
 
-}
-
-// Typedefs
-
-namespace caf
-{
-  template<class T> class Proxy;
-  class StandardRecord;
-  typedef Proxy<StandardRecord> SRProxy;
-  class SRSpill;
-  typedef Proxy<SRSpill> SRSpillProxy;
-  class SRNeutrino;
-  typedef Proxy<SRNeutrino> SRNeutrinoProxy;
-}
-
-namespace ana
-{
-  template<class T> class _Var;
-  typedef _Var<caf::SRProxy> Var;
-  typedef _Var<caf::SRSpillProxy> SpillVar;
-  typedef _Var<caf::SRNeutrinoProxy> NuTruthVar;
-  template<class T> class _MultiVar;
-  typedef _MultiVar<caf::SRProxy> MultiVar;
+  // Typedefs
   typedef _HistAxis<Var> HistAxis;
   typedef _HistAxis<MultiVar> MultiVarHistAxis;
   typedef _HistAxis<SpillVar> SpillHistAxis;
   typedef _HistAxis<NuTruthVar> NuTruthHistAxis;
-}
-
-namespace ana
-{
-  HistAxis HistAxisFromNuTruthHistAxis(NuTruthHistAxis ntha, double _default = -5);
 }
