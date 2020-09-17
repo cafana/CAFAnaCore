@@ -8,6 +8,12 @@
 #include "TH2.h"
 #include "TH3.h"
 
+#include <iostream>
+
+#include "wordexp.h"
+
+#include "sys/stat.h"
+
 namespace ana
 {
   //----------------------------------------------------------------------
@@ -98,7 +104,7 @@ namespace ana
                  const Binning& binsy,
 	 	 const Binning& binsz)
   {
-    return MakeHist<TH3D>(name, title, 
+    return MakeHist<TH3D>(name, title,
 			  binsx.NBins(), &binsx.Edges().front(),
 			  binsy.NBins(), &binsy.Edges().front(),
 			  binsz.NBins(), &binsz.Edges().front());
@@ -227,4 +233,62 @@ namespace ana
     return ret;
   }
 
+  //----------------------------------------------------------------------
+  std::string pnfs2xrootd(std::string loc, bool unauth)
+  {
+    static bool first = true;
+    static bool onsite = false;
+
+    if (first && unauth) {
+      first = false;
+      char chostname[255];
+      gethostname(chostname, 255);
+      std::string hostname = chostname;
+
+      if ( hostname.find("fnal.gov") != std::string::npos ){
+        onsite = true;
+        std::cout << "Using unauthenticated xrootd access (port 1095) while on-site, hostname: " << hostname << std::endl;
+      }
+      else {
+        onsite = false;
+        std::cout << "Using authenticated xrootd access (port 1094) access while off-site, hostname: " << hostname << std::endl;
+      }
+    }
+
+    if(loc.rfind("/pnfs/", 0) == 0){ // ie begins with
+      if ( onsite && unauth )
+        loc = std::string("root://fndca1.fnal.gov:1095//pnfs/fnal.gov/usr/")+&loc.c_str()[6];
+      else
+        loc = std::string("root://fndca1.fnal.gov:1094//pnfs/fnal.gov/usr/")+&loc.c_str()[6];
+    }
+    return loc;
+  }
+
+  //----------------------------------------------------------------------
+  std::vector<std::string> Wildcard(const std::string& wildcardString)
+  {
+    // Expand environment variables and wildcards like the shell would
+    wordexp_t p;
+    const int status = wordexp(wildcardString.c_str(), &p, WRDE_SHOWERR);
+
+    if(status != 0){
+      std::cerr << "Wildcard string '" << wildcardString
+                << "' returned error " << status << " from wordexp()."
+                << std::endl;
+      return {};
+    }
+
+    std::vector<std::string> fileList;
+
+    for(unsigned int i = 0; i < p.we_wordc; ++i){
+      // Check the file exists before adding it
+      struct stat sb;
+      if(stat(p.we_wordv[i], &sb) == 0)
+        fileList.push_back(p.we_wordv[i]);
+    }
+
+    wordfree(&p);
+
+    return fileList;
+  }
 }

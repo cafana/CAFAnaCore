@@ -7,6 +7,7 @@
 #include <cxxabi.h>
 #include <memory>
 #include <string>
+#include <vector>
 
 class TH1;
 class TH2;
@@ -119,4 +120,9 @@ namespace ana
   {
     return abi::__cxa_demangle(typeid(T).name(), 0, 0, 0); 
   }
+
+  std::string pnfs2xrootd(std::string loc, bool unauth = false);
+
+  /// Find files matching a UNIX glob, plus expand environment variables        
+  std::vector<std::string> Wildcard(const std::string& wildcardString);
 }
