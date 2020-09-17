@@ -125,4 +125,6 @@ namespace ana
 
   /// Find files matching a UNIX glob, plus expand environment variables        
   std::vector<std::string> Wildcard(const std::string& wildcardString);
+
+  bool SAMDefinitionExists(const std::string& def);
 }

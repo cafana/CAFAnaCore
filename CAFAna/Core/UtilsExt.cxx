@@ -291,4 +291,12 @@ namespace ana
 
     return fileList;
   }
+
+  //----------------------------------------------------------------------
+  bool SAMDefinitionExists(const std::string& def)
+  {
+    // I would be much much happier to do this in proper code, but I'm not sure
+    // how, there's no samweb C++ API?
+    return system(TString::Format("samweb list-definitions --defname %s | grep %s", def.c_str(), def.c_str()).Data()) == 0;
+  }
 }

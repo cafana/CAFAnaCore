@@ -20,6 +20,7 @@ find_package(ROOT REQUIRED)
 find_package(Stan REQUIRED)
 find_package(Eigen REQUIRED)
 find_package(Boost REQUIRED)
+find_package(Ifdhc REQUIRED)
 
 # pthread / std::thread
 find_package(Threads REQUIRED)
@@ -65,6 +66,7 @@ include_directories(
         ${STAN_MATH_INC}
         ${EIGEN_INC}
         ${BOOST_INC}
+        ${IFDHC_INC}
 )
 
 # by default make the bin/ and lib/ dirs in the top of the source dir.

@@ -58,7 +58,7 @@ namespace ana
         }
 
 	if(!fgGotTickets){
-          // This comes from NovaGridUtils, v02.10 onwards.
+          // This comes from NovaGridUtils or duneutil
           system("setup_fnal_security -b");
 
 	  fgGotTickets = true;
