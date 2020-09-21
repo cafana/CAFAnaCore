@@ -48,7 +48,7 @@ sed -i s/vXX.YY/$TAG/g ${TAG}.version/*
 # Include the version number in a header file as well as the library
 echo '#define CAFANACORE_VERSION '$TAG >> $TAG/include/CAFAna/Core/Version.h
 
-# Include a symlink allowing use of explicit CAFAnaCore/CAFAna/Core path
-cd $TAG/include
-rm CAFAnaCore
-ln -s . CAFAnaCore
+# Jenkins doesn't deal well with symlinks
+# cd $TAG/include
+# rm CAFAnaCore
+# ln -s . CAFAnaCore
