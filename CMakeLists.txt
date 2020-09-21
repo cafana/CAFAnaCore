@@ -8,6 +8,10 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
+# Bake version number into the library (CAFAna/Core/Version.cxx)
+execute_process(COMMAND git describe --tags OUTPUT_VARIABLE CAFANACORE_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCAFANACORE_VERSION=\\\"${CAFANACORE_VERSION}\\\"")
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -g")  # needed to ensure assert() causes an abort() even in optimized builds
