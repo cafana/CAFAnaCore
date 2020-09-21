@@ -46,7 +46,7 @@ cp -r jenkins/version ${TAG}.version
 sed -i s/vXX.YY/$TAG/g ${TAG}.version/*
 
 # Include the version number in a header file as well as the library
-echo '#define CAFANACORE_VERSION '$TAG >> $TAG/include/CAFAna/Core/Version.h
+echo '#define CAFANACORE_VERSION "'$TAG'"' >> $TAG/include/CAFAna/Core/Version.h
 
 # Jenkins doesn't deal well with symlinks
 # cd $TAG/include
