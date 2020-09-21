@@ -50,4 +50,4 @@ echo '#define CAFANACORE_VERSION '$TAG >> $TAG/include/CAFAna/Core/Version.h
 
 # Include a symlink allowing use of explicit CAFAnaCore/CAFAna/Core path
 cd $TAG/include
-ln -s .. CAFAnaCore
+ln -s . CAFAnaCore
