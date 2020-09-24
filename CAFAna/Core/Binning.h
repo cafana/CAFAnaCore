@@ -22,6 +22,10 @@ namespace ana
     static Binning Custom(const std::vector<double>& edges);
     static Binning FromTAxis(const TAxis* ax);
 
+    Binning(const Binning& b);
+    Binning& operator=(const Binning& b);
+    ~Binning();
+
     int NBins() const {return fNBins;}
     double Min() const {return fMin;}
     double Max() const {return fMax;}
@@ -42,6 +46,7 @@ namespace ana
 
     bool operator==(const Binning& rhs) const;
     bool operator<(const Binning& rhs) const;
+
   protected:
     Binning();
 

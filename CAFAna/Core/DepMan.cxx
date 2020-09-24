@@ -133,6 +133,7 @@ namespace ana
 
 #include "CAFAna/Core/Cut.h"
 #include "CAFAna/Core/Var.h"
+#include "CAFAna/Core/Binning.h"
 
 namespace ana
 {
@@ -143,4 +144,6 @@ namespace ana
   template class DepMan<Var>;
   template class DepMan<SpillVar>;
   template class DepMan<NuTruthVar>;
+
+  template class DepMan<Binning>;
 }

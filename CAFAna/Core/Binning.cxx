@@ -1,5 +1,7 @@
 #include "CAFAna/Core/Binning.h"
 
+#include "CAFAna/Core/DepMan.h"
+
 #include "TDirectory.h"
 #include "TH1.h"
 #include "TObjString.h"
@@ -11,8 +13,82 @@ namespace ana
 
   //----------------------------------------------------------------------
   Binning::Binning()
-    : fID(-1)
+    : fNBins(-1), // need a non-zero value so we count as constructed
+      fID(-1)
   {
+    // Don't want children copying from us at this point. Only when we're
+    // "fully constructed". So I inserted explicit calls in Simple() and
+    // Custom() instead.
+
+    //    DepMan<Binning>::Instance().RegisterConstruction(this);
+  }
+
+  //----------------------------------------------------------------------
+  Binning::~Binning()
+  {
+    DepMan<Binning>::Instance().RegisterDestruction(this);
+  }
+
+  //----------------------------------------------------------------------
+  Binning::Binning(const Binning& b)
+  {
+    if(&b == this) return;
+
+    if(b.fNBins){
+      fEdges = b.fEdges;
+      fLabels = b.fLabels;
+      fNBins = b.fNBins;
+      fMin = b.fMin;
+      fMax = b.fMax;
+      fIsSimple = b.fIsSimple;
+      fID = b.fID;
+
+      DepMan<Binning>::Instance().RegisterConstruction(this);
+    }
+    else{
+      fNBins = 0;
+      fMin = 0;
+      fMax = 0;
+      fIsSimple = false;
+      fID = 0;
+
+      // If we are copying from a Binning with zero bins, that is probably
+      // because it is all zero because it hasn't been statically constructed
+      // yet. Register our interest of getting constructed in turn once it is.
+      DepMan<Binning>::Instance().RegisterDependency(&b, this);
+    }
+  }
+  
+  //----------------------------------------------------------------------
+  Binning& Binning::operator=(const Binning& b)
+  {
+    if(&b == this) return *this;
+
+    if(b.fNBins){
+      fEdges = b.fEdges;
+      fLabels = b.fLabels;
+      fNBins = b.fNBins;
+      fMin = b.fMin;
+      fMax = b.fMax;
+      fIsSimple = b.fIsSimple;
+      fID = b.fID;
+
+      DepMan<Binning>::Instance().RegisterConstruction(this);
+    }
+    else{
+      fNBins = 0;
+      fMin = 0;
+      fMax = 0;
+      fIsSimple = false;
+      fID = 0;
+
+      // If we are copying from a Binning with zero bins, that is probably
+      // because it is all zero because it hasn't been statically constructed
+      // yet. Register our interest of getting constructed in turn once it is.
+      DepMan<Binning>::Instance().RegisterDependency(&b, this);
+    }
+
+    return *this;
   }
 
   //----------------------------------------------------------------------
@@ -48,6 +124,8 @@ namespace ana
     else{
       bins.fID = it->second;
     }
+
+    DepMan<Binning>::Instance().RegisterConstruction(&bins);
 
     return bins;
   }
@@ -92,6 +170,8 @@ namespace ana
     else{
       bins.fID = it->second;
     }
+
+    DepMan<Binning>::Instance().RegisterConstruction(&bins);
 
     return bins;
   }
