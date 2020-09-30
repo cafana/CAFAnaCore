@@ -3,10 +3,12 @@
 set +ex
 env
 
+source /cvmfs/nova.opensciencegrid.org/externals/setup || exit 1
+# Alternate source of products
+# source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
+
 if [[ $QUALIFIER == *e19* ]]
 then
-    # DUNE lblpwgtools versions
-    source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
     setup root v6_18_04d -q ${QUALIFIER} || exit 1
     setup stan_math v2_18_0a -q $QUALIFIER || exit 1
     setup stan v2_18_0a -q $QUALIFIER || exit 1
@@ -14,8 +16,6 @@ then
     setup boost v1_70_0 -q $QUALIFIER || exit 1
     setup ifdhc v2_5_7 -q ${QUALIFIER}:p2715a || exit 1
 else
-    # NOvA versions
-    source /cvmfs/nova.opensciencegrid.org/externals/setup || exit 1
     setup root v6_16_00 -q $QUALIFIER || exit 1
     setup stan_math v2.18.0 -q $QUALIFIER || exit 1
     setup stan v2.18.0 -q $QUALIFIER || exit 1
