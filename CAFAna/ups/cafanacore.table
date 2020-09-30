@@ -63,11 +63,11 @@ ACTION=SETUP
   # for get-directory-name
   setupRequired(cetpkgsupport)
   setupRequired(root v6_18_04d -qe19:debug)
-  setupRequired(stan_math v2_18_0a -qe19:debug)
+  setupRequired(stan_math v2_18_0 -qe19:debug)
   setupRequired(stan v2_18_0a -qe19:debug)
   setupRequired(eigen v3_3_5)
   setupRequired(boost v1_70_0 -qe19:debug)
-  setupRequired(ifdhc v2_5_7 -qe19:debug:p2715a)
+  setupRequired(ifdhc v2_5_7 -qe19:debug:p372)
 
   EnvSet(CAFANACORE_VERSION, ${UPS_PROD_VERSION} )
   EnvSet(CAFANACORE_INC, ${UPS_PROD_DIR}/include )
@@ -86,11 +86,11 @@ ACTION=SETUP
   # for get-directory-name
   setupRequired(cetpkgsupport)
   setupRequired(root v6_18_04d -qe19:prof)
-  setupRequired(stan_math v2_18_0a -qe19:prof)
+  setupRequired(stan_math v2_18_0 -qe19:prof)
   setupRequired(stan v2_18_0a -qe19:prof)
   setupRequired(eigen v3_3_5)
   setupRequired(boost v1_70_0 -qe19:prof)
-  setupRequired(ifdhc v2_5_7 -qe19:prof:p2715a)
+  setupRequired(ifdhc v2_5_7 -qe19:prof:p372)
 
   EnvSet(CAFANACORE_VERSION, ${UPS_PROD_VERSION} )
   EnvSet(CAFANACORE_INC, ${UPS_PROD_DIR}/include )
