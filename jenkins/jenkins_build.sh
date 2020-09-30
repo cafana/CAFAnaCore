@@ -8,8 +8,8 @@ then
     # DUNE lblpwgtools versions
     source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
     setup root v6_18_04d -q ${QUALIFIER} || exit 1
-    setup stan_math v2_18_0 -q $QUALIFIER || exit 1
-    setup stan v2_18_0 -q $QUALIFIER || exit 1
+    setup stan_math v2_18_0a -q $QUALIFIER || exit 1
+    setup stan v2_18_0a -q $QUALIFIER || exit 1
     setup eigen v3_3_5 || exit 1
     setup boost v1_70_0 -q $QUALIFIER || exit 1
     setup ifdhc v2_5_7 -q ${QUALIFIER}:p2715a || exit 1
