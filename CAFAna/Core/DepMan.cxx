@@ -3,9 +3,8 @@
 #include "CAFAna/Core/UtilsExt.h" // DemangledTypeName()
 
 #include <cassert>
+#include <cstdlib>
 #include <iostream>
-
-//#include <string.h> // memcpy
 
 // The idea is to keep a tree of what objects are copy-constructed from which
 // others. Any object whose source is not constructed yet should skip
@@ -34,6 +33,16 @@ namespace
     if(it == col.end()) return 0;
     return &it->second;
   }
+
+  // The static for the DepMan singleton might be destroyed before various
+  // classes which might then try to access it in their own destructors. Make
+  // everything a no-op during shutdown.
+  bool gDuringShutdown = false;
+  void DepManAtExit(){gDuringShutdown = true;}
+  const struct RegisterDepManAtExit
+  {
+    RegisterDepManAtExit(){atexit(DepManAtExit);}
+  } gRegisterDepManAtExit;
 }
 
 namespace ana
@@ -49,15 +58,21 @@ namespace ana
   // --------------------------------------------------------------------------
   template<class T> void DepMan<T>::Print()
   {
-    std::cout << "DepMan for "<< DemangledTypeName<T>() << " :\n"
-      << "  assisted construction of " << fNOps << " objects. "
-      << fNodes.size() << " still awaiting construction." << std::endl;
+    std::cout << "DepMan for "<< DemangledTypeName<T>() << " :\n";
+    if(gDuringShutdown){
+      std::cout << "  Unable to print during shutdown" << std::endl;
+    }
+    else{
+      std::cout << "  assisted construction of " << fNOps << " objects. "
+                << fNodes.size() << " still awaiting construction."
+                << std::endl;
+    }
   }
 
   // --------------------------------------------------------------------------
   template<class T> void DepMan<T>::RegisterConstruction(T* x)
   {
-    if(fDisabled) return;
+    if(fDisabled || gDuringShutdown) return;
 
     ParentKids* xnode = maybe_find(fNodes, x);
     if(!xnode) return; // No record of us, nothing to do
@@ -81,7 +96,7 @@ namespace ana
   // --------------------------------------------------------------------------
   template<class T> void DepMan<T>::RegisterDestruction(T* x)
   {
-    if(fDisabled) return;
+    if(fDisabled || gDuringShutdown) return;
 
     ParentKids* xnode = maybe_find(fNodes, x);
     if(!xnode) return; // No record of us, nothing to do
@@ -106,7 +121,7 @@ namespace ana
   template<class T> void DepMan<T>::
   RegisterDependency(const T* parent, T* child)
   {
-    if(fDisabled) return;
+    if(fDisabled || gDuringShutdown) return;
 
     fNodes[child].parent = parent;
     fNodes[parent].kids.insert(child);
@@ -115,13 +130,13 @@ namespace ana
   // --------------------------------------------------------------------------
   template<class T> void DepMan<T>::Disable()
   {
-    fDisabled = true;
+    if(!gDuringShutdown) fDisabled = true;
   }
 
   // --------------------------------------------------------------------------
   template<class T> void DepMan<T>::Enable()
   {
-    fDisabled = false;
+    if(!gDuringShutdown) fDisabled = false;
   }
 }
 
