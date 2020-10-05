@@ -25,7 +25,7 @@ namespace ana
                      const SystShifts& shift,
                      const _Var<T>& wei,
                      Spectrum::ESparse sparse)
-    : Spectrum(loader, _HistAxis<_Var<T>>(label, bins), cut, shift, wei, sparse)
+    : Spectrum(loader, _HistAxis<_Var<T>>(label, bins, var), cut, shift, wei, sparse)
   {
   }
 
