@@ -1,8 +1,9 @@
 #include "CAFAna/Core/Ratio.h"
 
-#include "TH1.h"
+#include "TH2.h"
 
 #include <cassert>
+#include <iostream>
 
 namespace ana
 {
@@ -70,6 +71,26 @@ namespace ana
     ret->SetLineStyle(style);
     ret->GetXaxis()->SetTitle(fLabels[0].c_str()); // TODO
     ret->GetYaxis()->SetTitle("Ratio");
+    return ret;
+  }
+
+  //----------------------------------------------------------------------
+  TH2* Ratio::ToTH2() const
+  {
+    if(fBins.size() != 2){
+      std::cout << "Error: This Ratio does not appear to be 2D." << std::endl;
+      abort();
+    }
+
+    TH2* ret = ana::ToTH2Helper(std::unique_ptr<TH1>(ToTH1()), fBins[0], fBins[1]);
+
+    ret->GetXaxis()->SetTitle(fLabels[0].c_str());
+    ret->GetYaxis()->SetTitle(fLabels[1].c_str());
+
+    // Allow GetMean() and friends to work even if this histogram never had any
+    // explicit Fill() calls made.
+    if(ret->GetEntries() == 0) ret->SetEntries(1);
+
     return ret;
   }
 } // namespace
