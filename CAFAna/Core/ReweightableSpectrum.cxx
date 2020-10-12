@@ -358,8 +358,8 @@ namespace ana
     typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen:: Dynamic, Eigen::RowMajor> MatRowMajor;
     auto ret = std::make_unique<ReweightableSpectrum>(
       Eigen::Map<MatRowMajor>(spect->GetArray(),
-                              xax.GetBins1D().NBins()+2,
-                              yax.GetBins1D().NBins()+2),
+                              yax.GetBins1D().NBins()+2,
+                              xax.GetBins1D().NBins()+2),
       xax, yax, hPot->Integral(0, -1), hLivetime->Integral(0, -1));
 
     delete spect;
