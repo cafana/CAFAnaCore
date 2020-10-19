@@ -239,6 +239,14 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+  TH1* Spectrum::ToTHX(double exposure, EExposureType expotype, EBinType bintype) const
+  {
+    if(NDimensions() == 2) return ToTH2(exposure, expotype, bintype);
+    if(NDimensions() == 3) return ToTH3(exposure, expotype, bintype);
+    return ToTH1(exposure, expotype, bintype);
+  }
+
+  //----------------------------------------------------------------------
   Eigen::ArrayXd Spectrum::GetEigen(double exposure, EExposureType expotype) const
   {
     if(expotype == kPOT)

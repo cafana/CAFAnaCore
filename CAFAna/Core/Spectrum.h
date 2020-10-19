@@ -183,6 +183,9 @@ namespace ana
     TH3*  ToTH3     (double exposure, EExposureType expotype = kPOT,
 		     EBinType bintype = kBinContent) const;
 
+    TH1* ToTHX(double exposure, EExposureType expotype = kPOT,
+               EBinType bintype = kBinContent) const;
+
     bool HasStan() const {return fHist.HasStan();}
     /// NB these don't have POT scaling. For expert high performance ops only!
     const Eigen::ArrayXd& GetEigen() const {return fHist.GetEigen();}
