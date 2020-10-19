@@ -176,8 +176,6 @@ namespace ana
     /// Spectrum must be 2D to obtain TH2
     TH2*  ToTH2     (double exposure, EExposureType expotype = kPOT,
 		     EBinType bintype = kBinContent) const;
-    /// Spectrum must be 2D to obtain TH2. Normalized to X axis.
-    TH2*  ToTH2NormX(double exposure, EExposureType expotype = kPOT) const;
 
     /// Spectrum must be 3D to obtain TH3
     TH3*  ToTH3     (double exposure, EExposureType expotype = kPOT,

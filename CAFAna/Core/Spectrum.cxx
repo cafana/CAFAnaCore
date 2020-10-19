@@ -184,37 +184,6 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  TH2* Spectrum::ToTH2NormX(double exposure, EExposureType expotype) const
-  {
-    TH2* xyhist = ToTH2(exposure, expotype);
-    if(!xyhist) return nullptr;
-
-    const int nbinsx = GetBinnings()[0].NBins();
-    const int nbinsy = GetBinnings()[1].NBins();
-
-    // Normalize 2D histogram to X-axis spectrum
-    for(int i=1; i<=nbinsx; ++i){
-      double norm = 0.0;
-      for(int j=1; j<=nbinsy; ++j){
-        norm += xyhist->GetBinContent(i, j);
-      }
-      /// If no entries in the column, skip normalization
-      if(norm < 0.0000001) continue;
-
-      norm = 1.0 / norm;
-      for(int j=1; j<=nbinsy; ++j){
-        xyhist->SetBinContent(i,j, xyhist->GetBinContent(i, j) * norm);
-      }
-    }
-
-    // Allow GetMean() and friends to work even if this histogram never had any
-    // explicit Fill() calls made.
-    if(xyhist->GetEntries() == 0) xyhist->SetEntries(1);
-
-    return xyhist;
-  }
-
-  //----------------------------------------------------------------------
   TH3* Spectrum::ToTH3(double exposure, EExposureType expotype, EBinType bintype) const
   {
     if(NDimensions() != 3){
