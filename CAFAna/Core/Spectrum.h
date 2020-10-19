@@ -208,15 +208,22 @@ namespace ana
     /// \brief Mock data is \ref FakeData with Poisson fluctuations applied
     ///
     /// Use for low-budget MDCs, or just getting a sense of the expected scale
-    /// of statistical variation
-    Spectrum MockData(double pot, int idx = 0) const;
-    /// \brief Fake data is a MC spectrum scaled to the POT expected in the data
+    /// of statistical variation. NB seed = 0 is true random
+    Spectrum MockData(double pot, int seed = 0) const;
+
+    /// \brief Asimov data is a MC spectrum scaled to the POT expected in the
+    /// data
     ///
     /// Use for sensitivity plots and testing fit convergence
-    Spectrum FakeData(double pot) const;
+    Spectrum AsimovData(double pot) const;
 
     /// Use for sensitivity plots when fake cosmic data is needed.
     /// Fake cosmic spectra can be added to FakeData by desired livetime.
+    Spectrum AsimovData(double pot, double livetime) const;
+
+    /// Synonymous with AsimovData(). Retained for compatibility
+    Spectrum FakeData(double pot) const;
+    /// Synonymous with AsimovData(). Retained for compatibility
     Spectrum FakeData(double pot, double livetime) const;
 
     double POT() const {return fPOT;}

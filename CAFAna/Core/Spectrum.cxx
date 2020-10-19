@@ -328,11 +328,11 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  Spectrum Spectrum::MockData(double pot, int idx) const
+  Spectrum Spectrum::MockData(double pot, int seed) const
   {
     Spectrum ret = FakeData(pot);
 
-    TRandom3 rnd(idx); // zero seeds randomly
+    TRandom3 rnd(seed); // zero seeds randomly
 
     for(int i = 0; i < ret.fHist.GetNbinsX()+2; ++i){
       ret.fHist.SetBinContent(i, rnd.Poisson(ret.fHist.GetBinContent(i)));
@@ -346,7 +346,7 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  Spectrum Spectrum::FakeData(double pot) const
+  Spectrum Spectrum::AsimovData(double pot) const
   {
     Spectrum ret = *this;
     if(fPOT > 0) ret.fHist.Scale(pot/fPOT);
@@ -360,7 +360,7 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  Spectrum Spectrum::FakeData(double pot, double livetime) const
+  Spectrum Spectrum::AsimovData(double pot, double livetime) const
   {
     Spectrum ret = *this;
 
@@ -374,6 +374,18 @@ namespace ana
     ret.fHist.ResetErrors();
 
     return ret;
+  }
+
+  //----------------------------------------------------------------------
+  Spectrum Spectrum::FakeData(double pot) const
+  {
+    return AsimovData(pot);
+  }
+
+  //----------------------------------------------------------------------
+  Spectrum Spectrum::FakeData(double pot, double livetime) const
+  {
+    return AsimovData(pot, livetime);
   }
 
   //----------------------------------------------------------------------
