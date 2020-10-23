@@ -28,7 +28,7 @@ setup cmake v3_14_3 || exit 1
 setup ninja v1_8_2 || exit 1
 
 export PRODUCTS=/cvmfs/nova.opensciencegrid.org/externals/:$PRODUCTS
-setup osclib v00.03 -q ${QUALIFIER}:stan || exit 1
+setup osclib v00.05 -q ${QUALIFIER}:stan || exit 1
 setup srproxy v00.12 -q ${QUALIFIER}:py2 || exit 1
 
 make clean
