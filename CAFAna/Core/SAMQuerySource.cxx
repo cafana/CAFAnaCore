@@ -229,6 +229,14 @@ namespace ana
 
       std::string resolved;
       for(TString loc: locs){
+        // This is a short-term hack to prevent files with odd locations (of
+        // which JINR is the only example so far) with locations inaccessible
+        // from FNAL from gumming things up. Really we need a generic system
+        // for deciding on the best file location, but no such thing seems to
+        // be readily available.
+        if(loc.Contains("jinr.ru") &&
+           getenv("CAFANA_ALLOW_ALL_FILE_LOCATIONS") == 0) continue;
+
 	// Never try to access bluearc locations from the grid
 	if(!RunningOnGrid() && loc.BeginsWith("novadata:") && best < 3){
 	  loc.Remove(0, 9);
