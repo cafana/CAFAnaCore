@@ -19,7 +19,7 @@ namespace ana
                                              const LabelsAndBins& trueAxis,
                                              double pot, double livetime)
     : fMat(mat), fPOT(pot), fLivetime(livetime),
-      fAxisX(recoAxis), fBinsY(trueAxis.GetBinnings()[0]), fTrueLabel(trueAxis.GetLabels()[0])
+      fAxisX(recoAxis), fAxisY(trueAxis)
   {
   }
 
@@ -31,7 +31,7 @@ namespace ana
 
   //----------------------------------------------------------------------
   ReweightableSpectrum::ReweightableSpectrum(const ReweightableSpectrum& rhs)
-    : fAxisX(rhs.fAxisX), fBinsY(rhs.fBinsY)
+    : fAxisX(rhs.fAxisX), fAxisY(rhs.fAxisY)
   {
     DontAddDirectory guard;
 
@@ -50,7 +50,7 @@ namespace ana
     DontAddDirectory guard;
 
     fAxisX = rhs.fAxisX;
-    fBinsY = rhs.fBinsY;
+    fAxisY = rhs.fAxisY;
 
     fMat = rhs.fMat;
     fPOT = rhs.fPOT;
@@ -67,7 +67,7 @@ namespace ana
     // Could have a file temporarily open
     DontAddDirectory guard;
 
-    TH2D* ret = MakeTH2D(UniqueName().c_str(), "", fAxisX.GetBins1D(), fBinsY);
+    TH2D* ret = MakeTH2D(UniqueName().c_str(), "", fAxisX.GetBins1D(), fAxisY.GetBins1D());
 
     for(int i = 0; i < fMat.rows(); ++i){
       for(int j = 0; j < fMat.cols(); ++j){
@@ -84,7 +84,7 @@ namespace ana
     }
 
     ret->GetXaxis()->SetTitle(fAxisX.GetLabel1D().c_str());
-    ret->GetYaxis()->SetTitle(fTrueLabel.c_str());
+    ret->GetYaxis()->SetTitle(fAxisY.GetLabel1D().c_str());
 
     return ret;
   }
@@ -92,7 +92,7 @@ namespace ana
   //----------------------------------------------------------------------
   void ReweightableSpectrum::Fill(double x, double y, double w)
   {
-    fMat(fBinsY.FindBin(y), fAxisX.GetBins1D().FindBin(x)) += w;
+    fMat(fAxisY.GetBins1D().FindBin(y), fAxisX.GetBins1D().FindBin(x)) += w;
   }
 
   /// Helper for \ref Unweighted
@@ -116,7 +116,7 @@ namespace ana
   //----------------------------------------------------------------------
   Spectrum ReweightableSpectrum::WeightingVariable() const
   {
-    return Spectrum(Hist::Adopt(ProjectionY(fMat)), fAxisX, fPOT, fLivetime);
+    return Spectrum(Hist::Adopt(ProjectionY(fMat)), fAxisY, fPOT, fLivetime);
   }
 
   //----------------------------------------------------------------------
@@ -308,7 +308,10 @@ namespace ana
       fAxisX.GetBinnings()[i].SaveTo(dir, TString::Format("bins%d", i).Data());
     }
 
-    TObjString(fTrueLabel.c_str()).Write("true_label");
+    for(unsigned int i = 0; i < fAxisY.NDimensions(); ++i){
+      TObjString(fAxisY.GetLabels()[i].c_str()).Write(TString::Format("labely%d", i).Data());
+      fAxisY.GetBinnings()[i].SaveTo(dir, TString::Format("binsy%d", i).Data());
+    }
 
     dir->Write();
     delete dir;
@@ -336,8 +339,8 @@ namespace ana
     TH1* hLivetime = (TH1*)dir->Get("livetime");
     assert(hLivetime);
 
-    std::vector<std::string> labels;
-    std::vector<Binning> bins;
+    std::vector<std::string> labels, labelsy;
+    std::vector<Binning> bins, binsy;
 
     for(int i = 0; ; ++i){
       const std::string subname = TString::Format("bins%d", i).Data();
@@ -349,9 +352,22 @@ namespace ana
       labels.push_back(label ? label->GetString().Data() : "");
     }
 
+    for(int i = 0; ; ++i){
+      const std::string subname = TString::Format("binsy%d", i).Data();
+      TDirectory* subdir = dir->GetDirectory(subname.c_str());
+      if(!subdir) break;
+      delete subdir;
+      binsy.push_back(*Binning::LoadFrom(dir, subname.c_str()));
+      TObjString* labely = (TObjString*)dir->Get(TString::Format("labely%d", i));
+      labelsy.push_back(labely ? labely->GetString().Data() : "");
+    }
+
+    // Backwards compatibility
+    if(labelsy.empty()) labelsy.push_back(spect->GetYaxis()->GetTitle());
+    if(binsy.empty()) binsy.push_back(Binning::FromTAxis(spect->GetYaxis()));
+
     const LabelsAndBins xax(labels, bins);
-    const LabelsAndBins yax(spect->GetYaxis()->GetTitle(),
-                            Binning::FromTAxis(spect->GetYaxis()));
+    const LabelsAndBins yax(labelsy, binsy);
 
     // ROOT histogram storage is row-major, but Eigen is column-major by
     // default

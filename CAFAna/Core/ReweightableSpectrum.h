@@ -81,21 +81,23 @@ namespace ana
     unsigned int NDimensions() const{return fAxisX.NDimensions();}
     const std::vector<std::string>& GetLabels() const {return fAxisX.GetLabels();}
     const std::vector<Binning>& GetBinnings() const {return fAxisX.GetBinnings();}
-    Binning GetTrueBinning() const {return fBinsY;}
+    const std::vector<Binning>& GetTrueBinnings() const {return fAxisY.GetBinnings();}
 
     Eigen::MatrixXd GetEigen(double pot) const {return fMat * pot/fPOT;}
   protected:
     // Derived classes can be trusted take care of their own construction
-    ReweightableSpectrum(const HistAxis& axisX,
-                         const Binning& ybins)
+    ReweightableSpectrum(const LabelsAndBins& axisX,
+                         const LabelsAndBins& axisY)
       : fPOT(0), fLivetime(0),
-        fAxisX(axisX), fBinsY(ybins)
+        fAxisX(axisX), fAxisY(axisY)
     {
     }
 
     // Constructor for user by Uninitialized()
     ReweightableSpectrum()
-      : fPOT(0), fLivetime(0), fAxisX(std::vector<std::string>(), std::vector<Binning>()), fBinsY(Binning::Simple(1, 0, 1))
+      : fPOT(0), fLivetime(0),
+        fAxisX(std::vector<std::string>(), std::vector<Binning>()),
+        fAxisY(std::vector<std::string>(), std::vector<Binning>())
     {
     }
 
@@ -112,11 +114,7 @@ namespace ana
     double fPOT;
     double fLivetime;
 
-    LabelsAndBins fAxisX;
-
-    Binning fBinsY;
-
-    std::string fTrueLabel;
+    LabelsAndBins fAxisX, fAxisY;
 
     /// Things that point at this ReweightableSpectrum. Maintained by
     /// SpectrumLoader

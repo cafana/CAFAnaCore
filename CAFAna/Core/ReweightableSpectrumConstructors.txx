@@ -10,12 +10,8 @@ namespace ana
                        const _Cut<T>& cut,
                        const SystShifts& shift,
                        const _Var<T>& wei)
-    : ReweightableSpectrum(recoAxis, trueAxis.GetBins1D())
+    : ReweightableSpectrum(recoAxis, trueAxis)
   {
-    assert(trueAxis.NDimensions() == 1);
-
-    fTrueLabel = trueAxis.GetLabels()[0];
-
     fMat.resize(trueAxis.GetBins1D().NBins()+2, recoAxis.GetBins1D().NBins()+2);
     fMat.setZero();
 
