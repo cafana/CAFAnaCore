@@ -1,6 +1,6 @@
-####  FindStan.cmake:
-####     Find the Stan library.
-####     Assumes you have an $STAN_INC and $STAN_MATH_INC environment variables set.
+####  FindStanMath.cmake:
+####     Find the StanMath library.
+####     Assumes you have a $STAN_MATH_INC environment variable set.
 ####
 ####   Original author:  J. Wolcott <jwolcott@fnal.gov>
 ####   Date:             August 2020
@@ -25,9 +25,9 @@ if(NOT STAN_MATH_INC)
 		set(STAN_MATH_INC ${STAN_MATH_DIR}/include)
 	endif()
 endif()
-message(STATUS "Found Stan include dir: ${STAN_MATH_INC}")
+message(STATUS "Found StanMath include dir: ${STAN_MATH_INC}")
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Stan
+find_package_handle_standard_args(StanMath
 		REQUIRED_VARS STAN_MATH_DIR STAN_MATH_VERSION STAN_MATH_INC
 		VERSION_VAR STAN_MATH_VERSION)
