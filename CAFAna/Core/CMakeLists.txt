@@ -9,7 +9,6 @@ add_library(${LIBRARY} SHARED
 )
 
 link_root(${LIBRARY})
-link_osclib(${LIBRARY})
 link_ifdhc(${LIBRARY})
 
 install(TARGETS ${LIBRARY} LIBRARY DESTINATION ${TARGET_LIBDIR})

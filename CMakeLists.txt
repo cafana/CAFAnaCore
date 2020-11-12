@@ -18,10 +18,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -g")  # needed 
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
 
 # non-negotiable dependencies
-find_package(OscLib REQUIRED)
-find_package(SRProxy REQUIRED)
 find_package(ROOT REQUIRED)
-find_package(Stan REQUIRED)
+find_package(StanMath REQUIRED)
 find_package(Eigen REQUIRED)
 find_package(Boost REQUIRED)
 find_package(Ifdhc REQUIRED)
@@ -65,7 +63,6 @@ set(TARGET_BINDIR bin)
 include_directories(
         ${CMAKE_SOURCE_DIR}
         ${ROOT_INCLUDE_DIRS}
-        ${OSCLIB_INC}
         ${SRPROXY_INC}
         ${STAN_MATH_INC}
         ${EIGEN_INC}
