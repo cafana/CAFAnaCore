@@ -63,7 +63,6 @@ set(TARGET_BINDIR bin)
 include_directories(
         ${CMAKE_SOURCE_DIR}
         ${ROOT_INCLUDE_DIRS}
-        ${SRPROXY_INC}
         ${STAN_MATH_INC}
         ${EIGEN_INC}
         ${BOOST_INC}
