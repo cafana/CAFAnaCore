@@ -41,9 +41,6 @@ namespace ana
     void SaveTo(TDirectory* dir, const std::string& name) const;
     static std::unique_ptr<Binning> LoadFrom(TDirectory* dir, const std::string& name);
 
-    int ID() const {return fID;}
-    static int MaxID() {return fgNextID-1;}
-
     bool operator==(const Binning& rhs) const;
     bool operator<(const Binning& rhs) const;
 
@@ -60,12 +57,6 @@ namespace ana
     int fNBins;
     double fMin, fMax;
     bool fIsSimple;
-
-    int fID;
-    /// The next ID that hasn't yet been assigned
-    static int fgNextID;
-
-    static std::map<Binning, int>& IDMap();
   };
 
 }

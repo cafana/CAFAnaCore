@@ -9,12 +9,9 @@
 
 namespace ana
 {
-  int Binning::fgNextID = 0;
-
   //----------------------------------------------------------------------
   Binning::Binning()
-    : fNBins(-1), // need a non-zero value so we count as constructed
-      fID(-1)
+    : fNBins(-1) // need a non-zero value so we count as constructed
   {
     // Don't want children copying from us at this point. Only when we're
     // "fully constructed". So I inserted explicit calls in Simple() and
@@ -41,7 +38,6 @@ namespace ana
       fMin = b.fMin;
       fMax = b.fMax;
       fIsSimple = b.fIsSimple;
-      fID = b.fID;
 
       DepMan<Binning>::Instance().RegisterConstruction(this);
     }
@@ -50,7 +46,6 @@ namespace ana
       fMin = 0;
       fMax = 0;
       fIsSimple = false;
-      fID = 0;
 
       // If we are copying from a Binning with zero bins, that is probably
       // because it is all zero because it hasn't been statically constructed
@@ -71,7 +66,6 @@ namespace ana
       fMin = b.fMin;
       fMax = b.fMax;
       fIsSimple = b.fIsSimple;
-      fID = b.fID;
 
       DepMan<Binning>::Instance().RegisterConstruction(this);
     }
@@ -80,7 +74,6 @@ namespace ana
       fMin = 0;
       fMax = 0;
       fIsSimple = false;
-      fID = 0;
 
       // If we are copying from a Binning with zero bins, that is probably
       // because it is all zero because it hasn't been statically constructed
@@ -115,15 +108,6 @@ namespace ana
                           const std::vector<std::string>& labels)
   {
     Binning bins = SimpleHelper(n, lo, hi, labels);
-
-    auto it = IDMap().find(bins);
-    if(it == IDMap().end()){
-      bins.fID = fgNextID++;
-      IDMap().emplace(bins, bins.fID);
-    }
-    else{
-      bins.fID = it->second;
-    }
 
     DepMan<Binning>::Instance().RegisterConstruction(&bins);
 
@@ -161,15 +145,6 @@ namespace ana
   Binning Binning::Custom(const std::vector<double>& edges)
   {
     Binning bins = CustomHelper(edges);
-
-    auto it = IDMap().find(bins);
-    if(it == IDMap().end()){
-      bins.fID = fgNextID++;
-      IDMap().emplace(bins, bins.fID);
-    }
-    else{
-      bins.fID = it->second;
-    }
 
     DepMan<Binning>::Instance().RegisterConstruction(&bins);
 
@@ -209,15 +184,6 @@ namespace ana
       edges[ax->GetNbins()] = ax->GetBinUpEdge(ax->GetNbins());
 
       bins = Binning::Custom(edges);
-    }
-
-    auto it = IDMap().find(bins);
-    if(it != IDMap().end()){
-      bins.fID = it->second;
-    }
-    else{
-      bins.fID = fgNextID++;
-      IDMap().emplace(bins, bins.fID);
     }
 
     return bins;
@@ -303,8 +269,6 @@ namespace ana
   //----------------------------------------------------------------------
   bool Binning::operator==(const Binning& rhs) const
   {
-    // NB don't look at ID here or in < because we use these in the maps below
-    // that are used to find the IDs in the first place
     if(fIsSimple != rhs.fIsSimple) return false;
     if(fIsSimple){
       return fNBins == rhs.fNBins && fMin == rhs.fMin && fMax == rhs.fMax;
@@ -324,13 +288,6 @@ namespace ana
     else{
       return fEdges < rhs.fEdges;
     }
-  }
-
-  //----------------------------------------------------------------------
-  std::map<Binning, int>& Binning::IDMap()
-  {
-    static std::map<Binning, int> ret;
-    return ret;
   }
 
 }
