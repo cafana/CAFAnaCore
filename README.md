@@ -60,7 +60,7 @@ rm archive.zip
 ssh cvmfs${EXPERIMENT}@oasiscfs.fnal.gov
 cvmfs_server transaction ${EXPERIMENT}.opensciencegrid.org
 # fetch the files you extracted previously to the correct /cvmfs directory
-cd /cvmfs/ ... /cafanacorecore/$NEW_TAG_NUMBER/include
+cd /cvmfs/ ... /cafanacore/$NEW_TAG_NUMBER/include
 ln -s . CAFAnaCore # can't be done earlier because neither jenkins or scp like symlinks
 cd -
 cvmfs_server publish ${EXPERIMENT}.opensciencegrid.org
