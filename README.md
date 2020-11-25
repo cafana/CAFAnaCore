@@ -29,7 +29,7 @@ $ cmake ..
 $ make install
 ```
 
-## How to build and and test your changes
+## How to build and and test your changes locally
 
 - `export QUALIFIER=e19:prof` or `e17:debug`, etc
 - `jenkins/jenkins_build.sh` (or paste parts of it into your terminal)
@@ -57,7 +57,7 @@ unzip archive.zip
 mv archive/* .
 rm archive.zip
 
-ssh cvmfs${EXPERIMENT}@oasiscfs
+ssh cvmfs${EXPERIMENT}@oasiscfs.fnal.gov
 cvmfs_server transaction ${EXPERIMENT}.opensciencegrid.org
 # fetch the files you extracted previously to the correct /cvmfs directory
 cd /cvmfs/ ... /cafanacorecore/$NEW_TAG_NUMBER/include
@@ -69,6 +69,10 @@ cvmfs_server publish ${EXPERIMENT}.opensciencegrid.org
 ### For NOvA
 
 Update `CAFAna/Core/VersionCheck.cxx`, `setup/nova-offline-ups-externals-development`, and `nova-offline-ups-externals-development-prof`. Notify `#cmake`
+
+### For DUNE
+
+Update `cmake/ups_env_setup.sh`
 
 ## Usage
 Coming soon!
