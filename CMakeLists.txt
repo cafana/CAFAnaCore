@@ -17,7 +17,10 @@ endif()
 execute_process(COMMAND git describe --tags OUTPUT_VARIABLE CAFANACORE_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCAFANACORE_VERSION=\\\"${CAFANACORE_VERSION}\\\"")
 
-set(common_flags "-fdiagnostics-color")
+# Record what flags were used. Can dump with
+# readelf -p .GCC.command.line libCAFAnaCoreExt.so 
+set(common_flags "-fdiagnostics-color -frecord-gcc-switches -grecord-gcc-switches")
+
 set(CMAKE_CXX_FLAGS_DEBUG "-g -Og ${common_flags}")
 set(CMAKE_CXX_FLAGS_MINSIZEREL "${common_flags} -Os")
 # notes for release:
