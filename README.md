@@ -29,5 +29,46 @@ $ cmake ..
 $ make install
 ```
 
+## How to build and and test your changes
+
+- `export QUALIFIER=e19:prof` or `e17:debug`, etc
+- `jenkins/jenkins_build.sh` (or paste parts of it into your terminal)
+- set `CAFANACORE_LIB` and `CAFANACORE_INC` manually to point to what you just built
+- rebuild your test release
+- `export CAFANA_DISABLE_VERSION_CHECK=1`
+- Profit!
+
+## How to build with jenkins
+
+```
+git push
+git tag $NEW_TAG_NUMBER
+git push --tags
+```
+
+- Navigate to https://buildmaster.fnal.gov/buildmaster/view/Nova/job/external/job/cafanacore_build/ and click "Build Now".
+- Wait
+
+## How to deploy
+
+```
+wget https://buildmaster.fnal.gov/buildmaster/view/Nova/job/external/job/cafanacore_collect/lastSuccessfulBuild/artifact/*zip*/archive.zip
+unzip archive.zip
+mv archive/* .
+rm archive.zip
+
+ssh cvmfs${EXPERIMENT}@oasiscfs
+cvmfs_server transaction ${EXPERIMENT}.opensciencegrid.org
+# fetch the files you extracted previously to the correct /cvmfs directory
+cd /cvmfs/ ... /cafanacorecore/$NEW_TAG_NUMBER/include
+ln -s . CAFAnaCore # can't be done earlier because neither jenkins or scp like symlinks
+cd -
+cvmfs_server publish ${EXPERIMENT}.opensciencegrid.org
+```
+
+### For NOvA
+
+Update `CAFAna/Core/VersionCheck.cxx`, `setup/nova-offline-ups-externals-development`, and `nova-offline-ups-externals-development-prof`. Notify '#cmake'
+
 ## Usage
 Coming soon!
