@@ -26,4 +26,10 @@ setup cmake v3_14_3 || exit 1
 setup ninja v1_8_2 || exit 1
 
 make clean
-time make || exit 2
+
+if [[ $QUALIFIER == *prof* ]]
+then
+    time make CMAKE_BUILD_TYPE=Release || exit 2
+else
+    time make CMAKE_BUILD_TYPE=Debug || exit 2
+fi
