@@ -8,13 +8,26 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
+# default to 'release' build if not specified
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
 # Bake version number into the library (CAFAna/Core/Version.cxx)
 execute_process(COMMAND git describe --tags OUTPUT_VARIABLE CAFANACORE_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCAFANACORE_VERSION=\\\"${CAFANACORE_VERSION}\\\"")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -g")  # needed to ensure assert() causes an abort() even in optimized builds
+set(common_flags "-fdiagnostics-color")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -Og ${common_flags}")
+set(CMAKE_CXX_FLAGS_MINSIZEREL "${common_flags} -Os")
+# notes for release:
+# -O3 yields linker errors in some versions of gcc.
+#   it's also apparently unstable across some architectures anyway,
+#    and apparently doesn't often offer much in the way of performance increases.
+#    so let's not cause ourselves headaches
+# NDEBUG needed to ensure assert() causes an abort() even in optimized builds
+set(CMAKE_CXX_FLAGS_RELEASE "${common_flags} -O2 -DNDEBUG -g")
+
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
 
 # non-negotiable dependencies
