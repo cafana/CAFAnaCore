@@ -68,7 +68,7 @@ cvmfs_server publish ${EXPERIMENT}.opensciencegrid.org
 
 ### For NOvA
 
-Update `CAFAna/Core/VersionCheck.cxx`, `setup/nova-offline-ups-externals-development`, and `nova-offline-ups-externals-development-prof`. Notify '#cmake'
+Update `CAFAna/Core/VersionCheck.cxx`, `setup/nova-offline-ups-externals-development`, and `nova-offline-ups-externals-development-prof`. Notify `#cmake`
 
 ## Usage
 Coming soon!
