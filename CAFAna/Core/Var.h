@@ -19,6 +19,8 @@ namespace ana
     typedef double (VoidVarFunc_t)(const void* rec);
 
     friend class DepMan<VarBase>;
+    friend class Var2DFunc;
+    friend class Var3DFunc;
 
     friend double ValHelper(const VarBase&, const std::string&, double c, const void*);
     friend void ValHelper(const VarBase&, const VarBase&, const std::string&, const void*, double&, double&);
@@ -29,6 +31,13 @@ namespace ana
     VarBase(const std::function<VoidVarFunc_t>& func, int id = -1);
 
     VarBase(const VarBase& v);
+
+    VarBase(const VarBase& a, const Binning& binsa,
+            const VarBase& b, const Binning& binsb);
+
+    VarBase(const VarBase& a, const Binning& binsa,
+            const VarBase& b, const Binning& binsb,
+            const VarBase& c, const Binning& binsc);
 
     VarBase& operator=(const VarBase& v);
 
@@ -70,7 +79,6 @@ namespace ana
     static int fgNextID;
   };
 
-
   /// Template for Vars applied to any type of object
   template<class T> class _Var : protected VarBase
   {
@@ -92,6 +100,39 @@ namespace ana
     /// std::function can wrap a real function, function object, or lambda
     _Var(const std::function<VarFunc_t>& func)
       : VarBase(AddType<decltype(func), T>(func))
+    {
+    }
+
+    /// \brief Variable formed from two input variables
+    ///
+    /// The binning of each variable has to be given to allow conversion into a
+    /// 1D binned representation.
+    _Var(const _Var& a, const Binning& binsa,
+         const _Var& b, const Binning& binsb)
+      : VarBase(a, binsa, b, binsb)
+    {
+    }
+
+    _Var(const _Var& a, int na, double a0, double a1,
+         const _Var& b, int nb, double b0, double b1)
+      : VarBase(a, Binning::Simple(na, a0, a1),
+                b, Binning::Simple(nb, b0, b1))
+    {
+    }
+
+    _Var(const _Var& a, const Binning& binsa,
+         const _Var& b, const Binning& binsb,
+         const _Var& c, const Binning& binsc)
+      : VarBase(a, binsa, b, binsb, c, binsc)
+    {
+    }
+
+    _Var(const _Var& a, int na, double a0, double a1,
+         const _Var& b, int nb, double b0, double b1,
+         const _Var& c, int nc, double c0, double c1)
+      : VarBase(a, Binning::Simple(na, a0, a1),
+                b, Binning::Simple(nb, b0, b1),
+                c, Binning::Simple(nc, c0, c1))
     {
     }
 
@@ -161,34 +202,6 @@ namespace ana
   const SpillVar kSpillUnweighted{One<caf::SRSpillProxy>()};
 
   const NuTruthVar kNuTruthUnweighted{One<caf::SRNeutrinoProxy>()};
-
-  /// \brief Variable formed from two input variables
-  ///
-  /// The binning of each variable has to be given to allow conversion into a
-  /// 1D binned representation.
-  template<class T> _Var<T>
-  Var2D(const _Var<T>& a, const Binning& binsa,
-        const _Var<T>& b, const Binning& binsb);
-
-  /// \brief Variable formed from two input variables
-  ///
-  /// The binning of each variable has to be given to allow conversion into a
-  /// 1D binned representation.
-  template<class T> _Var<T>
-  Var2D(const _Var<T>& a, int na, double a0, double a1,
-        const _Var<T>& b, int nb, double b0, double b1);
-
-  /// This is just like a Var2D, but useful for 3D Spectra
-  template<class T> _Var<T>
-  Var3D(const _Var<T>& a, const Binning& binsa,
-        const _Var<T>& b, const Binning& binsb,
-        const _Var<T>& c, const Binning& binsc);
-
-  /// This is just like a Var2D, but useful for 3D Spectra
-  template<class T> _Var<T>
-  Var3D(const _Var<T>& a, int na, double a0, double a1,
-        const _Var<T>& b, int nb, double b0, double b1,
-        const _Var<T>& c, int nc, double c0, double c1);
 
   /// Use to rescale another variable.
   Var Scaled(const Var& v, double s);

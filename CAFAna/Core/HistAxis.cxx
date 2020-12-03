@@ -49,13 +49,12 @@ namespace ana
       if constexpr(std::is_same_v<T, MultiVar>)
         return MultiVar2D(fVars[0], fBins[0], fVars[1], fBins[1]);
       else
-        return Var2D(fVars[0], fBins[0],
-                     fVars[1], fBins[1]);
+        return T(fVars[0], fBins[0], fVars[1], fBins[1]);
     case 3:
       if constexpr(!std::is_same_v<T, MultiVar>) // for MultiVar fall-through to the error
-        return Var3D(fVars[0], fBins[0],
-                     fVars[1], fBins[1],
-                     fVars[2], fBins[2]);
+        return T(fVars[0], fBins[0],
+                 fVars[1], fBins[1],
+                 fVars[2], fBins[2]);
     default:
       std::cout << "Error: HistAxis::GetVar1D() doesn't support "
                 << fVars.size() << "-dimensional axes" << std::endl;

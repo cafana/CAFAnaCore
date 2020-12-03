@@ -141,22 +141,22 @@ namespace ana
   int VarBase::fgNextID = 0;
 
   //----------------------------------------------------------------------
-  /// Helper for \ref Var2D
-  template<class T> class Var2DFunc
+  /// Helper for 2D VarBase constructor
+  class Var2DFunc
   {
   public:
-    Var2DFunc(const _Var<T>& a, const Binning binsa,
-              const _Var<T>& b, const Binning binsb)
+    Var2DFunc(const VarBase& a, const Binning& binsa,
+              const VarBase& b, const Binning& binsb)
       : fA(a), fBinsA(binsa),
 	fB(b), fBinsB(binsb)
     {
     }
 
-    double operator()(const T* sr) const
+    double operator()(const void* rec) const
     {
       // Calculate current values of the variables in StandardRecord once
-      const double va = fA(sr);
-      const double vb = fB(sr);
+      const double va = fA(rec);
+      const double vb = fB(rec);
 
       // Since there are no overflow/underflow bins, check the range
       if(va < fBinsA.Min() || vb < fBinsB.Min()) return -1;
@@ -172,31 +172,31 @@ namespace ana
     }
 
   protected:
-    const _Var<T> fA;
+    const VarBase fA;
     const Binning fBinsA;
-    const _Var<T> fB;
+    const VarBase fB;
     const Binning fBinsB;
   };
 
-  /// Helper for \ref Var3D
-  template<class T> class Var3DFunc
+  /// Helper for 3D VarBase constructor
+  class Var3DFunc
   {
   public:
-    Var3DFunc(const _Var<T>& a, const Binning binsa,
-              const _Var<T>& b, const Binning binsb,
-              const _Var<T>& c, const Binning binsc)
+    Var3DFunc(const VarBase& a, const Binning& binsa,
+              const VarBase& b, const Binning& binsb,
+              const VarBase& c, const Binning& binsc)
       : fA(a), fBinsA(binsa),
 	fB(b), fBinsB(binsb),
 	fC(c), fBinsC(binsc)
     {
     }
 
-    double operator()(const T* sr) const
+    double operator()(const void* rec) const
     {
       /// Calculate current values of the variables in StandardRecord once
-      const double va = fA(sr);
-      const double vb = fB(sr);
-      const double vc = fC(sr);
+      const double va = fA(rec);
+      const double vb = fB(rec);
+      const double vc = fC(rec);
 
       /// Since there are no overflow/underflow bins, check the range
       if(va < fBinsA.Min() || vb < fBinsB.Min() || vc < fBinsC.Min()){
@@ -216,68 +216,28 @@ namespace ana
     }
 
   protected:
-    const _Var<T> fA;
+    const VarBase fA;
     const Binning fBinsA;
-    const _Var<T> fB;
+    const VarBase fB;
     const Binning fBinsB;
-    const _Var<T> fC;
+    const VarBase fC;
     const Binning fBinsC;
   };
 
   //----------------------------------------------------------------------
-  template<class T> _Var<T>
-  Var2D(const _Var<T>& a, const Binning& binsa,
-        const _Var<T>& b, const Binning& binsb)
+  VarBase::VarBase(const VarBase& a, const Binning& binsa,
+                   const VarBase& b, const Binning& binsb)
+    : VarBase(Var2DFunc(a, binsa, b, binsb))
   {
-    return _Var<T>(Var2DFunc<T>(a, binsa, b, binsb));
   }
 
   //----------------------------------------------------------------------
-  template<class T> _Var<T>
-  Var2D(const _Var<T>& a, int na, double a0, double a1,
-        const _Var<T>& b, int nb, double b0, double b1)
+  VarBase::VarBase(const VarBase& a, const Binning& binsa,
+                   const VarBase& b, const Binning& binsb,
+                   const VarBase& c, const Binning& binsc)
+    : VarBase(Var3DFunc(a, binsa, b, binsb, c, binsc))
   {
-    return Var2D(a, Binning::Simple(na, a0, a1),
-                 b, Binning::Simple(nb, b0, b1));
   }
-
-  // explicitly instantiate the template for the types we know we have
-  template Var Var2D(const Var&, const Binning&, const Var&, const Binning&);
-  template SpillVar Var2D(const SpillVar&, const Binning&, const SpillVar&, const Binning&);
-  template NuTruthVar Var2D(const NuTruthVar&, const Binning&, const NuTruthVar&, const Binning&);
-
-  template Var Var2D(const Var&, int, double, double, const Var&, int, double, double);
-  template SpillVar Var2D(const SpillVar&, int, double, double, const SpillVar&, int, double, double);
-  template NuTruthVar Var2D(const NuTruthVar&, int, double, double, const NuTruthVar&, int, double, double);
-
-  //----------------------------------------------------------------------
-  template<class T> _Var<T>
-  Var3D(const _Var<T>& a, const Binning& binsa,
-        const _Var<T>& b, const Binning& binsb,
-        const _Var<T>& c, const Binning& binsc)
-  {
-    return _Var<T>(Var3DFunc<T>(a, binsa, b, binsb, c, binsc));
-  }
-
-  //----------------------------------------------------------------------
-  template<class T> _Var<T>
-  Var3D(const _Var<T>& a, int na, double a0, double a1,
-        const _Var<T>& b, int nb, double b0, double b1,
-        const _Var<T>& c, int nc, double c0, double c1)
-  {
-    return Var3D(a, Binning::Simple(na, a0, a1),
-                 b, Binning::Simple(nb, b0, b1),
-                 c, Binning::Simple(nc, c0, c1));
-  }
-
-  // explicitly instantiate the template for the types we know we have
-  template Var Var3D(const Var&, const Binning&, const Var&, const Binning&, const Var&, const Binning&);
-  template SpillVar Var3D(const SpillVar&, const Binning&, const SpillVar&, const Binning&, const SpillVar&, const Binning&);
-  template NuTruthVar Var3D(const NuTruthVar&, const Binning&, const NuTruthVar&, const Binning&, const NuTruthVar&, const Binning&);
-
-  template Var Var3D(const Var&, int, double, double, const Var&, int, double, double, const Var&, int, double, double);
-  template SpillVar Var3D(const SpillVar&, int, double, double, const SpillVar&, int, double, double, const SpillVar&, int, double, double);
-  template NuTruthVar Var3D(const NuTruthVar&, int, double, double, const NuTruthVar&, int, double, double, const NuTruthVar&, int, double, double);
 
   //----------------------------------------------------------------------
   Var Scaled(const Var& v, double s)
