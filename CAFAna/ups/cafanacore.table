@@ -93,3 +93,48 @@ ACTION=SETUP
   EnvSet(CAFANACORE_FQ_DIR, ${CAFANACORE_DIR}`get-directory-name subdir`.`echo ${UPS_PROD_QUALIFIERS} | tr ':' '.'` )
   EnvSet(CAFANACORE_LIB, ${CAFANACORE_FQ_DIR}/lib )
   pathPrepend(LD_LIBRARY_PATH, ${CAFANACORE_LIB})
+
+
+
+FLAVOR=ANY
+QUALIFIERS = "debug:c7"
+
+ACTION=SETUP
+  setupEnv()
+  proddir()
+
+  # for get-directory-name
+  setupRequired(cetpkgsupport)
+  setupRequired(root v6_18_04d -qc7:debug)
+  setupRequired(stan_math v2_18_0 -qc7:debug)
+  setupRequired(eigen v3_3_5)
+  setupRequired(boost v1_70_0 -qc7:debug)
+  setupRequired(ifdhc v2_5_7 -qc7:debug:p372)
+
+  EnvSet(CAFANACORE_VERSION, ${UPS_PROD_VERSION} )
+  EnvSet(CAFANACORE_INC, ${UPS_PROD_DIR}/include )
+  EnvSet(CAFANACORE_FQ_DIR, ${CAFANACORE_DIR}`get-directory-name subdir`.`echo ${UPS_PROD_QUALIFIERS} | tr ':' '.'` )
+  EnvSet(CAFANACORE_LIB, ${CAFANACORE_FQ_DIR}/lib )
+  pathPrepend(LD_LIBRARY_PATH, ${CAFANACORE_LIB})
+
+
+FLAVOR=ANY
+QUALIFIERS = "prof:c7"
+
+ACTION=SETUP
+  setupEnv()
+  proddir()
+
+  # for get-directory-name
+  setupRequired(cetpkgsupport)
+  setupRequired(root v6_18_04d -qc7:prof)
+  setupRequired(stan_math v2_18_0 -qc7:prof)
+  setupRequired(eigen v3_3_5)
+  setupRequired(boost v1_70_0 -qc7:prof)
+  setupRequired(ifdhc v2_5_7 -qc7:prof:p372)
+
+  EnvSet(CAFANACORE_VERSION, ${UPS_PROD_VERSION} )
+  EnvSet(CAFANACORE_INC, ${UPS_PROD_DIR}/include )
+  EnvSet(CAFANACORE_FQ_DIR, ${CAFANACORE_DIR}`get-directory-name subdir`.`echo ${UPS_PROD_QUALIFIERS} | tr ':' '.'` )
+  EnvSet(CAFANACORE_LIB, ${CAFANACORE_FQ_DIR}/lib )
+  pathPrepend(LD_LIBRARY_PATH, ${CAFANACORE_LIB})
