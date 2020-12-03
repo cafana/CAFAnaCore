@@ -13,6 +13,7 @@ namespace osc
   typedef _IOscCalcAdjustable<double> IOscCalcAdjustable;
 }
 
+/*
 namespace caf
 {
   // We assert that we know the names of the downstream experiment's standard
@@ -29,6 +30,7 @@ namespace caf
   typedef Proxy<SRSpill> SRSpillProxy;
   typedef Proxy<SRNeutrino> SRNeutrinoProxy;
 }
+*/
 
 namespace ana
 {

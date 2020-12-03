@@ -66,8 +66,10 @@ namespace ana
   };
 
 
+  struct DummySpillT{DummySpillT() = delete;};
+
   /// Template for Cuts applied to any type of object
-  template<class RecT, class SpillT = caf::SRSpillProxy> class _Cut: protected CutBase
+  template<class RecT, class SpillT = DummySpillT> class _Cut: protected CutBase
   {
   public:
     /// The type of the function part of a cut

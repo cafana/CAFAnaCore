@@ -9,10 +9,10 @@
 namespace ana
 {
   // explicitly instantiate the template for the types we know we have
-  template class _HistAxis<Var>;
-  template class _HistAxis<MultiVar>;
-  template class _HistAxis<SpillVar>;
-  template class _HistAxis<NuTruthVar>;
+  //  template class _HistAxis<Var>;
+  //  template class _HistAxis<MultiVar>;
+  //  template class _HistAxis<SpillVar>;
+  //  template class _HistAxis<NuTruthVar>;
 
   //----------------------------------------------------------------------
   template<class T> _HistAxis<T>::

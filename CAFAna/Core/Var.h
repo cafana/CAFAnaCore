@@ -103,6 +103,11 @@ namespace ana
     {
     }
 
+    template<class FuncT> _Var(const FuncT& func)
+      : VarBase(AddType<FuncT, T>(func))
+    {
+    }
+
     /// \brief Variable formed from two input variables
     ///
     /// The binning of each variable has to be given to allow conversion into a
@@ -170,6 +175,7 @@ namespace ana
     _Var(const VarBase& v) : VarBase(v) {}
   };
 
+  /*
   /// \brief Representation of a variable to be retrieved from a \ref
   /// caf::StandardRecord object
   ///
@@ -191,11 +197,11 @@ namespace ana
   /// NB lack of quotes quotes around my.var.str
 #define SIMPLEVAR(CAFNAME) ana::Var([](const caf::SRProxy* sr){return sr->CAFNAME;})
 #define SIMPLENUTRUTHVAR(CAFNAME) ana::NuTruthVar([](const caf::SRNeutrinoProxy* nu){return nu->CAFNAME;})
-
+  */
   template<class T> struct One{double operator()(const T*) const {return 1;}};
 
   template<class T> _Var<T> Unweighted(){return _Var<T>(One<T>());}
-
+  /*
   /// The simplest possible Var, always 1. Used as a default weight.
   const Var kUnweighted{One<caf::SRProxy>()};
 
@@ -204,13 +210,14 @@ namespace ana
   const NuTruthVar kNuTruthUnweighted{One<caf::SRNeutrinoProxy>()};
 
   /// Use to rescale another variable.
-  Var Scaled(const Var& v, double s);
+  VarBase Scaled(const VarBase& v, double s);
 
   /// Use to weight events up and down by some factor
   Var Constant(double c);
 
   /// Use to take sqrt of a var
   Var Sqrt(const Var& v);
+  */
 
   // Variants of the comparisons with the constant on the LHS
   template<class T> _Cut<T> operator>(double c, const _Var<T>& v){return v < c;}

@@ -239,6 +239,7 @@ namespace ana
   {
   }
 
+  /*
   //----------------------------------------------------------------------
   Var Scaled(const Var& v, double s)
   {
@@ -275,7 +276,7 @@ namespace ana
 
     return Var(Sqrter{v});
   }
-
+  */
   //----------------------------------------------------------------------
   VarBase VarBase::operator*(const VarBase& v) const
   {

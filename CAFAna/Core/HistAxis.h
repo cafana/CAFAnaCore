@@ -100,8 +100,8 @@ namespace ana
   };
 
   // Typedefs
-  typedef _HistAxis<Var> HistAxis;
-  typedef _HistAxis<MultiVar> MultiVarHistAxis;
-  typedef _HistAxis<SpillVar> SpillHistAxis;
-  typedef _HistAxis<NuTruthVar> NuTruthHistAxis;
+  //  typedef _HistAxis<Var> HistAxis;
+  //  typedef _HistAxis<MultiVar> MultiVarHistAxis;
+  //  typedef _HistAxis<SpillVar> SpillHistAxis;
+  //  typedef _HistAxis<NuTruthVar> NuTruthHistAxis;
 }
