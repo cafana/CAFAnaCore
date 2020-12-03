@@ -141,87 +141,88 @@ namespace ana
   int VarBase::fgNextID = 0;
 
   //----------------------------------------------------------------------
+  Var2DMapper::Var2DMapper(const Binning& binsa, const Binning& binsb)
+    : fBinsA(binsa), fBinsB(binsb)
+  {
+  }
+
+  double Var2DMapper::Map(double va, double vb) const
+  {
+    // Since there are no overflow/underflow bins, check the range
+    if(va < fBinsA.Min() || vb < fBinsB.Min()) return -1;
+    if(va > fBinsA.Max() || vb > fBinsB.Max()) return fBinsA.NBins() * fBinsB.NBins();
+
+    // FindBin uses root convention, first bin is bin 1, bin 0 is underflow
+    const int ia = fBinsA.FindBin(va) - 1;
+    const int ib = fBinsB.FindBin(vb) - 1;
+
+    const int i = ia*fBinsB.NBins()+ib;
+
+    return i+.5;
+  }
+
   /// Helper for 2D VarBase constructor
-  class Var2DFunc
+  class Var2DFunc : protected Var2DMapper
   {
   public:
     Var2DFunc(const VarBase& a, const Binning& binsa,
               const VarBase& b, const Binning& binsb)
-      : fA(a), fBinsA(binsa),
-	fB(b), fBinsB(binsb)
+      : Var2DMapper(binsa, binsb), fA(a), fB(b)
     {
     }
 
     double operator()(const void* rec) const
     {
-      // Calculate current values of the variables in StandardRecord once
-      const double va = fA(rec);
-      const double vb = fB(rec);
-
-      // Since there are no overflow/underflow bins, check the range
-      if(va < fBinsA.Min() || vb < fBinsB.Min()) return -1;
-      if(va > fBinsA.Max() || vb > fBinsB.Max()) return fBinsA.NBins() * fBinsB.NBins();
-
-      // FindBin uses root convention, first bin is bin 1, bin 0 is underflow
-      const int ia = fBinsA.FindBin(va) - 1;
-      const int ib = fBinsB.FindBin(vb) - 1;
-
-      const int i = ia*fBinsB.NBins()+ib;
-
-      return i+.5;
+      return Map(fA(rec), fB(rec));
     }
 
   protected:
-    const VarBase fA;
-    const Binning fBinsA;
-    const VarBase fB;
-    const Binning fBinsB;
+    const VarBase fA, fB;
   };
 
+
+  Var3DMapper::Var3DMapper(const Binning& binsa, const Binning& binsb, const Binning& binsc)
+    : fBinsA(binsa), fBinsB(binsb), fBinsC(binsc)
+  {
+  }
+
+  double Var3DMapper::Map(double va, double vb, double vc) const
+  {
+    /// Since there are no overflow/underflow bins, check the range
+    if(va < fBinsA.Min() || vb < fBinsB.Min() || vc < fBinsC.Min()){
+      return -1.0;
+    }
+
+    if(va > fBinsA.Max() || vb > fBinsB.Max() || vc > fBinsC.Max()){
+      return fBinsA.NBins() * fBinsB.NBins() * fBinsC.NBins();
+    }
+
+    const int ia = fBinsA.FindBin(va) - 1;
+    const int ib = fBinsB.FindBin(vb) - 1;
+    const int ic = fBinsC.FindBin(vc) - 1;
+    const int i = ia*fBinsB.NBins()*fBinsC.NBins() + ib*fBinsC.NBins() + ic;
+
+    return i+.5;
+  }
+
   /// Helper for 3D VarBase constructor
-  class Var3DFunc
+  class Var3DFunc : protected Var3DMapper
   {
   public:
     Var3DFunc(const VarBase& a, const Binning& binsa,
               const VarBase& b, const Binning& binsb,
               const VarBase& c, const Binning& binsc)
-      : fA(a), fBinsA(binsa),
-	fB(b), fBinsB(binsb),
-	fC(c), fBinsC(binsc)
+      : Var3DMapper(binsa, binsb, binsc), fA(a), fB(b),	fC(c)
     {
     }
 
     double operator()(const void* rec) const
     {
-      /// Calculate current values of the variables in StandardRecord once
-      const double va = fA(rec);
-      const double vb = fB(rec);
-      const double vc = fC(rec);
-
-      /// Since there are no overflow/underflow bins, check the range
-      if(va < fBinsA.Min() || vb < fBinsB.Min() || vc < fBinsC.Min()){
-        return -1.0;
-      }
-
-      if(va > fBinsA.Max() || vb > fBinsB.Max() || vc > fBinsC.Max()){
-        return fBinsA.NBins() * fBinsB.NBins() * fBinsC.NBins();
-      }
-
-      const int ia = fBinsA.FindBin(va) - 1;
-      const int ib = fBinsB.FindBin(vb) - 1;
-      const int ic = fBinsC.FindBin(vc) - 1;
-      const int i = ia*fBinsB.NBins()*fBinsC.NBins() + ib*fBinsC.NBins() + ic;
-
-      return i+.5;
+      return Map(fA(rec), fB(rec), fC(rec));
     }
 
   protected:
-    const VarBase fA;
-    const Binning fBinsA;
-    const VarBase fB;
-    const Binning fBinsB;
-    const VarBase fC;
-    const Binning fBinsC;
+    const VarBase fA, fB, fC;
   };
 
   //----------------------------------------------------------------------

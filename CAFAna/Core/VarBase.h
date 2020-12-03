@@ -75,4 +75,26 @@ namespace ana
     /// The next ID that hasn't yet been assigned
     static int fgNextID;
   };
+
+  class Var2DMapper
+  {
+  public:
+    Var2DMapper(const Binning& binsa, const Binning& binsb);
+
+    double Map(double va, double vb) const;
+
+  protected:
+    const Binning fBinsA, fBinsB;
+  };
+
+  class Var3DMapper
+  {
+  public:
+    Var3DMapper(const Binning& binsa, const Binning& binsb, const Binning& binsc);
+    double Map(double va, double vb, double vc) const;
+
+  protected:
+    const Binning fBinsA, fBinsB, fBinsC;
+  };
+
 } // namespace

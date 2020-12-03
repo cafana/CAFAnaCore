@@ -2,6 +2,8 @@
 
 #include "CAFAna/Core/Var.h"
 
+#include "CAFAna/Core/VarBase.h" // for Var[2|3]DMapper
+
 #include <algorithm>
 #include <cassert>
 #include <map>
@@ -23,14 +25,12 @@ namespace ana
   {
   }
 
-
-  class MultiVar2DFunc
+  class MultiVar2DFunc : protected Var2DMapper
   {
   public:
     MultiVar2DFunc(const MultiVar& a, const Binning binsa,
 		   const MultiVar& b, const Binning binsb)
-      : fA(a), fBinsA(binsa),
-	fB(b), fBinsB(binsb)
+      : Var2DMapper(binsa, binsb), fA(a), fB(b)
     {
     }
    
@@ -43,42 +43,20 @@ namespace ana
       
       assert(va.size() == vb.size());
       int vector_size = va.size();	  
-      for(int h = 0; h < vector_size; h++){
-        if(va[h] <  fBinsA.Min() || vb[h] <  fBinsB.Min())
-          {res1.push_back(-1);}
-        if(va[h] >  fBinsA.Max() || vb[h] >  fBinsB.Max()) 
-          {res1.push_back(fBinsA.NBins()*fBinsB.NBins());}  
-        // FindBin uses root convention, first bin is bin 1, bin 0 is underflow
-        const int ia = fBinsA.FindBin(va[h]) - 1;
-        const int ib = fBinsB.FindBin(vb[h]) - 1;  
-        const int i = ia*fBinsB.NBins()+ib;
-        res1.push_back(i+.5);
-      }
+      for(int h = 0; h < vector_size; h++) res1.push_back(Map(va[h], vb[h]));
       return res1;
     }
     
   protected:
-    const MultiVar fA;
-    const Binning fBinsA;
-    const MultiVar fB;
-    const Binning fBinsB;
+    const MultiVar fA, fB;
   };
-  
-  MultiVar
-  MultiVar2D(const MultiVar& a, const Binning& binsa,
-	     const MultiVar& b, const Binning& binsb)
+
+  template<class T> _MultiVar<T>::
+  _MultiVar(const _MultiVar& va, const Binning& binsa,
+            const _MultiVar& vb, const Binning& binsb)
+    : fFunc(MultiVar2DFunc(va, binsa, vb, binsb)), fID(fgNextID--)
   {
-    return MultiVar(MultiVar2DFunc(a, binsa, b, binsb));
   }
-  
-  //----------------------------------------------------------------------
-  MultiVar
-  MultiVar2D(const MultiVar& a, int na, double a0, double a1,
-	     const MultiVar& b, int nb, double b0, double b1)
-  {
-    return MultiVar2D(a, Binning::Simple(na, a0, a1),
-		      b, Binning::Simple(nb, b0, b1));
-  } 
 }
 
 

@@ -47,7 +47,7 @@ namespace ana
       return fVars[0];
     case 2:
       if constexpr(std::is_same_v<T, MultiVar>)
-        return MultiVar2D(fVars[0], fBins[0], fVars[1], fBins[1]);
+        return MultiVar(fVars[0], fBins[0], fVars[1], fBins[1]);
       else
         return T(fVars[0], fBins[0], fVars[1], fBins[1]);
     case 3:

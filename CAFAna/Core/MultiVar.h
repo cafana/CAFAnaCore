@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CAFAna/Core/Binning.h"
+
 #include <functional>
 #include <vector>
 
@@ -31,6 +33,16 @@ namespace ana
     /// std::function can wrap a real function, function object, or lambda
     _MultiVar(const std::function<VarFunc_t>& fun);
 
+    _MultiVar(const _MultiVar& va, const Binning& binsa,
+              const _MultiVar& vb, const Binning& binsb);
+
+    _MultiVar(const _MultiVar& a, int na, double a0, double a1,
+              const _MultiVar& b, int nb, double b0, double b1)
+      : _MultiVar(a, Binning::Simple(na, a0, a1),
+                  b, Binning::Simple(nb, b0, b1))
+    {
+    } 
+
     /// Allows a variable to be called with double value = myVar(sr) syntax
     std::vector<double> operator()(const T* sr) const
     {
@@ -51,9 +63,4 @@ namespace ana
 
   typedef _MultiVar<caf::SRProxy> MultiVar;
 
-  MultiVar MultiVar2D(const MultiVar& a, const Binning& binsa,
-                      const MultiVar& b, const Binning& binsb);
-
-  MultiVar MultiVar2D(const MultiVar& a, int na, double a0, double a1,
-                      const MultiVar& b, int nb, double b0, double b1);
 } // namespace
