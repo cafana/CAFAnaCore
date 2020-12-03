@@ -11,7 +11,6 @@ class TH2D;
 namespace ana
 {
   template<class T> class _Var;
-  template<class T> class _Cut;
 
   template<class T> _Var<T> Unweighted();
 

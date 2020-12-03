@@ -26,7 +26,6 @@ namespace ana
   class Ratio;
   class SpectrumLoaderBase;
   template<class T> class _Var;
-  template<class T> class _Cut;
   template<class T> class _MultiVar;
 
   template<class T> _Var<T> Unweighted();

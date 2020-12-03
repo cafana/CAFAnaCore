@@ -34,4 +34,6 @@ namespace ana
 {
   class Spectrum;
   template<class T> class DepMan;
+
+  template<class RecT, class SpillT> class _Cut;
 }
