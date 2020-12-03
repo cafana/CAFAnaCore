@@ -1,4 +1,4 @@
-#include "CAFAna/Core/Cut.h"
+#include "CAFAna/Core/CutBase.h"
 
 #include "CAFAna/Core/DepMan.h"
 
