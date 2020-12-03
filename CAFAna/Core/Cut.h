@@ -19,6 +19,7 @@ namespace ana
     typedef double (VoidExpoFunc_t)(const void* sr);
 
     friend class DepMan<CutBase>;
+    friend class VarBase;
 
     ~CutBase();
 
@@ -63,6 +64,7 @@ namespace ana
     /// The next ID that hasn't yet been assigned
     static int fgNextID;
   };
+
 
   /// Template for Cuts applied to any type of object
   template<class RecT, class SpillT = caf::SRSpillProxy> class _Cut: protected CutBase
@@ -136,6 +138,11 @@ namespace ana
       return fPOTFunc ? fPOTFunc(spill) : -1;
     }
 
+    /// Cuts with the same definition will have the same ID
+    using CutBase::ID;
+    using CutBase::MaxID;
+
+
     // Forward to base implementation
     _Cut operator&&(const _Cut& c) const {return CutBase::operator&&(c);}
     _Cut operator||(const _Cut& c) const {return CutBase::operator||(c);}
@@ -148,13 +155,11 @@ namespace ana
     _Cut __and__(const _Cut& c) const {return *this && c;}
     _Cut __or__(const _Cut& c) const {return *this || c;}
     _Cut __invert__() const {return !(*this);}
-#else
-  protected:
-#endif
     // Python's default implementation of and/or is very dangerous - it returns
     // one of its operands, which means the user probably won't notice the
     // problem. Make all checks of truthiness abort with a message.
     using CutBase::operator bool;
+#endif
 
   protected:
     _Cut(const CutBase& c) : CutBase(c) {}

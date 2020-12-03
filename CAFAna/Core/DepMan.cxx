@@ -153,10 +153,7 @@ namespace ana
 namespace ana
 {
   template class DepMan<CutBase>;
-
-  template class DepMan<Var>;
-  template class DepMan<SpillVar>;
-  template class DepMan<NuTruthVar>;
+  template class DepMan<VarBase>;
 
   template class DepMan<Binning>;
 }

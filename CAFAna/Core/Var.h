@@ -10,26 +10,32 @@
 
 namespace ana
 {
-  /// Template for Var and SpillVar
-  template<class T> class _Var
+  /// None of the implementation of _Var actually depends on the record
+  /// type. This base class implements all that basic functionality, and then
+  /// _Var just adds a typed wrapper on top.
+  class VarBase
   {
   public:
-    /// The type of the function part of a var
-    typedef double (VarFunc_t)(const T* sr);
+    typedef double (VoidVarFunc_t)(const void* rec);
 
-    /// std::function can wrap a real function, function object, or lambda
-    _Var(const std::function<VarFunc_t>& fun);
+    friend class DepMan<VarBase>;
 
-    _Var(const _Var<T>& v);
+    friend double ValHelper(const VarBase&, const std::string&, double c, const void*);
+    friend void ValHelper(const VarBase&, const VarBase&, const std::string&, const void*, double&, double&);
 
-    _Var& operator=(const _Var<T>& v);
+    ~VarBase();
 
-    ~_Var();
+  protected:
+    VarBase(const std::function<VoidVarFunc_t>& func, int id = -1);
 
-    /// Allows a variable to be called with double value = myVar(sr) syntax
-    double operator()(const T* sr) const
+    VarBase(const VarBase& v);
+
+    VarBase& operator=(const VarBase& v);
+
+    /// Allows a variable to be called with double value = myVar(rec) syntax
+    double operator()(const void* rec) const
     {
-      return fFunc(sr);
+      return fFunc(rec);
     }
 
     /// Vars with the same definition will have the same ID
@@ -37,33 +43,90 @@ namespace ana
 
     static int MaxID() {return fgNextID-1;}
 
-    _Cut<T> operator<(double c) const;
-    _Cut<T> operator>(double c) const;
-    _Cut<T> operator>=(double c) const;
-    _Cut<T> operator<=(double c) const;
-    _Cut<T> operator==(double c) const;
-    _Cut<T> operator!=(double c) const;
+    CutBase operator<(double c) const;
+    CutBase operator>(double c) const;
+    CutBase operator>=(double c) const;
+    CutBase operator<=(double c) const;
+    CutBase operator==(double c) const;
+    CutBase operator!=(double c) const;
 
-    _Cut<T> operator>(const _Var<T>& v) const;
-    _Cut<T> operator<(const _Var<T>& v) const;
-    _Cut<T> operator>=(const _Var<T>& v) const;
-    _Cut<T> operator<=(const _Var<T>& v) const;
-    _Cut<T> operator==(const _Var<T>& v) const;
-    _Cut<T> operator!=(const _Var<T>& v) const;
+    CutBase operator>(const VarBase& v) const;
+    CutBase operator<(const VarBase& v) const;
+    CutBase operator>=(const VarBase& v) const;
+    CutBase operator<=(const VarBase& v) const;
+    CutBase operator==(const VarBase& v) const;
+    CutBase operator!=(const VarBase& v) const;
 
     // Most useful for combining weights.
-    _Var<T> operator*(const _Var<T>& v) const;
-    _Var<T> operator/(const _Var<T>& v) const;
-    _Var<T> operator+(const _Var<T>& v) const;
-    _Var<T> operator-(const _Var<T>& v) const;
+    VarBase operator*(const VarBase& v) const;
+    VarBase operator/(const VarBase& v) const;
+    VarBase operator+(const VarBase& v) const;
+    VarBase operator-(const VarBase& v) const;
 
-  protected:
-    _Var(const std::function<VarFunc_t>& fun, int id);
-    std::function<VarFunc_t> fFunc;
+    std::function<VoidVarFunc_t> fFunc;
 
     int fID;
     /// The next ID that hasn't yet been assigned
     static int fgNextID;
+  };
+
+
+  /// Template for Vars applied to any type of object
+  template<class T> class _Var : protected VarBase
+  {
+  public:
+    /// The type of the function part of a var
+    typedef double (VarFunc_t)(const T* sr);
+
+    /// User function wants to be called with a specific type, but to pass the
+    /// user function to CutBase it needs to accept void*
+    template<class FuncT, class ArgT> struct AddType
+    {
+      static_assert(std::is_invocable_r_v<double, FuncT, const ArgT*>);
+
+      AddType(const FuncT& f) : fFunc(f) {}
+      double operator()(const void* x){return fFunc((const ArgT*)x);}
+      FuncT fFunc;
+    };
+
+    /// std::function can wrap a real function, function object, or lambda
+    _Var(const std::function<VarFunc_t>& func)
+      : VarBase(AddType<decltype(func), T>(func))
+    {
+    }
+
+    /// Allows a variable to be called with double value = myVar(rec) syntax
+    double operator()(const T* rec) const
+    {
+      return fFunc(rec);
+    }
+
+    /// Vars with the same definition will have the same ID
+    using VarBase::ID;
+    using VarBase::MaxID;
+
+    _Cut<T> operator<(double c) const  {return VarBase::operator<(c);}
+    _Cut<T> operator>(double c) const  {return VarBase::operator>(c);}
+    _Cut<T> operator>=(double c) const {return VarBase::operator>=(c);}
+    _Cut<T> operator<=(double c) const {return VarBase::operator<=(c);}
+    _Cut<T> operator==(double c) const {return VarBase::operator==(c);}
+    _Cut<T> operator!=(double c) const {return VarBase::operator!=(c);}
+
+    _Cut<T> operator>(const _Var& v) const  {return VarBase::operator>(v);}
+    _Cut<T> operator<(const _Var& v) const  {return VarBase::operator<(v);}
+    _Cut<T> operator>=(const _Var& v) const {return VarBase::operator>=(v);}
+    _Cut<T> operator<=(const _Var& v) const {return VarBase::operator<=(v);}
+    _Cut<T> operator==(const _Var& v) const {return VarBase::operator==(v);}
+    _Cut<T> operator!=(const _Var& v) const {return VarBase::operator!=(v);}
+
+    // Most useful for combining weights.
+    _Var operator*(const _Var& v) const {return VarBase::operator*(v);}
+    _Var operator/(const _Var& v) const {return VarBase::operator/(v);}
+    _Var operator+(const _Var& v) const {return VarBase::operator+(v);}
+    _Var operator-(const _Var& v) const {return VarBase::operator-(v);}
+
+  protected:
+    _Var(const VarBase& v) : VarBase(v) {}
   };
 
   /// \brief Representation of a variable to be retrieved from a \ref

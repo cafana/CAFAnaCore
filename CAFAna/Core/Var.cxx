@@ -10,29 +10,20 @@
 namespace ana
 {
   //----------------------------------------------------------------------
-  template<class T> _Var<T>::
-  _Var(const std::function<VarFunc_t>& fun)
-    : fFunc(fun), fID(fgNextID++)
+  VarBase::VarBase(const std::function<VoidVarFunc_t>& func, int id)
+    : fFunc(func), fID((id >= 0) ? id : fgNextID++)
   {
-    DepMan<_Var<T>>::Instance().RegisterConstruction(this);
+    DepMan<VarBase>::Instance().RegisterConstruction(this);
   }
 
   //----------------------------------------------------------------------
-  template<class T> _Var<T>::
-  _Var(const std::function<VarFunc_t>& fun, int id)
-    : fFunc(fun), fID(id)
+  VarBase::~VarBase()
   {
-    DepMan<_Var<T>>::Instance().RegisterConstruction(this);
+    DepMan<VarBase>::Instance().RegisterDestruction(this);
   }
 
   //----------------------------------------------------------------------
-  template<class T> _Var<T>::~_Var()
-  {
-    DepMan<_Var<T>>::Instance().RegisterDestruction(this);
-  }
-
-  //----------------------------------------------------------------------
-  template<class T> _Var<T>::_Var(const _Var<T>& v)
+  VarBase::VarBase(const VarBase& v)
     : fFunc(0), fID(-1)
   {
     if(&v == this) return;
@@ -41,19 +32,18 @@ namespace ana
       fFunc = v.fFunc;
       fID = v.fID;
 
-      DepMan<_Var<T>>::Instance().RegisterConstruction(this);
+      DepMan<VarBase>::Instance().RegisterConstruction(this);
     }
     else{
       // If we are copying from a Var with NULL func, that is probably because
       // it is all zero because it hasn't been statically constructed
       // yet. Register our interest of getting constructed in turn once it is.
-      DepMan<_Var<T>>::Instance().RegisterDependency(&v, this);
+      DepMan<VarBase>::Instance().RegisterDependency(&v, this);
     }
   }
 
   //----------------------------------------------------------------------
-  template<class T> _Var<T>& _Var<T>::
-  operator=(const _Var<T>& v)
+  VarBase& VarBase::operator=(const VarBase& v)
   {
     if(&v == this) return *this;
 
@@ -61,7 +51,7 @@ namespace ana
       fFunc = v.fFunc;
       fID = v.fID;
 
-      DepMan<_Var<T>>::Instance().RegisterConstruction(this);
+      DepMan<VarBase>::Instance().RegisterConstruction(this);
     }
     else{
       fFunc = 0;
@@ -70,7 +60,7 @@ namespace ana
       // If we are copying from a Var with NULL func, that is probably because
       // it is all zero because it hasn't been statically constructed
       // yet. Register our interest of getting constructed in turn once it is.
-      DepMan<_Var<T>>::Instance().RegisterDependency(&v, this);
+      DepMan<VarBase>::Instance().RegisterDependency(&v, this);
     }
 
     return *this;
@@ -79,26 +69,24 @@ namespace ana
 
   //----------------------------------------------------------------------
   // Extract the value (trivial) and print a good error message if it's NaN
-  template<class T>
-  double ValHelper(const _Var<T>& v,
+  double ValHelper(const VarBase& v,
                    const std::string& op,
-                   double c, const T* sr)
+                   double c, const void* rec)
   {
-    const double val = v(sr);
+    const double val = v(rec);
     if(std::isnan(val)){
       std::cout << "Warning: Cut compares NaN " << op << " " << c << std::endl;
     }
     return val;
   }
 
-  template<class T>
-  void ValHelper(const _Var<T>& va, const _Var<T>& vb,
+  void ValHelper(const VarBase& va, const VarBase& vb,
                  const std::string& op,
-                 const T* sr,
+                 const void* rec,
                  double& a, double& b)
   {
-    a = va(sr);
-    b = vb(sr);
+    a = va(rec);
+    b = vb(rec);
     if(std::isnan(a) || std::isnan(b)){
       std::cout << "Warning: Cut compares " << a << " " << op << " " << b << std::endl;
     }
@@ -109,37 +97,37 @@ namespace ana
 
 #define COMPARISON(OP, OPNAME)                                          \
   /* Comparison of a Var with a constant */                             \
-  template<class T> _Cut<T> _Var<T>::                                   \
+  CutBase VarBase::                                                     \
   operator OP(double c) const                                           \
   {                                                                     \
     struct OPNAME                                                       \
     {                                                                   \
-      _Var<T> v; double c;                                              \
-      bool operator()(const T* sr)                                      \
+      VarBase v; double c;                                              \
+      bool operator()(const void* rec)                                  \
       {                                                                 \
-        return ValHelper(v, #OP, c, sr) OP c;                           \
+        return ValHelper(v, #OP, c, rec) OP c;                          \
       }                                                                 \
     };                                                                  \
                                                                         \
-    return _Cut<T>(OPNAME{*this, c});                                   \
+    return CutBase(OPNAME{*this, c}, 0, 0, -1);                         \
   }                                                                     \
                                                                         \
   /* Comparison of a Var with another Var */                            \
-  template<class T> _Cut<T> _Var<T>::                                   \
-  operator OP(const _Var<T>& v) const                                   \
+  CutBase VarBase::                                                     \
+  operator OP(const VarBase& v) const                                   \
   {                                                                     \
     struct OPNAME                                                       \
     {                                                                   \
-      _Var<T> a, b;                                                     \
-      bool operator()(const T* sr)                                      \
+      VarBase a, b;                                                     \
+      bool operator()(const void* rec)                                  \
       {                                                                 \
         double va, vb;                                                  \
-        ValHelper(a, b, #OP, sr, va, vb);                               \
+        ValHelper(a, b, #OP, rec, va, vb);                              \
         return va OP vb;                                                \
       }                                                                 \
     };                                                                  \
                                                                         \
-    return _Cut<T>(OPNAME{*this, v});                                   \
+    return CutBase(OPNAME{*this, v}, 0, 0, -1);                         \
   }                                                                     \
   void dummy() // trick to require a semicolon
 
@@ -150,13 +138,7 @@ namespace ana
   COMPARISON(==, Equals);
   COMPARISON(!=, NotEquals);
 
-
-  // explicitly instantiate the template for the types we know we have
-  template class _Var<caf::SRProxy>;
-  template class _Var<caf::SRSpillProxy>;
-  template class _Var<caf::SRNeutrinoProxy>;
-
-  template<class T> int _Var<T>::fgNextID = 0;
+  int VarBase::fgNextID = 0;
 
   //----------------------------------------------------------------------
   /// Helper for \ref Var2D
@@ -335,77 +317,73 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  template<class T> _Var<T> _Var<T>::
-  operator*(const _Var<T>& v) const
+  VarBase VarBase::operator*(const VarBase& v) const
   {
     static std::map<std::pair<int, int>, int> ids;
     const std::pair<int, int> key(ID(), v.ID());
 
     struct Times
     {
-      const _Var<T> a, b;
-      double operator()(const T* sr) const {return a(sr) * b(sr);}
+      const VarBase a, b;
+      double operator()(const void* rec) const {return a(rec) * b(rec);}
     };
 
     if(ids.count(key) == 0) ids[key] = fgNextID++;
-    return _Var<T>(Times{*this, v});
+    return VarBase(Times{*this, v});
   }
 
   //----------------------------------------------------------------------
-  template<class T> _Var<T> _Var<T>::
-  operator/(const _Var<T>& v) const
+  VarBase VarBase:: operator/(const VarBase& v) const
   {
     static std::map<std::pair<int, int>, int> ids;
     const std::pair<int, int> key(ID(), v.ID());
 
     struct Divide
     {
-      const _Var<T> a, b;
-      double operator()(const T* sr) const
+      const VarBase a, b;
+      double operator()(const void* rec) const
       {
-        const double denom = b(sr);
+        const double denom = b(rec);
         if(denom != 0)
-          return a(sr) / denom;
+          return a(rec) / denom;
         else
           return 0.0;
       }
     };
 
     if(ids.count(key) == 0) ids[key] = fgNextID++;
-    return _Var<T>(Divide{*this, v}, ids[key]);
+    return VarBase(Divide{*this, v}, ids[key]);
   }
 
   //----------------------------------------------------------------------
-  template<class T> _Var<T> _Var<T>::
-  operator+(const _Var<T>& v) const
+  VarBase VarBase::operator+(const VarBase& v) const
   {
     static std::map<std::pair<int, int>, int> ids;
     const std::pair<int, int> key(ID(), v.ID());
 
     struct Plus
     {
-      const _Var<T> a, b;
-      double operator()(const T* sr) const {return a(sr) + b(sr);}
+      const VarBase a, b;
+      double operator()(const void* rec) const {return a(rec) + b(rec);}
     };
 
     if(ids.count(key) == 0) ids[key] = fgNextID++;
-    return _Var<T>(Plus{*this, v}, ids[key]);
+    return VarBase(Plus{*this, v}, ids[key]);
   }
 
   //----------------------------------------------------------------------
-  template<class T> _Var<T> _Var<T>::
-  operator-(const _Var<T>& v) const
+  VarBase VarBase::operator-(const VarBase& v) const
   {
     static std::map<std::pair<int, int>, int> ids;
     const std::pair<int, int> key(ID(), v.ID());
 
     struct Minus
     {
-      const _Var<T> a, b;
-      double operator()(const T* sr) const {return a(sr) - b(sr);}
+      const VarBase a, b;
+      double operator()(const void* rec) const {return a(rec) - b(rec);}
     };
 
     if(ids.count(key) == 0) ids[key] = fgNextID++;
-    return _Var<T>(Minus{*this, v}, ids[key]);
+    return VarBase(Minus{*this, v}, ids[key]);
   }
 } // namespace
