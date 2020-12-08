@@ -83,6 +83,9 @@ namespace ana
 
     double Map(double va, double vb) const;
 
+    std::vector<double> Map(const std::vector<double>& vas,
+                            const std::vector<double>& vbs) const;
+
   protected:
     const Binning fBinsA, fBinsB;
   };
@@ -91,7 +94,12 @@ namespace ana
   {
   public:
     Var3DMapper(const Binning& binsa, const Binning& binsb, const Binning& binsc);
+
     double Map(double va, double vb, double vc) const;
+
+    std::vector<double> Map(const std::vector<double>& vas,
+                            const std::vector<double>& vbs,
+                            const std::vector<double>& vcs) const;
 
   protected:
     const Binning fBinsA, fBinsB, fBinsC;

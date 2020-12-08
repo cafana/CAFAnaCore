@@ -3,6 +3,7 @@
 #include "CAFAna/Core/DepMan.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <iostream>
 #include <map>
@@ -161,6 +162,17 @@ namespace ana
     return i+.5;
   }
 
+  std::vector<double> Var2DMapper::Map(const std::vector<double>& vas,
+                                       const std::vector<double>& vbs) const
+  {
+    assert(vas.size() == vbs.size());
+    std::vector<double> ret;
+    ret.reserve(vas.size());
+    for(unsigned int i = 0; i < vas.size(); ++i)
+      ret.push_back(Map(vas[i], vbs[i]));
+    return ret;
+  }
+
   /// Helper for 2D VarBase constructor
   class Var2DFunc : protected Var2DMapper
   {
@@ -203,6 +215,18 @@ namespace ana
     const int i = ia*fBinsB.NBins()*fBinsC.NBins() + ib*fBinsC.NBins() + ic;
 
     return i+.5;
+  }
+
+  std::vector<double> Var3DMapper::Map(const std::vector<double>& vas,
+                                       const std::vector<double>& vbs,
+                                       const std::vector<double>& vcs) const
+  {
+    assert(vas.size() == vbs.size() && vbs.size() == vcs.size());
+    std::vector<double> ret;
+    ret.reserve(vas.size());
+    for(unsigned int i = 0; i < vas.size(); ++i)
+      ret.push_back(Map(vas[i], vbs[i], vcs[i]));
+    return ret;
   }
 
   /// Helper for 3D VarBase constructor

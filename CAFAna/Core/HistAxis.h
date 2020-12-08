@@ -7,10 +7,13 @@
 #include "CAFAna/Core/MultiVar.h"
 #include "CAFAna/Core/Var.h"
 
+#include <cassert>
 #include <string>
 
 namespace ana
 {
+  [[noreturn]] void HistAxisDimensionError(int dim);
+
   /// \brief Collect information describing the x-axis of an analysis histogram
   ///
   /// That is, what it should be labelled, what the binning should be, and what
@@ -21,7 +24,11 @@ namespace ana
     // The one constructor to rule them all
     _HistAxis(const std::vector<std::string>& labels,
               const std::vector<Binning>& bins,
-              const std::vector<T>& vars = {});
+              const std::vector<T>& vars = {})
+      : LabelsAndBins(labels, bins), fVars(vars)
+    {
+      assert(fBins.size() == fVars.size() || fVars.empty());
+    }
 
     // Forwards
     _HistAxis(const std::string& label,
@@ -36,7 +43,7 @@ namespace ana
     _HistAxis(const std::string& label,
               const Binning& bins)
       : _HistAxis(std::vector<std::string>(1, label),
-                        std::vector<Binning>(1, bins))
+                  std::vector<Binning>(1, bins))
     {
     }
 
@@ -65,14 +72,26 @@ namespace ana
               const std::string& labelY,
               int ny, double y0, double y1,
               const T& varY)
-      :  _HistAxis(labelX, Binning::Simple(nx, x0, x1), varX,
-                   labelY, Binning::Simple(ny, y0, y1), varY)
+      : _HistAxis(labelX, Binning::Simple(nx, x0, x1), varX,
+                  labelY, Binning::Simple(ny, y0, y1), varY)
     {
     }
 
     _HistAxis(const _HistAxis<T>& ax) = default;
 
-    _HistAxis(const std::vector<_HistAxis<T>>& axes);
+    // MultiD binning expressed as a composition of existing axes
+    _HistAxis(const std::vector<_HistAxis<T>>& axes)
+      : LabelsAndBins(std::vector<std::string>(), std::vector<Binning>())
+    {
+      for(const auto& a: axes){
+        fLabels.insert(fLabels.end(), a.fLabels.begin(), a.fLabels.end());
+        fBins.insert(fBins.end(), a.fBins.begin(), a.fBins.end());
+        fVars.insert(fVars.end(), a.fVars.begin(), a.fVars.end());
+      }
+
+      assert(fLabels.size() == fBins.size());
+      assert(fBins.size() == fVars.size() || fVars.empty());
+    }
 
     _HistAxis(const _HistAxis<T>& xax,
               const _HistAxis<T>& yax)
@@ -93,7 +112,15 @@ namespace ana
 
     /// A variable "flattening" all the dimensions into one 1D value. Use
     /// sparingly.
-    T GetVar1D() const;
+    T GetVar1D() const
+    {
+      switch(fVars.size()){
+      case 1: return fVars[0];
+      case 2: return T(fVars[0], fBins[0], fVars[1], fBins[1]);
+      case 3: return T(fVars[0], fBins[0], fVars[1], fBins[1], fVars[2], fBins[2]);
+      default: HistAxisDimensionError(fVars.size());
+      }
+    }
 
   protected:
     std::vector<T> fVars;
