@@ -107,6 +107,7 @@ namespace ana
 #endif
 
   protected:
+    friend class _Var<RecT>;
     _Cut(const CutBase& c) : CutBase(c) {}
   };
 
