@@ -2,11 +2,6 @@
 
 #include "CAFAna/Core/LabelsAndBins.h"
 
-#include "CAFAna/Core/FwdDeclare.h"
-
-#include "CAFAna/Core/MultiVar.h"
-#include "CAFAna/Core/Var.h"
-
 #include <cassert>
 #include <string>
 

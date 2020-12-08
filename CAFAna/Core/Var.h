@@ -105,49 +105,9 @@ namespace ana
     _Var(const VarBase& v) : VarBase(v) {}
   };
 
-  /*
-  /// \brief Representation of a variable to be retrieved from a \ref
-  /// caf::StandardRecord object
-  ///
-  /// A Var consists of a function, taking a StandardRecord and returning the
-  /// value of the variable (which may be some complicated function).
-  typedef _Var<caf::SRProxy> Var;
-
-  /// \brief Equivalent of \ref Var acting on \ref caf::SRSpill. For use in
-  /// making plots of POT per run etc
-  typedef _Var<caf::SRSpillProxy> SpillVar;
-
-  /// \brief Var designed to be used over the nuTree, ie all neutrinos, not
-  /// just those that got slices.
-  typedef _Var<caf::SRNeutrinoProxy> NuTruthVar;
-
-  /// \brief For Vars where literally all you need is a single CAF variable
-  ///
-  /// eg Var myVar = SIMPLEVAR(my.var.str);
-  /// NB lack of quotes quotes around my.var.str
-#define SIMPLEVAR(CAFNAME) ana::Var([](const caf::SRProxy* sr){return sr->CAFNAME;})
-#define SIMPLENUTRUTHVAR(CAFNAME) ana::NuTruthVar([](const caf::SRNeutrinoProxy* nu){return nu->CAFNAME;})
-  */
   template<class T> struct One{double operator()(const T*) const {return 1;}};
 
   template<class T> _Var<T> Unweighted(){return _Var<T>(One<T>());}
-  /*
-  /// The simplest possible Var, always 1. Used as a default weight.
-  const Var kUnweighted{One<caf::SRProxy>()};
-
-  const SpillVar kSpillUnweighted{One<caf::SRSpillProxy>()};
-
-  const NuTruthVar kNuTruthUnweighted{One<caf::SRNeutrinoProxy>()};
-
-  /// Use to rescale another variable.
-  VarBase Scaled(const VarBase& v, double s);
-
-  /// Use to weight events up and down by some factor
-  Var Constant(double c);
-
-  /// Use to take sqrt of a var
-  Var Sqrt(const Var& v);
-  */
 
   // Variants of the comparisons with the constant on the LHS
   template<class T> _Cut<T> operator>(double c, const _Var<T>& v){return v < c;}

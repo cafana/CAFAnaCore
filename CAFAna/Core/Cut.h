@@ -110,34 +110,6 @@ namespace ana
     _Cut(const CutBase& c) : CutBase(c) {}
   };
 
-  /*
-  /// \brief Representation of a cut (selection) to be applied to a \ref
-  /// caf::StandardRecord object
-  ///
-  /// A Cut consists of a function, taking a StandardRecord and returning a
-  /// boolean indicating if that event passes the cut.
-  ///
-  /// Cut objects may be combined with the standard boolean operations && ||
-  /// and !
-  typedef _Cut<caf::SRProxy, caf::SRSpillProxy> Cut;
-
-  /// \brief Equivalent of \ref Cut acting on \ref caf::SRSpill. For use in
-  /// spill-by-spill data quality cuts
-  typedef _Cut<caf::SRSpillProxy, caf::SRSpillProxy> SpillCut;
-
-  /// \brief Cut designed to be used over the nuTree, ie all neutrinos, not
-  /// just those that got slices.
-  typedef _Cut<caf::SRNeutrinoProxy, caf::SRSpillProxy> NuTruthCut;
-  */
   template<class T> struct NoCut{bool operator()(const T*) const {return true;}};
-  /*
-  /// The simplest possible cut: pass everything, used as a default
-  const Cut kNoCut{NoCut<caf::SRProxy>()};
 
-  /// The simplest possible cut: pass everything, used as a default
-  const SpillCut kNoSpillCut{NoCut<caf::SRSpillProxy>()};
-
-  /// The simplest possible cut: pass everything, used as a default
-  const NuTruthCut kNoNuTruthCut{NoCut<caf::SRNeutrinoProxy>()};
-  */
 } // namespace

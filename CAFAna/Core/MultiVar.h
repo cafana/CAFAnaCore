@@ -1,24 +1,9 @@
 #pragma once
 
-//#include "CAFAna/Core/Binning.h"
-
 #include "CAFAna/Core/Var.h" // for Var2DMapper
 
 #include <functional>
 #include <vector>
-
-//#include "StandardRecord/Proxy/FwdDeclare.h"
-
-// TODO unify into one header
-// namespace caf{
-//   class StandardRecord;
-//   class SRSpill;
-//   class SRNeutrino;
-//   template<class T> class Proxy;
-//   typedef Proxy<StandardRecord> SRProxy;
-//   typedef Proxy<SRSpill> SRSpillProxy;
-//   typedef Proxy<SRNeutrino> SRNeutrinoProxy;
-// }
 
 namespace ana
 {
@@ -101,7 +86,5 @@ namespace ana
 
     std::function<VarFunc_t> fFunc;
   };
-
-  //  typedef _MultiVar<caf::SRProxy> MultiVar;
 
 } // namespace

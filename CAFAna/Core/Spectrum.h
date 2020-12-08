@@ -47,29 +47,29 @@ namespace ana
     enum ESparse{kDense, kSparse};
 
     /// One constructor to rule them all
-    template<class T>
+    template<class T, class U>
     Spectrum(SpectrumLoaderBase& loader,
              const _HistAxis<_Var<T>>& axis,
-             const _Cut<T>& cut,
+             const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
              const _Var<T>& wei = Unweighted<T>(),
              ESparse sparse = kDense);
 
-    template<class T>
+    template<class T, class U>
     Spectrum(const std::string& label,
              const Binning& bins,
              SpectrumLoaderBase& loader,
              const _Var<T>& var,
-             const _Cut<T>& cut,
+             const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
              const _Var<T>& wei = Unweighted<T>(),
              ESparse sparse = kDense);
 
     /// The only \ref MultiVar variant available
-    template<class T>
+    template<class T, class U>
     Spectrum(SpectrumLoaderBase& loader,
              const _HistAxis<_MultiVar<T>>& axis,
-             const _Cut<T>& cut,
+             const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
              const _Var<T>& wei = Unweighted<T>());
 
@@ -84,40 +84,40 @@ namespace ana
              double pot, double livetime);
 
     /// 2D Spectrum taking 2 HistAxis
-    template<class T>
+    template<class T, class U>
     Spectrum(SpectrumLoaderBase& loader,
              const _HistAxis<_Var<T>>& xAxis,
              const _HistAxis<_Var<T>>& yAxis,
-             const _Cut<T>& cut,
+             const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
              const _Var<T>& wei = Unweighted<T>(),
              ESparse sparse = kDense);
 
     /// 2D Spectrum of two Vars
-    template<class T>
+    template<class T, class U>
     Spectrum(const std::string& xLabel,
 	     const std::string& yLabel,
 	     SpectrumLoaderBase& loader,
 	     const Binning& binsx, const _Var<T>& varx,
 	     const Binning& binsy, const _Var<T>& vary,
-	     const _Cut<T>& cut,
+	     const _Cut<T, U>& cut,
 	     const SystShifts& shift = kNoShift,
 	     const _Var<T>& wei = Unweighted<T>(),
              ESparse sparse = kDense);
 
     /// 3D Spectrum taking 3 HistAxis
-    template<class T>
+    template<class T, class U>
     Spectrum(SpectrumLoaderBase& loader,
              const _HistAxis<_Var<T>>& xAxis,
              const _HistAxis<_Var<T>>& yAxis,
 	     const _HistAxis<_Var<T>>& zAxis,
-             const _Cut<T>& cut,
+             const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
              const _Var<T>& wei = Unweighted<T>(),
 	     ESparse sparse = kDense);
 
     /// 3D Spectrum of three Vars
-    template<class T>
+    template<class T, class U>
     Spectrum(const std::string& xLabel,
 	     const std::string& yLabel,
 	     const std::string& zLabel,
@@ -125,7 +125,7 @@ namespace ana
              const Binning& binsx, const _Var<T>& varx,
              const Binning& binsy, const _Var<T>& vary,
              const Binning& binsz, const _Var<T>& varz,
-             const _Cut<T>& cut,
+             const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
              const _Var<T>& wei = Unweighted<T>(),
 	     ESparse sparse = kDense);

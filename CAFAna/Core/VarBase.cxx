@@ -264,44 +264,6 @@ namespace ana
   {
   }
 
-  /*
-  //----------------------------------------------------------------------
-  Var Scaled(const Var& v, double s)
-  {
-    struct Scale
-    {
-      const Var v; double s;
-      double operator()(const caf::SRProxy* sr) const {return s*v(sr);}
-    };
-
-    return Var(Scale{v, s});
-  }
-
-  //----------------------------------------------------------------------
-  Var Constant(double c)
-  {
-    struct Const
-    {
-      double c;
-      double operator()(const caf::SRProxy*) const {return c;}
-    };
-
-    return Var(Const{c});
-  }
-
-  //--------------------------------------------------------------------
-
-  Var Sqrt(const Var& v)
-  {
-    struct Sqrter
-    {
-      const Var v;
-      double operator()(const caf::SRProxy* sr) const {return sqrt(v(sr));}
-    };
-
-    return Var(Sqrter{v});
-  }
-  */
   //----------------------------------------------------------------------
   VarBase VarBase::operator*(const VarBase& v) const
   {

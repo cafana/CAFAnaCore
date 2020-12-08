@@ -21,11 +21,11 @@ namespace ana
     friend class ReweightableSpectrumSink;
     friend class SpectrumSinkBase<ReweightableSpectrum>;
 
-    template<class T>
+    template<class T, class U>
     ReweightableSpectrum(SpectrumLoaderBase& loader,
                          const _HistAxis<_Var<T>>& recoAxis,
                          const _HistAxis<_Var<T>>& trueAxis,
-                         const _Cut<T>& cut,
+                         const _Cut<T, U>& cut,
                          const SystShifts& shift = kNoShift,
                          const _Var<T>& wei = Unweighted<T>());
 
