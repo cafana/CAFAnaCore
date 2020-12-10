@@ -25,9 +25,15 @@ namespace ana
     {
       static_assert(std::is_invocable_r_v<RetT, FuncT, const ArgT*>);
 
+      // In the case the user passes a bare function, we need to store the
+      // function pointer.
+      typedef typename std::conditional_t<std::is_function_v<FuncT>,
+                                          typename std::add_pointer_t<FuncT>,
+                                          FuncT> FuncPT;
+
       AddType(const FuncT& f) : fFunc(f) {}
       RetT operator()(const void* x){return fFunc((const ArgT*)x);}
-      FuncT fFunc;
+      FuncPT fFunc;
     };
 
     /// std::function can wrap a real function, function object, or lambda
