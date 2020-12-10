@@ -3,10 +3,10 @@
 namespace ana
 {
   //----------------------------------------------------------------------
-  template<class T>
+  template<class T, class U>
   Spectrum::Spectrum(SpectrumLoaderBase& loader,
                      const _HistAxis<_Var<T>>& axis,
-                     const _Cut<T>& cut,
+                     const _Cut<T, U>& cut,
                      const SystShifts& shift,
                      const _Var<T>& wei,
                      Spectrum::ESparse sparse)
@@ -16,12 +16,12 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  template<class T>
+  template<class T, class U>
   Spectrum::Spectrum(const std::string& label,
                      const Binning& bins,
                      SpectrumLoaderBase& loader,       
                      const _Var<T>& var,
-                     const _Cut<T>& cut,
+                     const _Cut<T, U>& cut,
                      const SystShifts& shift,
                      const _Var<T>& wei,
                      Spectrum::ESparse sparse)
@@ -30,10 +30,10 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  template<class T>
+  template<class T, class U>
   Spectrum::Spectrum(SpectrumLoaderBase& loader,
                      const _HistAxis<_MultiVar<T>>& axis,
-                     const _Cut<T>& cut,
+                     const _Cut<T, U>& cut,
                      const SystShifts& shift,
                      const _Var<T>& wei)
     : Spectrum(LabelsAndBins(axis.GetLabels(), axis.GetBinnings()))
@@ -42,11 +42,11 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  template<class T>
+  template<class T, class U>
   Spectrum::Spectrum(SpectrumLoaderBase& loader,
                      const _HistAxis<_Var<T>>& xAxis,
                      const _HistAxis<_Var<T>>& yAxis,
-                     const _Cut<T>& cut,
+                     const _Cut<T, U>& cut,
                      const SystShifts& shift,
                      const _Var<T>& wei,
                      ESparse sparse)
@@ -55,13 +55,13 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  template<class T>
+  template<class T, class U>
   Spectrum::Spectrum(const std::string& xLabel,
 	             const std::string& yLabel,
                      SpectrumLoaderBase& loader,
                      const Binning& binsx, const _Var<T>& varx,
                      const Binning& binsy, const _Var<T>& vary,
-                     const _Cut<T>& cut,
+                     const _Cut<T, U>& cut,
                      const SystShifts& shift,
                      const _Var<T>& wei,
                      ESparse sparse)
@@ -72,12 +72,12 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  template<class T>
+  template<class T, class U>
   Spectrum::Spectrum(SpectrumLoaderBase& loader,
                      const _HistAxis<_Var<T>>& xAxis,
                      const _HistAxis<_Var<T>>& yAxis,
                      const _HistAxis<_Var<T>>& zAxis,
-                     const _Cut<T>& cut,
+                     const _Cut<T, U>& cut,
                      const SystShifts& shift,
                      const _Var<T>& wei,
                      ESparse sparse)
@@ -86,7 +86,7 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  template<class T>
+  template<class T, class U>
   Spectrum::Spectrum(const std::string& xLabel,
                      const std::string& yLabel,
                      const std::string& zLabel,
@@ -94,7 +94,7 @@ namespace ana
                      const Binning& binsx, const _Var<T>& varx,
                      const Binning& binsy, const _Var<T>& vary,
                      const Binning& binsz, const _Var<T>& varz,
-                     const _Cut<T>& cut,
+                     const _Cut<T, U>& cut,
                      const SystShifts& shift,
                      const _Var<T>& wei,
                      ESparse sparse)
@@ -104,34 +104,4 @@ namespace ana
                cut, shift, wei, sparse)
   {
   }
-
-  // These aren't templated, but they do interact directly with SpectrumLoader
-
-  //----------------------------------------------------------------------
-  Spectrum::Spectrum(Spectrum&& rhs):
-    fHist(std::move(rhs.fHist)),
-    fPOT(rhs.fPOT),
-    fLivetime(rhs.fLivetime),
-    fAxis(rhs.fAxis)
-  {
-    std::swap(fReferences, rhs.fReferences);
-    for(Spectrum** ref: fReferences) *ref = this;
-  }
-
-  //----------------------------------------------------------------------
-  Spectrum& Spectrum::operator=(Spectrum&& rhs)
-  {
-    if(this == &rhs) return *this;
-
-    fHist = std::move(rhs.fHist);
-    fPOT = rhs.fPOT;
-    fLivetime = rhs.fLivetime;
-    fAxis = rhs.fAxis;
-
-    std::swap(fReferences, rhs.fReferences);
-    for(Spectrum** ref: fReferences) *ref = this;
-
-    return *this;
-  }
-
 }

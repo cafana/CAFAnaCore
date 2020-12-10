@@ -3,11 +3,11 @@
 namespace ana
 {
   //----------------------------------------------------------------------
-  template<class T> ReweightableSpectrum::
+  template<class T, class U> ReweightableSpectrum::
   ReweightableSpectrum(SpectrumLoaderBase& loader,
                        const _HistAxis<_Var<T>>& recoAxis,
                        const _HistAxis<_Var<T>>& trueAxis,
-                       const _Cut<T>& cut,
+                       const _Cut<T, U>& cut,
                        const SystShifts& shift,
                        const _Var<T>& wei)
     : ReweightableSpectrum(recoAxis, trueAxis)

@@ -60,6 +60,17 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+  Spectrum::Spectrum(Spectrum&& rhs):
+    fHist(std::move(rhs.fHist)),
+    fPOT(rhs.fPOT),
+    fLivetime(rhs.fLivetime),
+    fAxis(rhs.fAxis)
+  {
+    std::swap(fReferences, rhs.fReferences);
+    for(Spectrum** ref: fReferences) *ref = this;
+  }
+
+  //----------------------------------------------------------------------
   Spectrum& Spectrum::operator=(const Spectrum& rhs)
   {
     if(this == &rhs) return *this;
@@ -70,6 +81,22 @@ namespace ana
     fAxis = rhs.fAxis;
 
     assert(fReferences.empty()); // Copying with pending loads is unexpected
+
+    return *this;
+  }
+
+  //----------------------------------------------------------------------
+  Spectrum& Spectrum::operator=(Spectrum&& rhs)
+  {
+    if(this == &rhs) return *this;
+
+    fHist = std::move(rhs.fHist);
+    fPOT = rhs.fPOT;
+    fLivetime = rhs.fLivetime;
+    fAxis = rhs.fAxis;
+
+    std::swap(fReferences, rhs.fReferences);
+    for(Spectrum** ref: fReferences) *ref = this;
 
     return *this;
   }
