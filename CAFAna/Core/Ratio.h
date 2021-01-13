@@ -20,7 +20,7 @@ namespace ana
     Ratio(Eigen::ArrayXd&& arr,
           const std::vector<std::string>& labels,
           const std::vector<Binning>& bins)
-      : fHist(Hist::Adopt(std::move(arr))), fBins(bins), fLabels(labels)
+      : fHist(Hist::Adopt(std::move(arr))), fAxis(labels, bins)
     {
     }
 
@@ -49,13 +49,12 @@ namespace ana
     Ratio(Hist&& h,
           std::vector<Binning>&& b,
           std::vector<std::string>&& l)
-      : fHist(std::move(h)), fBins(std::move(b)), fLabels(std::move(l))
+      : fHist(std::move(h)), fAxis(std::move(l), std::move(b))
     {
     }
 
     Hist fHist;
-    std::vector<Binning> fBins;
-    std::vector<std::string> fLabels;
+    LabelsAndBins fAxis;
   };
 
   inline Ratio operator/(const Spectrum& lhs, const Spectrum& rhs){return Ratio(lhs, rhs);}
