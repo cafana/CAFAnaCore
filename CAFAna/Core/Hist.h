@@ -1,14 +1,6 @@
 #pragma once
 
-#include "CAFAna/Core/StanVar.h"
-
-// These numeric limits need to be included before we actually instantiate any
-// eigen+stan objects.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#include "stan/math/rev/core/std_numeric_limits.hpp"
-#include "stan/math/rev/mat/fun/Eigen_NumTraits.hpp"
-#pragma GCC diagnostic pop
+#include "CAFAna/Core/Stan.h"
 
 class TDirectory;
 
