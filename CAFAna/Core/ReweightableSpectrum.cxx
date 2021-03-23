@@ -2,6 +2,7 @@
 
 #include "CAFAna/Core/Binning.h"
 #include "CAFAna/Core/Ratio.h"
+#include "CAFAna/Core/Stan.h"
 
 #include "TDirectory.h"
 #include "TH2.h"

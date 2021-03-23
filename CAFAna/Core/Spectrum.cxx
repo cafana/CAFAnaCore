@@ -1,6 +1,7 @@
 #include "CAFAna/Core/Spectrum.h"
 
 #include "CAFAna/Core/Ratio.h"
+#include "CAFAna/Core/Stan.h"
 
 #include "TDirectory.h"
 #include "TH2.h"

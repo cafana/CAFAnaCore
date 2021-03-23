@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CAFAna/Core/Stan.h"
+#include "CAFAna/Core/StanVar.h"
 
 class TDirectory;
 
