@@ -1,9 +1,33 @@
-/// Stan.h -- just the stan::math::var header
+/// StanVar.h -- just the stan::math::var header
 ///  (They trigger some warnings that we want to suppress,
 ///   so centralize all the stuff turning them off into this one spot.)
 
 #pragma once
 
+#ifdef EIGEN_MAJOR_VERSION
+#ifndef STAN_MATH_PRIM_FUN_EIGEN_HPP
+#error "It is strongly advised not to include Eigen headers before stan_math headers, please rearrange your includes"
+#endif
+#endif
+
+// Disable various pedantic warnings that stan triggers
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#pragma GCC diagnostic ignored "-Wignored-qualifiers"
+
+// stan::math::var itself
+#include "stan/math/rev/core/var.hpp"
+
+// Required for Eigen
+#include "stan/math/rev/core/typedefs.hpp"
+
+#pragma GCC diagnostic pop
+
+// TODO retrieve any of the preprocessor stuff below we might need in practice,
+// otherwise delete.
+/*
 
 // Stan's dependencies trigger some warnings. Save the warning state and then
 // adjust it to ignore them.
@@ -33,3 +57,4 @@
 
 // Return the warning state to how it started
 #pragma GCC diagnostic pop
+*/
