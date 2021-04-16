@@ -8,7 +8,7 @@ echo VERSION=$TAG
 echo
 echo
 
-for QUAL in debug:e19 e19:prof c7:debug c7:prof
+for QUAL in debug:e19 e19:prof debug:e20 e20:prof c7:debug c7:prof
 do
     echo FLAVOR=ANY
     echo QUALIFIERS=\"$QUAL\"

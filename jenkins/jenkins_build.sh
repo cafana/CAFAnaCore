@@ -3,7 +3,7 @@
 set +ex
 env
 
-if [[ $QUALIFIER == *c7* ]]
+if [[ $QUALIFIER == *c7* || $QUALIFIER == *e20* ]]
 then
     # NOvA doesn't seem to have all the c7 products
     source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1    
