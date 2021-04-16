@@ -11,11 +11,12 @@ else
     source /cvmfs/nova.opensciencegrid.org/externals/setup || exit 1
 fi
 
-setup root v6_18_04d -q $QUALIFIER || exit 1
-setup stan_math v4_0_1 -q $QUALIFIER || exit 1
-setup eigen v3_3_9a || exit 1
-setup boost v1_70_0 -q $QUALIFIER || exit 1
-setup ifdhc v2_5_7 -q ${QUALIFIER}:p372 || exit 1
+# Looping over lines is a total pain in bash. Easier to just send it to a file
+TMPFILE=`mktemp`
+# Expect to be run in the directory one above....
+jenkins/dependencies.sh $QUALIFIER | sed 's/^/setup /' > $TMPFILE
+cat $TMPFILE
+source $TMPFILE
 
 setup cmake v3_14_3 || exit 1
 setup ninja v1_8_2 || exit 1
@@ -39,3 +40,6 @@ else
 fi
 
 time make $FLAGS || exit 2
+
+mkdir -p CAFAna/ups
+jenkins/make_table.sh > CAFAna/ups/cafanacore.table

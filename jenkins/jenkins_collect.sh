@@ -27,7 +27,6 @@ do
     then
         once=yes
         mv $newdir/CAFAna/ups $TAG/
-        sed -i s/vXX.YY/$TAG/g ${TAG}/ups/cafanacore.table
         mv $newdir/inc $TAG/include
         for k in `find $newdir/CAFAna -name '*.h' -o -name '*.cxx' -o -name '*.txx'`
         do
