@@ -10,10 +10,10 @@ fi
 
 QUAL=$1
 
-if [ $QUAL == *:n308* ]; then NQUAL=n308; QUAL=${QUAL/:n308/}; fi
-if [ $QUAL == *:n308* ]; then NQUAL=n309; QUAL=${QUAL/:n309/}; fi
+if [[ $QUAL == *:n308* ]]; then NQUAL=n308; QUAL=${QUAL/:n308/}; fi
+if [[ $QUAL == *:n309* ]]; then NQUAL=n309; QUAL=${QUAL/:n309/}; fi
 
-if [[ $NQUAL == *n308* ]]
+if [[ $NQUAL == n308 ]]
 then
     # These are the current (Apr 2021) nova versions (nutools v3_08_00)
     echo root v6_18_04d -q$QUAL

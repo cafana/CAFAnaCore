@@ -17,7 +17,7 @@ do
             if [[ $EXPT == n308 && $COMPILER != e19 ]]; then continue; fi
 
             echo FLAVOR=ANY
-            echo $QUALIFIERS=\"${OPT}:${COMPILER}:${EXPT}\"
+            echo QUALIFIERS=\"${OPT}:${COMPILER}:${EXPT}\"
             echo
             echo 'ACTION=SETUP'
             echo '  setupEnv()'
