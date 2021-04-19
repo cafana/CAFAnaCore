@@ -281,7 +281,7 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  VarBase VarBase:: operator/(const VarBase& v) const
+  VarBase VarBase::operator/(const VarBase& v) const
   {
     static std::map<std::pair<int, int>, int> ids;
     const std::pair<int, int> key(ID(), v.ID());
