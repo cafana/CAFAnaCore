@@ -3,12 +3,29 @@
 set +ex
 env
 
-if [[ $QUALIFIER == *c7* || $QUALIFIER == *e20* ]]
+if [[ $QUALIFIER != *:n308* && $QUALIFIER != *:n309* ]]
 then
-    # NOvA doesn't seem to have all the c7 products
-    source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
-else
+    echo Unspecified nutools version in qualifier $QUALIFIER -- must be n308 or n309
+    exit 1
+fi
+
+if [[ $QUALIFIER != *e19* && $QUALIFIER != *e20* && $QUALIFIER != *c7* ]]
+then
+    echo Unknown compiler in qualifier $QUALIFIER -- must be e19, e20, or c7
+    exit 1
+fi
+
+if [[ $QUALIFIER != *debug* && $QUALIFIER != *prof* ]]
+then
+    echo Unknown optimization level in qualifier $QUALIFIER -- must be debug or prof
+    exit 1
+fi
+
+if [[ $EXPERIMENT == *n308* ]]
+then
     source /cvmfs/nova.opensciencegrid.org/externals/setup || exit 1
+else
+    source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
 fi
 
 # Looping over lines is a total pain in bash. Easier to just send it to a file

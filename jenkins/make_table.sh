@@ -8,28 +8,36 @@ echo VERSION=$TAG
 echo
 echo
 
-for QUAL in debug:e19 e19:prof debug:e20 e20:prof c7:debug c7:prof
+for EXPT in n308 n309
 do
-    echo FLAVOR=ANY
-    echo QUALIFIERS=\"$QUAL\"
-    echo
-    echo 'ACTION=SETUP'
-    echo '  setupEnv()'
-    echo '  proddir()'
-    echo
-    echo '  # for get-directory-name'
-    echo '  setupRequired(cetpkgsupport)'
-    # Expect to be run in the directory one above....
-    jenkins/dependencies.sh $QUAL | while read line
+    for OPT in debug prof
     do
-        echo '  setupRequired('$line')'
+        for COMPILER in e19 e20 c7
+        do
+            if [[ $EXPT == n308 && $COMPILER != e19 ]]; then continue; fi
+
+            echo FLAVOR=ANY
+            echo $QUALIFIERS=\"${OPT}:${COMPILER}:${EXPT}\"
+            echo
+            echo 'ACTION=SETUP'
+            echo '  setupEnv()'
+            echo '  proddir()'
+            echo
+            echo '  # for get-directory-name'
+            echo '  setupRequired(cetpkgsupport)'
+            # Expect to be run in the directory one above....
+            jenkins/dependencies.sh ${OPT}:${COMPILER}:${EXPT} | while read line
+            do
+                echo '  setupRequired('$line')'
+            done
+            echo
+            echo '  EnvSet(CAFANACORE_VERSION, ${UPS_PROD_VERSION} )'
+            echo '  EnvSet(CAFANACORE_INC, ${UPS_PROD_DIR}/include )'
+            echo '  EnvSet(CAFANACORE_FQ_DIR, ${CAFANACORE_DIR}`get-directory-name subdir`.`echo ${UPS_PROD_QUALIFIERS} | tr ":" "."` )'
+            echo '  EnvSet(CAFANACORE_LIB, ${CAFANACORE_FQ_DIR}/lib )'
+            echo '  pathPrepend(LD_LIBRARY_PATH, ${CAFANACORE_LIB})'
+            echo
+            echo
+        done
     done
-    echo
-    echo '  EnvSet(CAFANACORE_VERSION, ${UPS_PROD_VERSION} )'
-    echo '  EnvSet(CAFANACORE_INC, ${UPS_PROD_DIR}/include )'
-    echo '  EnvSet(CAFANACORE_FQ_DIR, ${CAFANACORE_DIR}`get-directory-name subdir`.`echo ${UPS_PROD_QUALIFIERS} | tr ":" "."` )'
-    echo '  EnvSet(CAFANACORE_LIB, ${CAFANACORE_FQ_DIR}/lib )'
-    echo '  pathPrepend(LD_LIBRARY_PATH, ${CAFANACORE_LIB})'
-    echo
-    echo
 done
