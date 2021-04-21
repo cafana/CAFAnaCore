@@ -17,6 +17,10 @@
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 
+// Supress a deprecation warning from tbb/task_scheduler_init.h that otherwise
+// gets triggered a lot. Hopefully stan updates before tbb does.
+#define __TBB_show_deprecation_message_task_scheduler_init_H
+
 // stan::math::var itself
 #include "stan/math/rev/core/var.hpp"
 
