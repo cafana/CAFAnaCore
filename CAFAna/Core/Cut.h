@@ -7,12 +7,12 @@
 
 #include "CAFAna/Core/CutBase.h"
 
+#include <cassert>
+
 namespace ana
 {
-  struct DummySpillT{DummySpillT() = delete;};
-
   /// Template for Cuts applied to any type of object
-  template<class RecT, class SpillT = DummySpillT> class _Cut: protected CutBase
+  template<class RecT, class SpillT = void> class _Cut: protected CutBase
   {
   public:
     /// The type of the function part of a cut
@@ -44,6 +44,10 @@ namespace ana
                 AddType<decltype(liveFunc), SpillT, double>(liveFunc),
                 AddType<decltype(potFunc), SpillT, double>(potFunc))
     {
+      // This would be better enforced at compile time by only making the
+      // three-argument constructor available for non-voids using enable_if.
+      assert(!(liveFunc && std::is_same_v<SpillT, void>));
+      assert(!(potFunc && std::is_same_v<SpillT, void>));
     }
 
     template<class T, class U, class V>
