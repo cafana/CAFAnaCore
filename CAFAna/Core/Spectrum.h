@@ -4,6 +4,8 @@
 #include "CAFAna/Core/FwdDeclare.h"
 #include "CAFAna/Core/HistAxis.h"
 #include "CAFAna/Core/Hist.h"
+#include "CAFAna/Core/IValueSource.h"
+#include "CAFAna/Core/IRecordSource.h"
 #include "CAFAna/Core/UtilsExt.h"
 
 #include <Eigen/Dense>
@@ -36,7 +38,7 @@ namespace ana
   template<class T> class SpectrumSinkBase;
 
   /// Representation of a spectrum in any variable, with associated POT
-  class Spectrum
+  class Spectrum: public IValueSink
   {
   public:
     friend class SpectrumLoaderBase;
@@ -45,6 +47,20 @@ namespace ana
     friend class Ratio;
 
     enum ESparse{kDense, kSparse};
+
+    // TODO implementation in cxx
+    Spectrum(IValueSource& src, const LabelsAndBins& axis, ESparse sparse = kDense)
+      : Spectrum(axis, sparse)
+    {
+      src.Register(this);
+    }
+
+    template<class RecT> Spectrum(_IRecordSource<RecT>& src,
+                                  const _HistAxis<_Var<RecT>>& axis,
+                                  ESparse sparse = kDense)
+      : Spectrum(src[axis.GetVar1D()], axis, sparse)
+    {
+    }
 
     /// One constructor to rule them all
     template<class T, class U>
@@ -150,7 +166,7 @@ namespace ana
     Spectrum& operator=(const Spectrum& rhs);
     Spectrum& operator=(Spectrum&& rhs);
 
-    void Fill(double x, double w = 1);
+    virtual void Fill(double x, double w = 1) override;
 
     /// \brief Histogram made from this Spectrum, scaled to some exposure
     ///
