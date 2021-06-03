@@ -1,4 +1,4 @@
-// This file sets things up (when libCAFAnaCore is loaded) so that we invoke
+// This file sets things up (when libCAFAnaCoreExt is loaded) so that we invoke
 // gdb to get a stack trace after any unusual program termination. You can
 // suppress this behaviour by setting the CAFE_NO_BACKTRACE environment
 // variable.
