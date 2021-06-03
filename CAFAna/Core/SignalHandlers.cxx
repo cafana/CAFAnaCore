@@ -3,6 +3,7 @@
 // suppress this behaviour by setting the CAFE_NO_BACKTRACE environment
 // variable.
 
+#include <atomic>
 #include <csignal>
 #include <cstring>
 #include <fstream>
@@ -13,6 +14,22 @@
 
 namespace ana
 {
+  std::atomic_flag cafanaQuitRequested = ATOMIC_FLAG_INIT;   // this is initialization to 'false', atomically
+  std::atomic_flag cafanaQuitNow = ATOMIC_FLAG_INIT;
+
+  bool CAFAnaQuitRequested()
+  {
+    // note that std::atomic_flag::test() doesn't exist until C++20,
+    // so we have to always set the flag, then clear it if it wasn't set.
+    if (cafanaQuitRequested.test_and_set())
+      return true;
+    else
+    {
+      cafanaQuitRequested.clear();
+      return false;
+    }
+  }
+
   void gdb_backtrace()
   {
     // Have to end with a 'kill' command, otherwise GDB winds up sending us
@@ -33,6 +50,19 @@ namespace ana
 
   void handle_signal(int sig, siginfo_t*, void*)
   {
+    // SIGTERM && SIGINT request nice shutdown
+    if (sig == SIGTERM || sig == SIGINT)
+    {
+      if (!cafanaQuitNow.test_and_set())
+      {
+        std::cout << "\nReceived SIGINT or SIGTERM -- trying to shut down nicely." << std::endl;
+        std::cout << "Interrupt again with Ctrl-C or 'kill <process id>' to exit immediately." << std::endl;
+        cafanaQuitRequested.test_and_set();
+        return;
+      }
+      _exit(sig+128);
+    }
+
     if(sig == SIGABRT && !gIsException)
       std::cout << "\n\nAborted\n" << std::endl;
     if(sig == SIGSEGV)
@@ -86,6 +116,8 @@ namespace ana
       sigaction(SIGSEGV, &sa, NULL);
       sigaction(SIGBUS, &sa, NULL);
       sigaction(SIGFPE, &sa, NULL);
+      sigaction(SIGINT, &sa, NULL);
+      sigaction(SIGTERM, &sa, NULL);
     }
   };
 
