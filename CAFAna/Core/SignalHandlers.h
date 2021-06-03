@@ -1,7 +1,5 @@
 #pragma once
 
-#include <atomic>
-
 namespace ana
 {
   /// Loops or long-running CAFAna sub-processes (e.g. Loaders::Go(), IFitter::Fit(), ...)
