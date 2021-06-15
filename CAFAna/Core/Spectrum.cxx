@@ -21,6 +21,13 @@ namespace
 namespace ana
 {
   //----------------------------------------------------------------------
+  Spectrum::Spectrum(IValueSource& src, const LabelsAndBins& axis, ESparse sparse)
+    : Spectrum(axis, sparse)
+  {
+    src.Register(this);
+  }
+
+  //----------------------------------------------------------------------
   Spectrum::Spectrum(const LabelsAndBins& axis, ESparse sparse)
     : fHist(Hist::Uninitialized()), fPOT(0), fLivetime(0), fAxis(axis)
   {

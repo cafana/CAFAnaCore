@@ -48,12 +48,7 @@ namespace ana
 
     enum ESparse{kDense, kSparse};
 
-    // TODO implementation in cxx
-    Spectrum(IValueSource& src, const LabelsAndBins& axis, ESparse sparse = kDense)
-      : Spectrum(axis, sparse)
-    {
-      src.Register(this);
-    }
+    Spectrum(IValueSource& src, const LabelsAndBins& axis, ESparse sparse = kDense);
 
     template<class RecT> Spectrum(_IRecordSource<RecT>& src,
                                   const _HistAxis<_Var<RecT>>& axis,
