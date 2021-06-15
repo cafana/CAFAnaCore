@@ -325,6 +325,18 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+  void Spectrum::FillPOT(double pot)
+  {
+    fPOT += pot;
+  }
+
+  //----------------------------------------------------------------------
+  void Spectrum::FillLivetime(double livetime)
+  {
+    fLivetime += livetime;
+  }
+
+  //----------------------------------------------------------------------
   Spectrum Spectrum::MockData(double pot, int seed) const
   {
     Spectrum ret = FakeData(pot);

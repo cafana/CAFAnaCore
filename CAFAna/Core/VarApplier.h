@@ -24,6 +24,16 @@ namespace ana
       for(IValueSink* sink: fSinks) sink->Fill(val, w);
     }
 
+    virtual void HandlePOT(double pot) override
+    {
+      for(IValueSink* sink: fSinks) sink->FillPOT(pot);
+    }
+
+    virtual void HandleLivetime(double livetime) override
+    {
+      for(IValueSink* sink: fSinks) sink->FillLivetime(livetime);
+    }
+
   protected:
     _Var<RecT> fVar;
   };

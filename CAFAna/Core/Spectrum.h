@@ -167,6 +167,8 @@ namespace ana
     Spectrum& operator=(Spectrum&& rhs);
 
     virtual void Fill(double x, double w = 1) override;
+    virtual void FillPOT(double pot) override;
+    virtual void FillLivetime(double pot) override;
 
     /// \brief Histogram made from this Spectrum, scaled to some exposure
     ///
