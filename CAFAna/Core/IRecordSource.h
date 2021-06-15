@@ -11,8 +11,6 @@ namespace ana
   public:
     virtual ~_IRecordSource() {}
 
-    // TODO make all of these classes non-copyable
-
     virtual void Register(_IRecordSink<RecT>* sink)
     {
       fSinks.push_back(sink);
@@ -35,8 +33,8 @@ namespace ana
   protected:
     std::vector<_IRecordSink<RecT>*> fSinks;
 
-    std::unordered_map<int, _IRecordSource<RecT>*> fCutSources;
-    std::unordered_map<int, IValueSource*> fVarSources;
+    std::unordered_map<int, std::unique_ptr<_IRecordSource<RecT>>> fCutSources;
+    std::unordered_map<int, std::unique_ptr<IValueSource>> fVarSources;
   };
 };
 
@@ -54,7 +52,7 @@ namespace ana
     if(it != fVarSources.end()) return *it->second;
 
     _VarApplier<RecT>* ret = new _VarApplier<RecT>(var);
-    fVarSources[var.ID()] = ret;
+    fVarSources[var.ID()].reset(ret);
     Register(ret);
     return *ret;
   }
@@ -67,7 +65,7 @@ namespace ana
     if(it != fCutSources.end()) return *it->second;
 
     _CutApplier<RecT, SpillT>* ret = new  _CutApplier<RecT, SpillT>(cut);
-    fCutSources[cut.ID()] = ret;
+    fCutSources[cut.ID()].reset(ret);
     Register(ret);
     return *ret;
   }
