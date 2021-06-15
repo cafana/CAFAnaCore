@@ -1,4 +1,6 @@
-namespace ana
+#pragma once
+
+namespace ana::beta
 {
   class IValueSink
   {

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ana
+namespace ana::beta
 {
   template<class RecT> class _IRecordSink
   {

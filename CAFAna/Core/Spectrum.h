@@ -38,7 +38,7 @@ namespace ana
   template<class T> class SpectrumSinkBase;
 
   /// Representation of a spectrum in any variable, with associated POT
-  class Spectrum: public IValueSink
+  class Spectrum: public beta::IValueSink
   {
   public:
     friend class SpectrumLoaderBase;
@@ -48,9 +48,9 @@ namespace ana
 
     enum ESparse{kDense, kSparse};
 
-    Spectrum(IValueSource& src, const LabelsAndBins& axis, ESparse sparse = kDense);
+    Spectrum(beta::IValueSource& src, const LabelsAndBins& axis, ESparse sparse = kDense);
 
-    template<class RecT> Spectrum(_IRecordSource<RecT>& src,
+    template<class RecT> Spectrum(beta::_IRecordSource<RecT>& src,
                                   const _HistAxis<_Var<RecT>>& axis,
                                   ESparse sparse = kDense)
       : Spectrum(src[axis.GetVar1D()], axis, sparse)

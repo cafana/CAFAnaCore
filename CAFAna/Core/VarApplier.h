@@ -3,7 +3,7 @@
 #include "CAFAna/Core/IRecordSink.h"
 #include "CAFAna/Core/IRecordSource.h"
 
-namespace ana
+namespace ana::beta
 {
   // TODO is this the best name?
   template<class RecT> class _VarApplier: public _IRecordSink<RecT>, public IValueSource

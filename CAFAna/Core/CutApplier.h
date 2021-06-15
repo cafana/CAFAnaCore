@@ -5,7 +5,7 @@
 
 #include "CAFAna/Core/Cut.h"
 
-namespace ana
+namespace ana::beta
 {
   // TODO is this the best name?
   template<class RecT, class SpillT> class _CutApplier: public _IRecordSink<RecT>, public _IRecordSource<RecT>

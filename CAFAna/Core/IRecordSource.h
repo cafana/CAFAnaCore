@@ -2,7 +2,7 @@
 
 #include "CAFAna/Core/IRecordSink.h"
 
-namespace ana
+namespace ana::beta
 {
   class IValueSource;
 
@@ -42,7 +42,7 @@ namespace ana
 #include "CAFAna/Core/VarApplier.h"
 #include "CAFAna/Core/CutApplier.h"
 
-namespace ana
+namespace ana::beta
 {
   template<class RecT> IValueSource&
   _IRecordSource<RecT>::GetVar(const _Var<RecT>& var)

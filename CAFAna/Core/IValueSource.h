@@ -1,8 +1,10 @@
+#pragma once
+
 #include "CAFAna/Core/IValueSink.h"
 
 #include <vector>
 
-namespace ana
+namespace ana::beta
 {
   class IValueSource
   {
