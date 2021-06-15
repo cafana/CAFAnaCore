@@ -27,8 +27,16 @@ namespace ana
       return GetVar(var);
     }
 
+    template<class SpillT> _IRecordSource<RecT>& operator[](const _Cut<RecT, SpillT>& cut)
+    {
+      return GetCut(cut);
+    }
+
   protected:
     std::vector<_IRecordSink<RecT>*> fSinks;
+
+    std::unordered_map<int, _IRecordSource<RecT>*> fCutSources;
+    std::unordered_map<int, IValueSource*> fVarSources;
   };
 };
 
@@ -41,18 +49,26 @@ namespace ana
   template<class RecT> IValueSource&
   _IRecordSource<RecT>::GetVar(const _Var<RecT>& var)
   {
-     // TODO look up in a map by ID
-     _VarApplier<RecT>* ret = new _VarApplier<RecT>(var);
-     Register(ret);
-     return *ret;
+    auto it = fVarSources.find(var.ID());
+
+    if(it != fVarSources.end()) return *it->second;
+
+    _VarApplier<RecT>* ret = new _VarApplier<RecT>(var);
+    fVarSources[var.ID()] = ret;
+    Register(ret);
+    return *ret;
   }
 
   template<class RecT> template<class SpillT> IValueSource&
   _IRecordSource<RecT>::GetCut(const _Cut<RecT, SpillT>& cut)
   {
-     // TODO look up in a map by ID
-     _CutApplier<RecT, SpillT>* ret = new _CutApplier<RecT, SpillT>(cut);
-     Register(ret);
-     return *ret;
+    auto it = fCutSources.find(cut.ID());
+
+    if(it != fCutSources.end()) return *it->second;
+
+    _CutApplier<RecT, SpillT>* ret = new  _CutApplier<RecT, SpillT>(cut);
+    fCutSources[cut.ID()] = ret;
+    Register(ret);
+    return *ret;
   }
 }
