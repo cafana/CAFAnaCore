@@ -17,10 +17,10 @@ namespace ana
     {
     }
 
-    virtual void HandleRecord(const RecT* rec, double w = 1) override
+    virtual void HandleRecord(const RecT* rec, double weight) override
     {
       if(fCut(rec)){
-        for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->Fill(rec, w);
+        for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->Fill(rec, weight);
       }
     }
 

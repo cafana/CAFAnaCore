@@ -7,7 +7,7 @@ namespace ana
   public:
     virtual ~_IRecordSink(){}
 
-    virtual void HandleRecord(const RecT* rec, double w = 1) = 0;
+    virtual void HandleRecord(const RecT* rec, double weight) = 0;
     virtual void HandlePOT(double pot) = 0;
     virtual void HandleLivetime(double livetime) = 0;
   };

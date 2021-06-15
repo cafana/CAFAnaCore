@@ -16,12 +16,12 @@ namespace ana
       //      for(IValueSink** sink: fSinks) if(*sink) delete (*sink);
     }
 
-    virtual void HandleRecord(const RecT* rec, double w = 1)
+    virtual void HandleRecord(const RecT* rec, double weight)
     {
       const double val = fVar(rec);
       // TODO check for NaNs etc that is in existing code
-      //      for(IValueSink** sink: fSinks) if(*sink) (*sink)->Fill(val, w);
-      for(IValueSink* sink: fSinks) sink->Fill(val, w);
+      //      for(IValueSink** sink: fSinks) if(*sink) (*sink)->Fill(val, weight);
+      for(IValueSink* sink: fSinks) sink->Fill(val, weight);
     }
 
     virtual void HandlePOT(double pot) override
