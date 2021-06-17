@@ -458,7 +458,7 @@ namespace ana
       if(fLivetime && rhs.fLivetime){
         // If POT/livetime ratios match, keep regular lifetime, otherwise zero
         // it out.
-        if(AlmostEqual(fLivetime*rhs.fPOT, rhs.fLivetime*fPOT))
+        if(!AlmostEqual(fLivetime*rhs.fPOT, rhs.fLivetime*fPOT))
           fLivetime = 0;
       }
       if(!fLivetime && rhs.fLivetime){
