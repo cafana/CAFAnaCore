@@ -6,7 +6,6 @@
 #include "TDirectory.h"
 #include "TH2.h"
 #include "TH3.h"
-#include "THnSparse.h"
 #include "TObjString.h"
 #include "TRandom3.h"
 
