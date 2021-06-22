@@ -9,7 +9,7 @@ namespace ana
                        const _HistAxis<_Var<T>>& trueAxis,
                        const _Cut<T, U>& cut,
                        const SystShifts& shift,
-                       const _Var<T>& wei)
+                       const _Weight<T>& wei)
     : ReweightableSpectrum(recoAxis, trueAxis)
   {
     fMat.resize(trueAxis.GetBins1D().NBins()+2, recoAxis.GetBins1D().NBins()+2);

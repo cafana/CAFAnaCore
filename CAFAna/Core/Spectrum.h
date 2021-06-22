@@ -26,9 +26,10 @@ namespace ana
   class Ratio;
   class SpectrumLoaderBase;
   template<class T> class _Var;
+  template<class T> class _Weight;
   template<class T> class _MultiVar;
 
-  template<class T> _Var<T> Unweighted();
+  template<class T> _Weight<T> Unweighted();
 
   class SystShifts;
   extern const SystShifts kNoShift;
@@ -52,7 +53,7 @@ namespace ana
              const _HistAxis<_Var<T>>& axis,
              const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
-             const _Var<T>& wei = Unweighted<T>(),
+             const _Weight<T>& wei = Unweighted<T>(),
              ESparse sparse = kDense);
 
     template<class T, class U>
@@ -62,7 +63,7 @@ namespace ana
              const _Var<T>& var,
              const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
-             const _Var<T>& wei = Unweighted<T>(),
+             const _Weight<T>& wei = Unweighted<T>(),
              ESparse sparse = kDense);
 
     /// The only \ref MultiVar variant available
@@ -71,7 +72,7 @@ namespace ana
              const _HistAxis<_MultiVar<T>>& axis,
              const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
-             const _Var<T>& wei = Unweighted<T>());
+             const _Weight<T>& wei = Unweighted<T>());
 
     /// Makes a spectrum from an eigen array
     Spectrum(Eigen::ArrayXd&& h,
@@ -90,7 +91,7 @@ namespace ana
              const _HistAxis<_Var<T>>& yAxis,
              const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
-             const _Var<T>& wei = Unweighted<T>(),
+             const _Weight<T>& wei = Unweighted<T>(),
              ESparse sparse = kDense);
 
     /// 2D Spectrum of two Vars
@@ -102,7 +103,7 @@ namespace ana
 	     const Binning& binsy, const _Var<T>& vary,
 	     const _Cut<T, U>& cut,
 	     const SystShifts& shift = kNoShift,
-	     const _Var<T>& wei = Unweighted<T>(),
+	     const _Weight<T>& wei = Unweighted<T>(),
              ESparse sparse = kDense);
 
     /// 3D Spectrum taking 3 HistAxis
@@ -113,7 +114,7 @@ namespace ana
 	     const _HistAxis<_Var<T>>& zAxis,
              const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
-             const _Var<T>& wei = Unweighted<T>(),
+             const _Weight<T>& wei = Unweighted<T>(),
 	     ESparse sparse = kDense);
 
     /// 3D Spectrum of three Vars
@@ -127,7 +128,7 @@ namespace ana
              const Binning& binsz, const _Var<T>& varz,
              const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
-             const _Var<T>& wei = Unweighted<T>(),
+             const _Weight<T>& wei = Unweighted<T>(),
 	     ESparse sparse = kDense);
 
     /// Expert constructor for ReweightableSpectrum et al
