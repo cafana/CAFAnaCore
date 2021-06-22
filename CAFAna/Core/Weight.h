@@ -16,6 +16,7 @@ namespace ana
 
     using _Var<T>::operator();
     using _Var<T>::ID;
+    using _Var<T>::MaxID;
 
   protected:
     _Weight(const _Var<T>& v) : _Var<T>(v) {}
