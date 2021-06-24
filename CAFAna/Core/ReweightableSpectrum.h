@@ -11,8 +11,9 @@ class TH2D;
 namespace ana
 {
   template<class T> class _Var;
+  template<class T> class _Weight;
 
-  template<class T> _Var<T> Unweighted();
+  template<class T> _Weight<T> Unweighted();
 
   /// %Spectrum with the value of a second variable, allowing for reweighting
   class ReweightableSpectrum
@@ -27,7 +28,7 @@ namespace ana
                          const _HistAxis<_Var<T>>& trueAxis,
                          const _Cut<T, U>& cut,
                          const SystShifts& shift = kNoShift,
-                         const _Var<T>& wei = Unweighted<T>());
+                         const _Weight<T>& wei = Unweighted<T>());
 
     ReweightableSpectrum(const Eigen::MatrixXd&& mat,
                          const LabelsAndBins& recoAxis,

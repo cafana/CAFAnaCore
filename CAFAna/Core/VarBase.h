@@ -63,7 +63,6 @@ namespace ana
     CutBase operator==(const VarBase& v) const;
     CutBase operator!=(const VarBase& v) const;
 
-    // Most useful for combining weights.
     VarBase operator*(const VarBase& v) const;
     VarBase operator/(const VarBase& v) const;
     VarBase operator+(const VarBase& v) const;
