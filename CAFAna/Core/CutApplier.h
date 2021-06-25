@@ -20,7 +20,7 @@ namespace ana::beta
     virtual void HandleRecord(const RecT* rec, double weight) override
     {
       if(fCut(rec)){
-        for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->Fill(rec, weight);
+        for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleRecord(rec, weight);
       }
     }
 
@@ -28,12 +28,12 @@ namespace ana::beta
     {
       // TODO make use of the SpillT part of fCut to modify the exposure where
       // necessary.
-      for(IValueSink* sink: _IRecordSource<RecT>::fSinks) sink->FillPOT(pot);
+      for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandlePOT(pot);
     }
 
     virtual void HandleLivetime(double livetime) override
     {
-      for(IValueSink* sink: _IRecordSource<RecT>::fSinks) sink->FillLivetime(livetime);
+      for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleLivetime(livetime);
     }
 
   protected:

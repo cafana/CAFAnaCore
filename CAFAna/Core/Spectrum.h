@@ -162,9 +162,9 @@ namespace ana
     Spectrum& operator=(const Spectrum& rhs);
     Spectrum& operator=(Spectrum&& rhs);
 
-    virtual void Fill(double x, double w = 1) override;
+    virtual void Fill(double x, double w) override;
     virtual void FillPOT(double pot) override;
-    virtual void FillLivetime(double pot) override;
+    virtual void FillLivetime(double livetime) override;
 
     /// \brief Histogram made from this Spectrum, scaled to some exposure
     ///

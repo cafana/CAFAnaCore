@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CAFAna/Core/Spectrum.h"
+#include "CAFAna/Core/IValueSink.h"
 
 #include <string>
 
@@ -16,7 +17,7 @@ namespace ana
   template<class T> _Weight<T> Unweighted();
 
   /// %Spectrum with the value of a second variable, allowing for reweighting
-  class ReweightableSpectrum
+  class ReweightableSpectrum: public beta::IValuePairSink
   {
   public:
     friend class ReweightableSpectrumSink;
@@ -35,6 +36,17 @@ namespace ana
                          const LabelsAndBins& trueAxis,
                          double pot, double livetime);
 
+    ReweightableSpectrum(beta::IValuePairSource& src,
+                         const LabelsAndBins& recoAxis,
+                         const LabelsAndBins& trueAxis);
+
+    template<class T> ReweightableSpectrum(beta::_IRecordSource<T>& src,
+                                           const _HistAxis<_Var<T>>& recoAxis,
+                                           const _HistAxis<_Var<T>>& trueAxis)
+      : ReweightableSpectrum(src.GetVars(recoAxis.GetVar1D(), trueAxis.GetVar1D()), recoAxis, trueAxis)
+    {
+    }
+
     /// The only valid thing to do with such a spectrum is to assign something
     /// else into it.
     static ReweightableSpectrum Uninitialized(){return ReweightableSpectrum();}
@@ -44,7 +56,9 @@ namespace ana
     ReweightableSpectrum(const ReweightableSpectrum& rhs);
     ReweightableSpectrum& operator=(const ReweightableSpectrum& rhs);
 
-    void Fill(double x, double y, double w = 1);
+    virtual void Fill(double x, double y, double w) override;
+    virtual void FillPOT(double pot) override;
+    virtual void FillLivetime(double livetime) override;
 
     TH2D* ToTH2(double pot) const;
 

@@ -18,7 +18,10 @@ namespace ana::beta
 
     IValueSource& GetVar(const _Var<RecT>& var);
 
-    template<class SpillT> IValueSource& GetCut(const _Cut<RecT, SpillT>& cut);
+    IValuePairSource& GetVars(const _Var<RecT>& varx,
+                              const _Var<RecT>& vary);
+
+    template<class SpillT> _IRecordSource<RecT>& GetCut(const _Cut<RecT, SpillT>& cut);
 
     IValueSource& operator[](const _Var<RecT>& var)
     {
@@ -35,6 +38,7 @@ namespace ana::beta
 
     std::unordered_map<int, std::unique_ptr<_IRecordSource<RecT>>> fCutSources;
     std::unordered_map<int, std::unique_ptr<IValueSource>> fVarSources;
+    std::unordered_map<int, std::unique_ptr<IValuePairSource>> fVarPairSources;
   };
 };
 
@@ -57,7 +61,21 @@ namespace ana::beta
     return *ret;
   }
 
-  template<class RecT> template<class SpillT> IValueSource&
+  template<class RecT> IValuePairSource&
+  _IRecordSource<RecT>::GetVars(const _Var<RecT>& varx,
+                                const _Var<RecT>& vary)
+  {
+    auto it = fVarPairSources.find((varx*vary).ID());
+
+    if(it != fVarPairSources.end()) return *it->second;
+
+    _VarPairApplier<RecT>* ret = new _VarPairApplier<RecT>(varx, vary);
+    fVarPairSources[(varx*vary).ID()].reset(ret);
+    Register(ret);
+    return *ret;
+  }
+
+  template<class RecT> template<class SpillT> _IRecordSource<RecT>&
   _IRecordSource<RecT>::GetCut(const _Cut<RecT, SpillT>& cut)
   {
     auto it = fCutSources.find(cut.ID());
