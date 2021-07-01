@@ -8,7 +8,7 @@ namespace ana
                      const _HistAxis<_Var<T>>& axis,
                      const _Cut<T, U>& cut,
                      const SystShifts& shift,
-                     const _Var<T>& wei,
+                     const _Weight<T>& wei,
                      Spectrum::ESparse sparse)
     : Spectrum(LabelsAndBins(axis.GetLabels(), axis.GetBinnings()), sparse)
   {
@@ -23,7 +23,7 @@ namespace ana
                      const _Var<T>& var,
                      const _Cut<T, U>& cut,
                      const SystShifts& shift,
-                     const _Var<T>& wei,
+                     const _Weight<T>& wei,
                      Spectrum::ESparse sparse)
     : Spectrum(loader, _HistAxis<_Var<T>>(label, bins, var), cut, shift, wei, sparse)
   {
@@ -35,7 +35,7 @@ namespace ana
                      const _HistAxis<_MultiVar<T>>& axis,
                      const _Cut<T, U>& cut,
                      const SystShifts& shift,
-                     const _Var<T>& wei)
+                     const _Weight<T>& wei)
     : Spectrum(LabelsAndBins(axis.GetLabels(), axis.GetBinnings()))
   {
     if(axis.HasVars()) loader.AddSpectrum(*this, axis.GetVar1D(), cut, shift, wei);
@@ -48,7 +48,7 @@ namespace ana
                      const _HistAxis<_Var<T>>& yAxis,
                      const _Cut<T, U>& cut,
                      const SystShifts& shift,
-                     const _Var<T>& wei,
+                     const _Weight<T>& wei,
                      ESparse sparse)
     : Spectrum(loader, _HistAxis<_Var<T>>(xAxis, yAxis), cut, shift, wei, sparse)
   {
@@ -63,7 +63,7 @@ namespace ana
                      const Binning& binsy, const _Var<T>& vary,
                      const _Cut<T, U>& cut,
                      const SystShifts& shift,
-                     const _Var<T>& wei,
+                     const _Weight<T>& wei,
                      ESparse sparse)
     : Spectrum(loader, _HistAxis<_Var<T>>(xLabel, binsx, varx,
                                           yLabel, binsy, vary),
@@ -79,7 +79,7 @@ namespace ana
                      const _HistAxis<_Var<T>>& zAxis,
                      const _Cut<T, U>& cut,
                      const SystShifts& shift,
-                     const _Var<T>& wei,
+                     const _Weight<T>& wei,
                      ESparse sparse)
     : Spectrum(loader, _HistAxis<_Var<T>>(xAxis, yAxis, zAxis), cut, shift, wei, sparse)
   {
@@ -96,7 +96,7 @@ namespace ana
                      const Binning& binsz, const _Var<T>& varz,
                      const _Cut<T, U>& cut,
                      const SystShifts& shift,
-                     const _Var<T>& wei,
+                     const _Weight<T>& wei,
                      ESparse sparse)
     : Spectrum(loader, _HistAxis<_Var<T>>(_HistAxis<_Var<T>>(xLabel, binsx, varx),
                                           _HistAxis<_Var<T>>(yLabel, binsy, vary),

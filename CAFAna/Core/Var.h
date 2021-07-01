@@ -101,7 +101,6 @@ namespace ana
     _Cut<T> operator==(const _Var& v) const {return VarBase::operator==(v);}
     _Cut<T> operator!=(const _Var& v) const {return VarBase::operator!=(v);}
 
-    // Most useful for combining weights.
     _Var operator*(const _Var& v) const {return VarBase::operator*(v);}
     _Var operator/(const _Var& v) const {return VarBase::operator/(v);}
     _Var operator+(const _Var& v) const {return VarBase::operator+(v);}
@@ -110,10 +109,6 @@ namespace ana
   protected:
     _Var(const VarBase& v) : VarBase(v) {}
   };
-
-  template<class T> struct One{double operator()(const T*) const {return 1;}};
-
-  template<class T> _Var<T> Unweighted(){return _Var<T>(One<T>());}
 
   // Variants of the comparisons with the constant on the LHS
   template<class T> _Cut<T> operator>(double c, const _Var<T>& v){return v < c;}
