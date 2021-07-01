@@ -366,6 +366,7 @@ namespace ana
   {
     Spectrum ret = *this;
     if(fPOT > 0) ret.fHist.Scale(pot/fPOT);
+    if(fLivetime > 0) ret.fLivetime *= pot/fPOT;
     ret.fPOT = pot;
 
     // Drop old errors, which are based on the MC statistics, and create new
