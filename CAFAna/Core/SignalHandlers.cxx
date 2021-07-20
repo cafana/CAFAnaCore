@@ -90,15 +90,18 @@ namespace ana
       // We're already being debugged somehow. Don't complicate things
       if(getenv("CAFE_NO_BACKTRACE")) return;
 
-      // Check that this is really a CAFAna job. Somehow this library gets
-      // loaded into art jobs too??
-      char s[1024];
-      sprintf(s, "/proc/%d/cmdline", getpid());
-      std::ifstream f(s);
-      if(f){
-        std::string ss;
-        f >> ss;
-        if(ss.find("root.exe") == std::string::npos) return;
+      // Check that this is really a CAFAna job, either by affirmative opt-in,
+      // or at least a root.exe command line. We don't necessarily want this
+      // triggering for unrelated art jobs.
+      if(getenv("CAFE_YES_BACKTRACE") == 0){
+        char s[1024];
+        sprintf(s, "/proc/%d/cmdline", getpid());
+        std::ifstream f(s);
+        if(f){
+          std::string ss;
+          f >> ss;
+          if(ss.find("root.exe") == std::string::npos) return;
+        }
       }
 
       // Handle uncaught exceptions
