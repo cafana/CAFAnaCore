@@ -20,9 +20,15 @@ then
     echo boost v1_70_0 -q$QUAL
     echo ifdhc v2_5_7 -q${QUAL}:p372
 else
-    # These are the current (Apr 2021) sbn versions (nutools v3_09_02)
-    echo root v6_22_06a -q${QUAL}:p383b
+    # These were the sbn versions in Apr 2021 (nutools v3_09_02)
+#    echo root v6_22_06a -q${QUAL}:p383b
+#    echo boost v1_73_0 -q$QUAL
+
+    # These are the current (July 2021) sbn versions (nutools v3_09_04)
+    echo root v6_22_08b -q${QUAL}:p383b
     echo boost v1_73_0 -q$QUAL
+
+
     echo ifdhc v2_5_12 -q${QUAL}:p383b
 fi
 
