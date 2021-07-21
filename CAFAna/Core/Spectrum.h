@@ -58,6 +58,7 @@ namespace ana
     {
     }
 
+#ifdef CAFANACORE_SPECTRUMLOADERBASE
     /// One constructor to rule them all
     template<class T, class U>
     Spectrum(SpectrumLoaderBase& loader,
@@ -84,6 +85,7 @@ namespace ana
              const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
              const _Weight<T>& wei = Unweighted<T>());
+#endif
 
     /// Makes a spectrum from an eigen array
     Spectrum(Eigen::ArrayXd&& h,
@@ -95,6 +97,7 @@ namespace ana
              const LabelsAndBins& axis,
              double pot, double livetime);
 
+#ifdef CAFANACORE_SPECTRUMLOADERBASE
     /// 2D Spectrum taking 2 HistAxis
     template<class T, class U>
     Spectrum(SpectrumLoaderBase& loader,
@@ -141,6 +144,7 @@ namespace ana
              const SystShifts& shift = kNoShift,
              const _Weight<T>& wei = Unweighted<T>(),
 	     ESparse sparse = kDense);
+#endif
 
     /// Expert constructor for ReweightableSpectrum et al
     Spectrum(Hist&& hist,

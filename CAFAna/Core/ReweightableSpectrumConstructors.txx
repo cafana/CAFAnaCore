@@ -2,6 +2,7 @@
 
 namespace ana
 {
+#ifdef CAFANACORE_SPECTRUMLOADERBASE
   //----------------------------------------------------------------------
   template<class T, class U> ReweightableSpectrum::
   ReweightableSpectrum(SpectrumLoaderBase& loader,
@@ -17,5 +18,5 @@ namespace ana
 
     if(recoAxis.HasVars()) loader.AddReweightableSpectrum(*this, recoAxis.GetVar1D(), trueAxis.GetVar1D(), cut, shift, wei);
   }
-
+#endif
 }

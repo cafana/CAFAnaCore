@@ -2,6 +2,7 @@
 
 namespace ana
 {
+#ifdef CAFANACORE_SPECTRUMLOADERBASE
   //----------------------------------------------------------------------
   template<class T, class U>
   Spectrum::Spectrum(SpectrumLoaderBase& loader,
@@ -104,4 +105,5 @@ namespace ana
                cut, shift, wei, sparse)
   {
   }
+#endif
 }

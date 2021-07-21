@@ -23,6 +23,7 @@ namespace ana
     friend class ReweightableSpectrumSink;
     friend class SpectrumSinkBase<ReweightableSpectrum>;
 
+#ifdef CAFANACORE_SPECTRUMLOADERBASE
     template<class T, class U>
     ReweightableSpectrum(SpectrumLoaderBase& loader,
                          const _HistAxis<_Var<T>>& recoAxis,
@@ -30,6 +31,7 @@ namespace ana
                          const _Cut<T, U>& cut,
                          const SystShifts& shift = kNoShift,
                          const _Weight<T>& wei = Unweighted<T>());
+#endif
 
     ReweightableSpectrum(const Eigen::MatrixXd&& mat,
                          const LabelsAndBins& recoAxis,
@@ -130,8 +132,7 @@ namespace ana
 
     LabelsAndBins fAxisX, fAxisY;
 
-    /// Things that point at this ReweightableSpectrum. Maintained by
-    /// SpectrumLoader
+    /// Things that point at this ReweightableSpectrum
     std::set<ReweightableSpectrum**> fReferences;
   };
 }
