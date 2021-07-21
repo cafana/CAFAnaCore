@@ -34,4 +34,4 @@ namespace ana::beta
   protected:
     std::vector<IValuePairSink*> fSinks;
   };
-};
+}

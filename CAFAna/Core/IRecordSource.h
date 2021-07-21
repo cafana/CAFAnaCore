@@ -40,7 +40,7 @@ namespace ana::beta
     std::unordered_map<int, std::unique_ptr<IValueSource>> fVarSources;
     std::unordered_map<int, std::unique_ptr<IValuePairSource>> fVarPairSources;
   };
-};
+}
 
 
 #include "CAFAna/Core/VarApplier.h"
