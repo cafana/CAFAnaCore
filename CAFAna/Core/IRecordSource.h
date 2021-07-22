@@ -1,6 +1,9 @@
 #pragma once
 
 #include "CAFAna/Core/IRecordSink.h"
+#include "CAFAna/Core/IValueSource.h"
+#include "CAFAna/Core/Cut.h"
+#include "CAFAna/Core/Var.h"
 
 namespace ana::beta
 {
@@ -34,6 +37,11 @@ namespace ana::beta
     }
 
   protected:
+    _IRecordSource(){}
+
+    _IRecordSource(const _IRecordSource&) = delete;
+    _IRecordSource& operator=(const _IRecordSource&) = delete;
+
     std::vector<_IRecordSink<RecT>*> fSinks;
 
     std::unordered_map<int, std::unique_ptr<_IRecordSource<RecT>>> fCutSources;

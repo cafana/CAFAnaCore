@@ -17,6 +17,11 @@ namespace ana::beta
     }
 
   protected:
+    IValueSource(){}
+
+    IValueSource(const IValueSource&) = delete;
+    IValueSource& operator=(const IValueSource&) = delete;
+
     std::vector<IValueSink*> fSinks;
   };
 
@@ -32,6 +37,11 @@ namespace ana::beta
     }
 
   protected:
+    IValuePairSource(){}
+
+    IValuePairSource(const IValuePairSource&) = delete;
+    IValuePairSource& operator=(const IValuePairSource&) = delete;
+
     std::vector<IValuePairSink*> fSinks;
   };
 }
