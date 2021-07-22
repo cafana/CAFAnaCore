@@ -15,7 +15,7 @@ namespace ana::beta
     {
     }
 
-    virtual void HandleRecord(const RecT* rec, double weight)
+    virtual void HandleRecord(const RecT* rec, double weight) override
     {
       const double val = fVar(rec);
       // TODO check for NaNs etc that is in existing code
@@ -47,7 +47,7 @@ namespace ana::beta
     {
     }
 
-    virtual void HandleRecord(const RecT* rec, double weight)
+    virtual void HandleRecord(const RecT* rec, double weight) override
     {
       const double valx = fVarX(rec);
       const double valy = fVarY(rec);
