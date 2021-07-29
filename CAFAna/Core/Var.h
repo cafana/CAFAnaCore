@@ -34,12 +34,12 @@ namespace ana
     };
 
     /// std::function can wrap a real function, function object, or lambda
-    _Var(const std::function<VarFunc_t>& func)
+    explicit _Var(const std::function<VarFunc_t>& func)
       : VarBase(AddType<decltype(func), T>(func))
     {
     }
 
-    template<class FuncT> _Var(const FuncT& func)
+    template<class FuncT> explicit _Var(const FuncT& func)
       : VarBase(AddType<FuncT, T>(func))
     {
     }
