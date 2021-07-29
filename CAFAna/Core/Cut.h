@@ -37,9 +37,9 @@ namespace ana
     };
 
     /// std::function can wrap a real function, function object, or lambda
-    _Cut(const std::function<CutFunc_t>& func,
-         const std::function<ExposureFunc_t>& liveFunc = 0,
-         const std::function<ExposureFunc_t>& potFunc = 0)
+    explicit _Cut(const std::function<CutFunc_t>& func,
+                  const std::function<ExposureFunc_t>& liveFunc = 0,
+                  const std::function<ExposureFunc_t>& potFunc = 0)
       : CutBase(AddType<decltype(func), RecT, bool>(func),
                 AddType<decltype(liveFunc), SpillT, double>(liveFunc),
                 AddType<decltype(potFunc), SpillT, double>(potFunc))
@@ -51,9 +51,9 @@ namespace ana
     }
 
     template<class T, class U, class V>
-    _Cut(const T& func,
-         const U& liveFunc,
-         const V& potFunc)
+    explicit _Cut(const T& func,
+                  const U& liveFunc,
+                  const V& potFunc)
       : CutBase(AddType<T, RecT, bool>(func),
                 AddType<U, SpillT, double>(liveFunc),
                 AddType<V, SpillT, double>(potFunc))
@@ -61,8 +61,8 @@ namespace ana
     }
 
     template<class T, class U>
-    _Cut(const T& func,
-         const U& liveFunc = 0)
+    explicit _Cut(const T& func,
+                  const U& liveFunc = 0)
       : CutBase(AddType<T, RecT, bool>(func),
                 AddType<U, SpillT, double>(liveFunc),
                 0)
@@ -70,7 +70,7 @@ namespace ana
     }
 
     template<class T, class U = ExposureFunc_t, class V = ExposureFunc_t>
-    _Cut(const T& func)
+    explicit _Cut(const T& func)
       : CutBase(AddType<T, RecT, bool>(func), 0, 0)
     {
     }
