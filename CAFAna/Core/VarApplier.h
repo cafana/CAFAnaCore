@@ -39,6 +39,13 @@ namespace ana::beta
       for(IValueSink* sink: fSinks) sink->FillLivetime(livetime);
     }
 
+    virtual unsigned int NSinks() const override
+    {
+      unsigned int tot = 0;
+      for(const IValueSink* sink: fSinks) tot += sink->NSinks();
+      return tot;
+    }
+
   protected:
     _Var<RecT> fVar;
   };
@@ -70,6 +77,13 @@ namespace ana::beta
     virtual void HandleLivetime(double livetime) override
     {
       for(IValuePairSink* sink: fSinks) sink->FillLivetime(livetime);
+    }
+
+    virtual unsigned int NSinks() const override
+    {
+      unsigned int tot = 0;
+      for(const IValuePairSink* sink: fSinks) tot += sink->NSinks();
+      return tot;
     }
 
   protected:

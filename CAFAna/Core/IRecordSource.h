@@ -5,6 +5,8 @@
 #include "CAFAna/Core/Cut.h"
 #include "CAFAna/Core/Var.h"
 
+#include <numeric>
+
 namespace ana::beta
 {
   class IValueSource;

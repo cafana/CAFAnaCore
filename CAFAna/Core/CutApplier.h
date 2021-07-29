@@ -36,6 +36,13 @@ namespace ana::beta
       for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleLivetime(livetime);
     }
 
+    virtual unsigned int NSinks() const override
+    {
+      unsigned int tot = 0;
+      for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) tot += sink->NSinks();
+      return tot;
+    }
+
   protected:
     _Cut<RecT, SpillT> fCut;
   };
