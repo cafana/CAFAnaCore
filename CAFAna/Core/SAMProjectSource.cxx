@@ -30,7 +30,7 @@ namespace ana
     }
 
     if(!fgGotTickets){
-      // This comes from NovaGridUtils, v02.10 onwards.
+      // This comes from NovaGridUtils or duneutil
       system("setup_fnal_security -b");
 
       fgGotTickets = true;
@@ -57,9 +57,13 @@ namespace ana
     std::string hostNameStr;
     strPtr = getenv("HOSTNAME");
     if(!strPtr) strPtr = getenv("OSG_HOSTNAME");
-    hostNameStr = strPtr;
+    hostNameStr = strPtr ? strPtr : "unknown";
 
-    fProcessID = fIFDH->establishProcess(fProjectURL, "CAFAna", "v0.9", hostNameStr.c_str(), userStr.c_str(), "nova", "", fileLimit);
+    strPtr = getenv("SAM_EXPERIMENT");
+    if(!strPtr) strPtr = getenv("EXPERIMENT");
+    std::string exptStr = strPtr ? strPtr : "cafana";
+
+    fProcessID = fIFDH->establishProcess(fProjectURL, "CAFAna", "v1.0", hostNameStr.c_str(), userStr.c_str(), exptStr.c_str(), "", fileLimit);
   }
 
   //----------------------------------------------------------------------
