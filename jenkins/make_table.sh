@@ -8,14 +8,14 @@ echo VERSION=$TAG
 echo
 echo
 
-for EXPT in n308 n309
+for EXPT in n308 n311
 do
     for OPT in debug prof
     do
         for COMPILER in e19 e20 c7
         do
             if [[ $EXPT == n308 && $COMPILER != e19 ]]; then continue; fi
-            if [[ $EXPT == n309 && $COMPILER == e19 ]]; then continue; fi
+            if [[ $EXPT == n311 && $COMPILER == e19 ]]; then continue; fi
 
             echo FLAVOR=ANY
             echo QUALIFIERS=\"${OPT}:${COMPILER}:${EXPT}\"
