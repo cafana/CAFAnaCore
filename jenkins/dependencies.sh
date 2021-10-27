@@ -11,7 +11,7 @@ fi
 QUAL=$1
 
 if [[ $QUAL == *:n308* ]]; then NQUAL=n308; QUAL=${QUAL/:n308/}; fi
-if [[ $QUAL == *:n309* ]]; then NQUAL=n309; QUAL=${QUAL/:n309/}; fi
+if [[ $QUAL == *:n311* ]]; then NQUAL=n311; QUAL=${QUAL/:n311/}; fi
 
 if [[ $NQUAL == n308 ]]
 then
@@ -20,16 +20,11 @@ then
     echo boost v1_70_0 -q$QUAL
     echo ifdhc v2_5_7 -q${QUAL}:p372
 else
-    # These were the sbn versions in Apr 2021 (nutools v3_09_02)
-#    echo root v6_22_06a -q${QUAL}:p383b
-#    echo boost v1_73_0 -q$QUAL
+    # These are the current (October 2021) sbn versions (nutools v3_11_05)
+    echo root v6_22_08d -q${QUAL}:p392
+    echo boost v1_75_0 -q$QUAL
 
-    # These are the current (July 2021) sbn versions (nutools v3_09_04)
-    echo root v6_22_08b -q${QUAL}:p383b
-    echo boost v1_73_0 -q$QUAL
-
-
-    echo ifdhc v2_5_12 -q${QUAL}:p383b
+    echo ifdhc v2_5_16 -q${QUAL}:p392
 fi
 
 echo stan_math v4_0_1 -q$QUAL

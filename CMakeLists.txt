@@ -17,21 +17,6 @@ endif()
 execute_process(COMMAND git describe --tags OUTPUT_VARIABLE CAFANACORE_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCAFANACORE_VERSION=\\\"${CAFANACORE_VERSION}\\\"")
 
-# Record what flags were used. Can dump with
-# readelf -p .GCC.command.line libCAFAnaCoreExt.so 
-set(common_flags "-fdiagnostics-color -grecord-gcc-switches -D_REENTRANT")
-
-set(CMAKE_CXX_FLAGS_DEBUG "-g -Og ${common_flags}")
-set(CMAKE_CXX_FLAGS_MINSIZEREL "${common_flags} -Os")
-# notes for release:
-# -O3 yields linker errors in some versions of gcc.
-#   it's also apparently unstable across some architectures anyway,
-#    and apparently doesn't often offer much in the way of performance increases.
-#    so let's not cause ourselves headaches
-# NDEBUG needed to ensure assert() causes an abort() even in optimized builds
-set(CMAKE_CXX_FLAGS_RELEASE "${common_flags} -O2 -DNDEBUG -g")
-
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
 
 # non-negotiable dependencies
 find_package(ROOT REQUIRED)
@@ -45,6 +30,28 @@ find_package(Ifdhc REQUIRED)
 # pthread / std::thread
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
+
+
+# Record what flags were used. Can dump with
+# readelf -p .GCC.command.line libCAFAnaCoreExt.so 
+set(common_flags "-fdiagnostics-color -grecord-gcc-switches -D_REENTRANT")
+
+# If we can't find "2019" in the version, ie it's newer than that
+if(NOT TBB_VERSION MATCHES 2019)
+    set(common_flags "${common_flags} -DTBB_INTERFACE_NEW")
+endif()
+
+set(CMAKE_CXX_FLAGS_DEBUG "-g -Og ${common_flags}")
+set(CMAKE_CXX_FLAGS_MINSIZEREL "${common_flags} -Os")
+# notes for release:
+# -O3 yields linker errors in some versions of gcc.
+#   it's also apparently unstable across some architectures anyway,
+#    and apparently doesn't often offer much in the way of performance increases.
+#    so let's not cause ourselves headaches
+# NDEBUG needed to ensure assert() causes an abort() even in optimized builds
+set(CMAKE_CXX_FLAGS_RELEASE "${common_flags} -O2 -DNDEBUG -g")
+
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
 
 # ROOT does things differently depending on whether it's built for C++17 or not :-\
 string(REGEX REPLACE ".*c\\+\\+([0-9][0-9]).*" "\\1" ROOT_CXX_STANDARD ${ROOT_CXX_FLAGS})
