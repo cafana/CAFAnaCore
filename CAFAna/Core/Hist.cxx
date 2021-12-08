@@ -155,6 +155,16 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+  Hist Hist::AdoptErrors(Eigen::ArrayXd&& v, Eigen::ArrayXd&& e)
+  {
+    Hist ret;
+    ret.fType = kDense;
+    ret.fData = std::move(v);
+    ret.fSumSq = std::move(e);
+    return ret;
+  }
+  
+  //----------------------------------------------------------------------
   Hist Hist::FromDirectory(TDirectory* dir)
   {
     Hist ret;
@@ -344,7 +354,7 @@ namespace ana
     fSumSq.resize(0);
     fSqrtErrs = true;
   }
-
+  
   //----------------------------------------------------------------------
   double Hist::GetBinContent(int i) const
   {
