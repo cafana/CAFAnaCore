@@ -155,6 +155,17 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+  Hist Hist::AdoptWithErrors(Eigen::ArrayXd&& v, Eigen::ArrayXd&& sqerr)
+  {
+    // Function to let user manually set fSumSq for a Hist.
+    Hist ret;
+    ret.fType = kDense;
+    ret.fData = std::move(v);
+    ret.fSumSq = std::move(sqerr);
+    return ret;
+  }
+  
+  //----------------------------------------------------------------------
   Hist Hist::FromDirectory(TDirectory* dir)
   {
     Hist ret;
