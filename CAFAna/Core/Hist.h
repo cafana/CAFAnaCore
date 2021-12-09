@@ -36,6 +36,7 @@ namespace ana
     static Hist AdoptSparse(Eigen::SparseVector<double>&& v);
     static Hist AdoptStan(Eigen::ArrayXstan&& v);
     static Hist Adopt(Eigen::ArrayXd&& v);
+    static Hist AdoptWithErrors(Eigen::ArrayXd&& v, Eigen::ArrayXd&& sqerr);
 
     static Hist FromDirectory(TDirectory* dir);
 
