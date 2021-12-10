@@ -139,15 +139,6 @@ namespace ana
              const _Weight<T>& wei = Unweighted<T>(),
 	     ESparse sparse = kDense);
 
-    /// Expert constructor for ReweightableSpectrum et al
-    Spectrum(Hist&& hist,
-             const LabelsAndBins& axis,
-             double pot,
-             double livetime)
-      : fHist(std::move(hist)), fPOT(pot), fLivetime(livetime), fAxis(axis)
-    {
-    }
-
     /// The only valid thing to do with such a spectrum is to assign something
     /// else into it.
     static Spectrum Uninitialized(){return Spectrum();}
