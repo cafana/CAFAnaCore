@@ -158,6 +158,12 @@ namespace ana
   Hist Hist::AdoptWithErrors(Eigen::ArrayXd&& v, Eigen::ArrayXd&& sqerr)
   {
     // Function to let user manually set fSumSq for a Hist.
+
+    if(!gStatErrs){
+      std::cout << "Hist::AdoptWithErrors: must have stat errors enabled (via $CAFANA_STAT_ERRS env var) to use this constructor" << std::endl;
+      abort();
+    }
+
     Hist ret;
     ret.fType = kDense;
     ret.fData = std::move(v);

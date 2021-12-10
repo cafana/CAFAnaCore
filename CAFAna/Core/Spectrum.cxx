@@ -56,11 +56,6 @@ namespace ana
                      double pot, double livetime)
     : fHist(Hist::AdoptWithErrors(std::move(h), std::move(sqerr))), fPOT(pot), fLivetime(livetime), fAxis(axis)
   {
-    bool EnabledStats = (getenv("CAFANA_STAT_ERRS") != 0);
-    if (!EnabledStats) {
-      std::cout << "[ERROR]: Must have stat errors enabled to use this constructor." std::endl;
-      abort();
-    }
   }
 	
   //----------------------------------------------------------------------
