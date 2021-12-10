@@ -83,7 +83,15 @@ namespace ana
     Spectrum(Eigen::ArrayXstan&& h,
              const LabelsAndBins& axis,
              double pot, double livetime);
-
+ 
+    /// Makes a spectrum from two eigen arrays
+    /// One array is for bin contents, the other for squared errors
+    /// Only to be used with stat errors enabled
+    Spectrum(Eigen::ArrayXd&& h,
+             Eigen::ArrayXd&& sqerr,
+             const LabelsAndBins& axis,
+             double pot, double livetime);
+	  
     /// 2D Spectrum taking 2 HistAxis
     template<class T, class U>
     Spectrum(SpectrumLoaderBase& loader,
@@ -130,15 +138,6 @@ namespace ana
              const SystShifts& shift = kNoShift,
              const _Weight<T>& wei = Unweighted<T>(),
 	     ESparse sparse = kDense);
-
-    /// Expert constructor for ReweightableSpectrum et al
-    Spectrum(Hist&& hist,
-             const LabelsAndBins& axis,
-             double pot,
-             double livetime)
-      : fHist(std::move(hist)), fPOT(pot), fLivetime(livetime), fAxis(axis)
-    {
-    }
 
     /// The only valid thing to do with such a spectrum is to assign something
     /// else into it.

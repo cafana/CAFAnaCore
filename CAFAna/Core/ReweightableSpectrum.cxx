@@ -111,13 +111,13 @@ namespace ana
   //----------------------------------------------------------------------
   Spectrum ReweightableSpectrum::UnWeighted() const
   {
-    return Spectrum(Hist::Adopt(ProjectionX(fMat)), fAxisX, fPOT, fLivetime);
+    return Spectrum(ProjectionX(fMat), fAxisX, fPOT, fLivetime);
   }
 
   //----------------------------------------------------------------------
   Spectrum ReweightableSpectrum::WeightingVariable() const
   {
-    return Spectrum(Hist::Adopt(ProjectionY(fMat)), fAxisY, fPOT, fLivetime);
+    return Spectrum(ProjectionY(fMat), fAxisY, fPOT, fLivetime);
   }
 
   //----------------------------------------------------------------------
@@ -126,14 +126,13 @@ namespace ana
     if(!ws.HasStan()){
       const Eigen::VectorXd& vec = ws.GetEigen();
 
-      return Spectrum(Hist::Adopt(Eigen::ArrayXd(vec.transpose() * fMat)),
+      return Spectrum(Eigen::ArrayXd(vec.transpose() * fMat),
                       fAxisX, fPOT, fLivetime);
     }
     else{
       const Eigen::VectorXstan& vec = ws.GetEigenStan();
 
-      return Spectrum(Hist::AdoptStan(vec.transpose() * fMat),
-                      fAxisX, fPOT, fLivetime);
+      return Spectrum(vec.transpose() * fMat, fAxisX, fPOT, fLivetime);
     }
   }
 
