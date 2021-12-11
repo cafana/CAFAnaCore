@@ -75,6 +75,12 @@ namespace ana
     {
     }
 
+    // Convert from cuts without spillT to those with a typed spillT but null
+    // function pointer
+    _Cut(const _Cut<RecT, void>& c) : CutBase(c)
+    {
+    }
+
     /// Allows a cut to be called with bool result = myCut(rec) syntax
     bool operator()(const RecT* rec) const
     {
@@ -99,9 +105,9 @@ namespace ana
 
 
     // Forward to base implementation
-    _Cut operator&&(const _Cut& c) const {return CutBase::operator&&(c);}
-    _Cut operator||(const _Cut& c) const {return CutBase::operator||(c);}
-    _Cut operator!() const {return CutBase::operator!();}
+    _Cut operator&&(const _Cut& c) const {return _Cut(CutBase::operator&&(c));}
+    _Cut operator||(const _Cut& c) const {return _Cut(CutBase::operator||(c));}
+    _Cut operator!() const {return _Cut(CutBase::operator!());}
 
     // Python doesn't allow overloading and/or/not, but &/|/~ are
     // available. Don't expose these publicly to C++ users though.
@@ -118,7 +124,10 @@ namespace ana
 
   protected:
     friend class _Var<RecT>;
-    _Cut(const CutBase& c) : CutBase(c) {}
+    // friend with all types of cuts
+    template<class T, class U> friend class _Cut;
+
+    explicit _Cut(const CutBase& c) : CutBase(c) {}
   };
 
   template<class T> struct NoCut{bool operator()(const T*) const {return true;}};

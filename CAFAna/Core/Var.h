@@ -87,27 +87,27 @@ namespace ana
     using VarBase::ID;
     using VarBase::MaxID;
 
-    _Cut<T> operator<(double c) const  {return VarBase::operator<(c);}
-    _Cut<T> operator>(double c) const  {return VarBase::operator>(c);}
-    _Cut<T> operator>=(double c) const {return VarBase::operator>=(c);}
-    _Cut<T> operator<=(double c) const {return VarBase::operator<=(c);}
-    _Cut<T> operator==(double c) const {return VarBase::operator==(c);}
-    _Cut<T> operator!=(double c) const {return VarBase::operator!=(c);}
+    _Cut<T> operator<(double c) const  {return _Cut<T>(VarBase::operator<(c));}
+    _Cut<T> operator>(double c) const  {return _Cut<T>(VarBase::operator>(c));}
+    _Cut<T> operator>=(double c) const {return _Cut<T>(VarBase::operator>=(c));}
+    _Cut<T> operator<=(double c) const {return _Cut<T>(VarBase::operator<=(c));}
+    _Cut<T> operator==(double c) const {return _Cut<T>(VarBase::operator==(c));}
+    _Cut<T> operator!=(double c) const {return _Cut<T>(VarBase::operator!=(c));}
 
-    _Cut<T> operator>(const _Var& v) const  {return VarBase::operator>(v);}
-    _Cut<T> operator<(const _Var& v) const  {return VarBase::operator<(v);}
-    _Cut<T> operator>=(const _Var& v) const {return VarBase::operator>=(v);}
-    _Cut<T> operator<=(const _Var& v) const {return VarBase::operator<=(v);}
-    _Cut<T> operator==(const _Var& v) const {return VarBase::operator==(v);}
-    _Cut<T> operator!=(const _Var& v) const {return VarBase::operator!=(v);}
+    _Cut<T> operator>(const _Var& v) const  {return _Cut<T>(VarBase::operator>(v));}
+    _Cut<T> operator<(const _Var& v) const  {return _Cut<T>(VarBase::operator<(v));}
+    _Cut<T> operator>=(const _Var& v) const {return _Cut<T>(VarBase::operator>=(v));}
+    _Cut<T> operator<=(const _Var& v) const {return _Cut<T>(VarBase::operator<=(v));}
+    _Cut<T> operator==(const _Var& v) const {return _Cut<T>(VarBase::operator==(v));}
+    _Cut<T> operator!=(const _Var& v) const {return _Cut<T>(VarBase::operator!=(v));}
 
-    _Var operator*(const _Var& v) const {return VarBase::operator*(v);}
-    _Var operator/(const _Var& v) const {return VarBase::operator/(v);}
-    _Var operator+(const _Var& v) const {return VarBase::operator+(v);}
-    _Var operator-(const _Var& v) const {return VarBase::operator-(v);}
+    _Var operator*(const _Var& v) const {return _Var(VarBase::operator*(v));}
+    _Var operator/(const _Var& v) const {return _Var(VarBase::operator/(v));}
+    _Var operator+(const _Var& v) const {return _Var(VarBase::operator+(v));}
+    _Var operator-(const _Var& v) const {return _Var(VarBase::operator-(v));}
 
   protected:
-    _Var(const VarBase& v) : VarBase(v) {}
+    explicit _Var(const VarBase& v) : VarBase(v) {}
   };
 
   // Variants of the comparisons with the constant on the LHS
