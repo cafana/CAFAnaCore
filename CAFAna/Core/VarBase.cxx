@@ -10,9 +10,11 @@
 
 namespace ana
 {
+  int VarBase::fgNextID = 1;
+
   //----------------------------------------------------------------------
   VarBase::VarBase(const std::function<VoidVarFunc_t>& func, int id)
-    : fFunc(func), fID((id >= 0) ? id : fgNextID++)
+    : fFunc(func), fID((id > 0) ? id : fgNextID++)
   {
     DepMan<VarBase>::Instance().RegisterConstruction(this);
   }
@@ -93,6 +95,30 @@ namespace ana
     }
   }
 
+  namespace{
+    // If two Vars are combined with each other in the same way in two places,
+    // we want to give the combination the same ID in both cases. This helps
+    // caching in SpectrumLoader
+    class IDCache
+    {
+    public:
+      int GetID(int idA, int idB, int& nextID)
+      {
+        // If either is not fully constructed yet it's not safe to proceed
+        if(idA <= 0 || idB <= 0) return nextID++;
+        const std::pair<int, int> key(idA, idB);
+        auto it = fIDs.find(key);
+        if(it != fIDs.end()) return it->second;
+        const int newid = nextID++;
+        fIDs.emplace(key, newid);
+        return newid;
+      }
+
+    protected:
+      std::map<std::pair<int, int>, int> fIDs;
+    };
+  }
+
 
   // These comparison operators are extremely rote. Use a macro
 
@@ -104,7 +130,7 @@ namespace ana
     struct OPNAME                                                       \
     {                                                                   \
       VarBase v; double c;                                              \
-      bool operator()(const void* rec)                                  \
+      bool operator()(const void* rec) const                            \
       {                                                                 \
         return ValHelper(v, #OP, c, rec) OP c;                          \
       }                                                                 \
@@ -120,7 +146,7 @@ namespace ana
     struct OPNAME                                                       \
     {                                                                   \
       VarBase a, b;                                                     \
-      bool operator()(const void* rec)                                  \
+      bool operator()(const void* rec) const                            \
       {                                                                 \
         double va, vb;                                                  \
         ValHelper(a, b, #OP, rec, va, vb);                              \
@@ -128,7 +154,9 @@ namespace ana
       }                                                                 \
     };                                                                  \
                                                                         \
-    return CutBase(OPNAME{*this, v}, 0, 0, -1);                         \
+    static IDCache cache;                                               \
+    return CutBase(OPNAME{*this, v}, 0, 0,                              \
+                   cache.GetID(ID(), v.ID(), fgNextID));                \
   }                                                                     \
   void dummy() // trick to require a semicolon
 
@@ -139,7 +167,52 @@ namespace ana
   COMPARISON(==, Equals);
   COMPARISON(!=, NotEquals);
 
-  int VarBase::fgNextID = 0;
+  // Likewise for combination operators
+
+#define COMBINATION(OP, OPNAME)                                         \
+  /* Combination of a Var with another Var */                           \
+  VarBase VarBase::                                                     \
+  operator OP(const VarBase& v) const                                   \
+  {                                                                     \
+    struct OPNAME                                                       \
+    {                                                                   \
+      VarBase a, b;                                                     \
+      double operator()(const void* rec) const                          \
+      {                                                                 \
+        return a(rec) OP b(rec);                                        \
+      }                                                                 \
+    };                                                                  \
+                                                                        \
+    static IDCache cache;                                               \
+    return VarBase(OPNAME{*this, v},                                    \
+                   cache.GetID(ID(), v.ID(), fgNextID));                \
+  }                                                                     \
+  void dummy2() // trick to require a semicolon
+
+  COMBINATION(*, Times);
+  COMBINATION(+, Plus);
+  COMBINATION(-, Minus);
+
+  //----------------------------------------------------------------------
+  // Have to write division out manually because we want a special case for 0/0
+  VarBase VarBase::operator/(const VarBase& v) const
+  {
+    struct Divide
+    {
+      const VarBase a, b;
+      double operator()(const void* rec) const
+      {
+        const double denom = b(rec);
+        if(denom != 0)
+          return a(rec) / denom;
+        else
+          return 0.0;
+      }
+    };
+
+    static IDCache cache;
+    return VarBase(Divide{*this, v}, cache.GetID(ID(), v.ID(), fgNextID));
+  }
 
   //----------------------------------------------------------------------
   Var2DMapper::Var2DMapper(const Binning& binsa, const Binning& binsb)
@@ -262,76 +335,5 @@ namespace ana
                    const VarBase& c, const Binning& binsc)
     : VarBase(Var3DFunc(a, binsa, b, binsb, c, binsc))
   {
-  }
-
-  //----------------------------------------------------------------------
-  VarBase VarBase::operator*(const VarBase& v) const
-  {
-    static std::map<std::pair<int, int>, int> ids;
-    const std::pair<int, int> key(ID(), v.ID());
-
-    struct Times
-    {
-      const VarBase a, b;
-      double operator()(const void* rec) const {return a(rec) * b(rec);}
-    };
-
-    if(ids.count(key) == 0) ids[key] = fgNextID++;
-    return VarBase(Times{*this, v});
-  }
-
-  //----------------------------------------------------------------------
-  VarBase VarBase::operator/(const VarBase& v) const
-  {
-    static std::map<std::pair<int, int>, int> ids;
-    const std::pair<int, int> key(ID(), v.ID());
-
-    struct Divide
-    {
-      const VarBase a, b;
-      double operator()(const void* rec) const
-      {
-        const double denom = b(rec);
-        if(denom != 0)
-          return a(rec) / denom;
-        else
-          return 0.0;
-      }
-    };
-
-    if(ids.count(key) == 0) ids[key] = fgNextID++;
-    return VarBase(Divide{*this, v}, ids[key]);
-  }
-
-  //----------------------------------------------------------------------
-  VarBase VarBase::operator+(const VarBase& v) const
-  {
-    static std::map<std::pair<int, int>, int> ids;
-    const std::pair<int, int> key(ID(), v.ID());
-
-    struct Plus
-    {
-      const VarBase a, b;
-      double operator()(const void* rec) const {return a(rec) + b(rec);}
-    };
-
-    if(ids.count(key) == 0) ids[key] = fgNextID++;
-    return VarBase(Plus{*this, v}, ids[key]);
-  }
-
-  //----------------------------------------------------------------------
-  VarBase VarBase::operator-(const VarBase& v) const
-  {
-    static std::map<std::pair<int, int>, int> ids;
-    const std::pair<int, int> key(ID(), v.ID());
-
-    struct Minus
-    {
-      const VarBase a, b;
-      double operator()(const void* rec) const {return a(rec) - b(rec);}
-    };
-
-    if(ids.count(key) == 0) ids[key] = fgNextID++;
-    return VarBase(Minus{*this, v}, ids[key]);
   }
 } // namespace
