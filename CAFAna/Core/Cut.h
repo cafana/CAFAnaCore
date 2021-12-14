@@ -130,6 +130,12 @@ namespace ana
     explicit _Cut(const CutBase& c) : CutBase(c) {}
   };
 
+  // Allow cut with void SpillT to be combined on the LHS of an expression with
+  // a full cut on the right.
+  template<class RecT, class SpillT> inline _Cut<RecT, SpillT> operator&&(const _Cut<RecT, void>& a, const _Cut<RecT, SpillT>& b){return _Cut<RecT, SpillT>(a) && b;}
+  template<class RecT, class SpillT> inline _Cut<RecT, SpillT> operator||(const _Cut<RecT, void>& a, const _Cut<RecT, SpillT>& b){return _Cut<RecT, SpillT>(a) || b;}
+
+
   template<class T> struct NoCut{bool operator()(const T*) const {return true;}};
 
 } // namespace
