@@ -25,12 +25,12 @@ find_package(Eigen REQUIRED)
 find_package(Boost REQUIRED)
 find_package(Sundials REQUIRED)
 find_package(TBB REQUIRED)
-find_package(Ifdhc REQUIRED)
 
 # pthread / std::thread
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
 
+find_package(Ifdhc)
 
 # Record what flags were used. Can dump with
 # readelf -p .GCC.command.line libCAFAnaCoreExt.so 
@@ -92,8 +92,11 @@ include_directories(
         ${EIGEN_INC}
         ${BOOST_INC}
         ${SUNDIALS_INC}
-        ${IFDHC_INC}
 )
+
+if(Ifdhc_FOUND)
+    include_directories(${IFDHC_INC})
+endif()
 
 # by default make the bin/ and lib/ dirs in the top of the source dir.
 # can by overridden on command line if desired

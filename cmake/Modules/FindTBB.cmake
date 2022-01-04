@@ -9,6 +9,10 @@ set(TBB_DIR $ENV{TBB_DIR})
 message(STATUS "Trying TBB directory: ${TBB_DIR}")
 
 set(TBB_VERSION $ENV{TBB_UPS_VERSION})
+if(NOT TBB_VERSION AND DEFINED ENV{TBB_VERSION})
+	set(TBB_VERSION $ENV{TBB_VERSION})
+endif()
+
 if(NOT TBB_VERSION)
 	if (EXISTS ${TBB_DIR}/ups/sundials.table)
 		file(READ ${TBB_DIR}/ups/sundials.table table_contents)

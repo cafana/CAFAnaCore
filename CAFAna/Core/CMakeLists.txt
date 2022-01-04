@@ -3,13 +3,20 @@ set(LIBRARY CAFAnaCoreExt)
 file(GLOB HEADER_FILES *.h *.txx)
 file(GLOB SOURCES *.cxx)
 
+if(NOT Ifdhc_FOUND)
+        list(FILTER HEADER_FILES EXCLUDE REGEX ".*SAM.*")
+        list(FILTER SOURCES EXCLUDE REGEX ".*SAM.*")
+endif()
+
 add_library(${LIBRARY} SHARED
         ${HEADER_FILES}
         ${SOURCES}
 )
 
 link_root(${LIBRARY})
-link_ifdhc(${LIBRARY})
+if(Ifdhc_FOUND)
+    link_ifdhc(${LIBRARY})
+endif()
 link_tbb(${LIBRARY})
 
 install(TARGETS ${LIBRARY} LIBRARY DESTINATION ${TARGET_LIBDIR})
