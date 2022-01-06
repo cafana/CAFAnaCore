@@ -45,7 +45,7 @@ namespace ana
     bool HasStan() const {return fType == kDenseStan;}
     const Eigen::ArrayXd& GetEigen() const {assert(fType == kDense); return fData;}
     const Eigen::ArrayXstan& GetEigenStan() const {assert(fType == kDenseStan); return fDataStan;}
-    const Eigen::ArrayXd& GetEigenSqError() const {assert(fType == kDense); return fSumSq;}
+    const Eigen::ArrayXd& GetEigenSqErrors() const {assert(fType == kDense); return fSumSq;}
 
     int GetNbinsX() const;
     double GetBinError(int i) const;
