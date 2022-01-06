@@ -273,9 +273,9 @@ namespace ana
   Eigen::ArrayXd Spectrum::GetEigenSqErrors(double exposure, EExposureType expotype) const
   {
     if(expotype == kPOT)
-      return std::pow(exposure/fPOT, 2) * fHist.GetEigenSqErrors();
+      return util::sqr(exposure/fPOT) * fHist.GetEigenSqErrors();
     else
-      return std::pow(exposure/fLivetime, 2) * fHist.GetEigenSqErrors();
+      return util::sqr(exposure/fLivetime) * fHist.GetEigenSqErrors();
   }
 
   //----------------------------------------------------------------------
