@@ -270,6 +270,15 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+  Eigen::ArrayXd Spectrum::GetEigenSqErrors(double exposure, EExposureType expotype) const
+  {
+    if(expotype == kPOT)
+      return std::pow(exposure/fPOT, 2) * fHist.GetEigenSqErrors();
+    else
+      return std::pow(exposure/fLivetime, 2) * fHist.GetEigenSqErrors();
+  }
+
+  //----------------------------------------------------------------------
   void Spectrum::Scale(double c)
   {
     fHist.Scale(c);
