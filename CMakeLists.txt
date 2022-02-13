@@ -30,7 +30,11 @@ find_package(TBB REQUIRED)
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
 
-find_package(Ifdhc)
+if(NOT DEFINED NO_IFDHC OR NOT NO_IFDHC)
+    find_package(Ifdhc)
+else()
+    set(Ifdhc_FOUND FALSE)
+endif()
 
 # Record what flags were used. Can dump with
 # readelf -p .GCC.command.line libCAFAnaCoreExt.so 
