@@ -31,7 +31,7 @@ find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
 
 if(NOT DEFINED NO_IFDHC OR NOT NO_IFDHC)
-    find_package(Ifdhc)
+    find_package(Ifdhc REQUIRED)
 else()
     set(Ifdhc_FOUND FALSE)
 endif()
