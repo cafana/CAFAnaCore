@@ -4,6 +4,7 @@
 #include "CAFAna/Core/IValueSource.h"
 #include "CAFAna/Core/Cut.h"
 #include "CAFAna/Core/Var.h"
+#include "CAFAna/Core/Weight.h"
 
 #include <numeric>
 
@@ -28,6 +29,8 @@ namespace ana::beta
 
     template<class SpillT> _IRecordSource<RecT>& GetCut(const _Cut<RecT, SpillT>& cut);
 
+    _IRecordSource<RecT>& Weighted(const _Weight<RecT>& wei);
+
     IValueSource& operator[](const _Var<RecT>& var)
     {
       return GetVar(var);
@@ -38,6 +41,13 @@ namespace ana::beta
       return GetCut(cut);
     }
 
+    /*
+    _IRecordSource<RecT>& operator[](const _Weight<RecT>& wei)
+    {
+      return Weighted(wei);
+    }
+    */
+
   protected:
     _IRecordSource(){}
 
@@ -47,14 +57,16 @@ namespace ana::beta
     std::vector<_IRecordSink<RecT>*> fSinks;
 
     std::unordered_map<int, std::unique_ptr<_IRecordSource<RecT>>> fCutSources;
+    std::unordered_map<int, std::unique_ptr<_IRecordSource<RecT>>> fWeightSources;
     std::unordered_map<int, std::unique_ptr<IValueSource>> fVarSources;
     std::unordered_map<int, std::unique_ptr<IValuePairSource>> fVarPairSources;
   };
 }
 
 
-#include "CAFAna/Core/VarApplier.h"
 #include "CAFAna/Core/CutApplier.h"
+#include "CAFAna/Core/VarApplier.h"
+#include "CAFAna/Core/WeightApplier.h"
 
 namespace ana::beta
 {
@@ -94,6 +106,19 @@ namespace ana::beta
 
     _CutApplier<RecT, SpillT>* ret = new  _CutApplier<RecT, SpillT>(cut);
     fCutSources[cut.ID()].reset(ret);
+    Register(ret);
+    return *ret;
+  }
+
+  template<class RecT> _IRecordSource<RecT>&
+  _IRecordSource<RecT>::Weighted(const _Weight<RecT>& wei)
+  {
+    auto it = fWeightSources.find(wei.ID());
+
+    if(it != fWeightSources.end()) return *it->second;
+
+    _WeightApplier<RecT>* ret = new  _WeightApplier<RecT>(wei);
+    fWeightSources[wei.ID()].reset(ret);
     Register(ret);
     return *ret;
   }
