@@ -30,12 +30,23 @@ namespace ana
     }
   }
 
+  std::string get_argv0()
+  {
+    char s[1024];
+    sprintf(s, "/proc/%d/cmdline", getpid());
+    std::ifstream f(s);
+    if(!f) return "unknown_argv0";
+    std::string ss;
+    f >> ss;
+    return ss;
+  }
+
   void gdb_backtrace()
   {
     // Have to end with a 'kill' command, otherwise GDB winds up sending us
     // SIGSTOP and never resuming us afterwards.
     char s[1024];
-    sprintf(s, "gdb --batch -ex 'set confirm off' -ex sharedlibrary -ex bt -ex kill root.exe %d", getpid());
+    sprintf(s, "gdb --batch -ex 'set confirm off' -ex sharedlibrary -ex bt -ex kill %s %d", get_argv0().c_str(), getpid());
     system(s);
   }
 
@@ -93,16 +104,8 @@ namespace ana
       // Check that this is really a CAFAna job, either by affirmative opt-in,
       // or at least a root.exe command line. We don't necessarily want this
       // triggering for unrelated art jobs.
-      if(getenv("CAFE_YES_BACKTRACE") == 0){
-        char s[1024];
-        sprintf(s, "/proc/%d/cmdline", getpid());
-        std::ifstream f(s);
-        if(f){
-          std::string ss;
-          f >> ss;
-          if(ss.find("root.exe") == std::string::npos) return;
-        }
-      }
+      if(getenv("CAFE_YES_BACKTRACE") == 0 &&
+         get_argv0().find("root.exe") == std::string::npos) return;
 
       // Handle uncaught exceptions
       std::set_terminate(handle_terminate);
