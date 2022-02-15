@@ -25,12 +25,16 @@ find_package(Eigen REQUIRED)
 find_package(Boost REQUIRED)
 find_package(Sundials REQUIRED)
 find_package(TBB REQUIRED)
-find_package(Ifdhc REQUIRED)
 
 # pthread / std::thread
 find_package(Threads REQUIRED)
 link_libraries(Threads::Threads)
 
+if(NOT DEFINED NO_IFDHC OR NOT NO_IFDHC)
+    find_package(Ifdhc REQUIRED)
+else()
+    set(Ifdhc_FOUND FALSE)
+endif()
 
 # Record what flags were used. Can dump with
 # readelf -p .GCC.command.line libCAFAnaCoreExt.so 
@@ -51,7 +55,11 @@ set(CMAKE_CXX_FLAGS_MINSIZEREL "${common_flags} -Os")
 # NDEBUG needed to ensure assert() causes an abort() even in optimized builds
 set(CMAKE_CXX_FLAGS_RELEASE "${common_flags} -O2 -DNDEBUG -g")
 
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+if(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}  -Wl,-undefined,error")
+elseif()
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")   
+endif()
 
 # ROOT does things differently depending on whether it's built for C++17 or not :-\
 string(REGEX REPLACE ".*c\\+\\+([0-9][0-9]).*" "\\1" ROOT_CXX_STANDARD ${ROOT_CXX_FLAGS})
@@ -92,8 +100,12 @@ include_directories(
         ${EIGEN_INC}
         ${BOOST_INC}
         ${SUNDIALS_INC}
-        ${IFDHC_INC}
+        ${TBB_INC}
 )
+
+if(Ifdhc_FOUND)
+    include_directories(${IFDHC_INC})
+endif()
 
 # by default make the bin/ and lib/ dirs in the top of the source dir.
 # can by overridden on command line if desired

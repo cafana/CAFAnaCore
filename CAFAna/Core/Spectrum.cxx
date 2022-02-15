@@ -57,6 +57,15 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+  Spectrum::Spectrum(Eigen::ArrayXd&& h,
+                     Eigen::ArrayXd&& sqerr,
+                     const LabelsAndBins& axis,
+                     double pot, double livetime)
+    : fHist(Hist::AdoptWithErrors(std::move(h), std::move(sqerr))), fPOT(pot), fLivetime(livetime), fAxis(axis)
+  {
+  }
+	
+  //----------------------------------------------------------------------
   Spectrum::Spectrum(const Spectrum& rhs):
     fHist(rhs.fHist),
     fPOT(rhs.fPOT),

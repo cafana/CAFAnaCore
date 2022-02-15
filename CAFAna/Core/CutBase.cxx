@@ -7,7 +7,7 @@
 
 namespace ana
 {
-  int CutBase::fgNextID = 0;
+  int CutBase::fgNextID = 1;
 
   //----------------------------------------------------------------------
   CutBase::CutBase(const std::function<VoidCutFunc_t>& func,
@@ -15,7 +15,7 @@ namespace ana
                    const std::function<VoidExpoFunc_t>& potfunc,
                    int id)
     : fFunc(func), fLiveFunc(livefunc), fPOTFunc(potfunc),
-      fID((id >= 0) ? id : fgNextID++)
+      fID((id > 0) ? id : fgNextID++)
   {
     DepMan<CutBase>::Instance().RegisterConstruction(this);
   }
@@ -108,59 +108,73 @@ namespace ana
     return ExposureCombiner{a, b};
   }
 
+  namespace{
+    // If two Cuts are combined with each other in the same way in two places,
+    // we want to give the combination the same ID in both cases. This helps
+    // caching in SpectrumLoader
+    class IDCache
+    {
+    public:
+      int GetID(int idA, int idB, int& nextID)
+      {
+        // If either is not fully constructed yet it's not safe to proceed
+        if(idA <= 0 || idB <= 0) return nextID++;
+        const std::pair<int, int> key(idA, idB);
+        auto it = fIDs.find(key);
+        if(it != fIDs.end()) return it->second;
+        const int newid = nextID++;
+        fIDs.emplace(key, newid);
+        return newid;
+      }
+
+    protected:
+      std::map<std::pair<int, int>, int> fIDs;
+    };
+  }
+
   //----------------------------------------------------------------------
   CutBase CutBase::operator&&(const CutBase& c) const
   {
-    // The same pairs of cuts are frequently and-ed together. Make sure those
-    // duplicates get the same IDs by remembering what we've done in the past.
-    static std::map<std::pair<int, int>, int> ids;
-    const std::pair<int, int> key(ID(), c.ID());
-
     struct And
     {
       const CutBase a, b;
       bool operator()(const void* rec) const {return a(rec) && b(rec);}
     };
 
-    if(ids.count(key) == 0) ids[key] = fgNextID++;
+    static IDCache cache;
     return CutBase(And{*this, c},
                    CombineExposures(fLiveFunc, c.fLiveFunc),
                    CombineExposures(fPOTFunc, c.fPOTFunc),
-                   ids[key]);
+                   cache.GetID(ID(), c.ID(), fgNextID));
   }
 
   //----------------------------------------------------------------------
   CutBase CutBase::operator||(const CutBase& c) const
   {
-    static std::map<std::pair<int, int>, int> ids;
-    const std::pair<int, int> key(ID(), c.ID());
-
     struct Or
     {
       const CutBase a, b;
       bool operator()(const void* rec) const {return a(rec) || b(rec);}
     };
 
-    if(ids.count(key) == 0) ids[key] = fgNextID++;
+    static IDCache cache;
     return CutBase(Or{*this, c},
                    CombineExposures(fLiveFunc, c.fLiveFunc),
                    CombineExposures(fPOTFunc, c.fPOTFunc),
-                   ids[key]);
+                   cache.GetID(ID(), c.ID(), fgNextID));
   }
 
   //----------------------------------------------------------------------
   CutBase CutBase::operator!() const
   {
-    static std::map<int, int> ids;
-
     struct Not
     {
       const CutBase a;
       bool operator()(const void* rec) const {return !a(rec);}
     };
 
-    if(ids.count(ID()) == 0) ids[ID()] = fgNextID++;
-    return CutBase(Not{*this}, 0, 0, ids[ID()]);
+    static IDCache cache;
+    return CutBase(Not{*this}, 0, 0, cache.GetID(ID(), ID(), fgNextID));
   }
 
 
