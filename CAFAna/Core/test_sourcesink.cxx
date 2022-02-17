@@ -28,7 +28,7 @@ void test_sourcesink()
 
   MyRec rec;
   rec.a = 42;
-  vapp.HandleRecord(&rec, 1);
+  vapp.HandleRecord(&rec, 1, 0);
 
   LabelsAndBins axis("foo", Binning::Simple(100, 0, 100));
   Spectrum spect(vapp, axis);

@@ -17,13 +17,15 @@ namespace ana::beta
     {
     }
 
-    virtual void HandleRecord(const RecT* rec, double weight) override
+    virtual void HandleRecord(const RecT* rec, double weight, int universeId) override
     {
       const double w = fWeight(rec);
       if(w != 0){ // TODO warning/error about negative weights?
-        for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleRecord(rec, w*weight);
+        for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleRecord(rec, w*weight, universeId);
       }
     }
+
+    // TODO does HandleEnsemble() make sense here? Or combine with EnsembleSource?
 
     // TODO can we implement these three boilerplate functions somewhere shared?
     virtual void HandlePOT(double pot) override

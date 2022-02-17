@@ -44,4 +44,7 @@ namespace ana::beta
 
     std::vector<IValuePairSink*> fSinks;
   };
+
+  class NullValueSource: public IValueSource {};
+  static NullValueSource kNullValueSource;
 }

@@ -17,10 +17,17 @@ namespace ana::beta
     {
     }
 
-    virtual void HandleRecord(const RecT* rec, double weight) override
+    virtual void HandleRecord(const RecT* rec, double weight, int universeId) override
     {
       if(fCut(rec)){
-        for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleRecord(rec, weight);
+        for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleRecord(rec, weight, universeId);
+      }
+    }
+
+    virtual void HandleEnsemble(const RecT* rec, const std::vector<double>& weights, int multiverseId) override
+    {
+      if(fCut(rec)){
+        for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleEnsemble(rec, weights, multiverseId);
       }
     }
 

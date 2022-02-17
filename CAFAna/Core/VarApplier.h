@@ -22,11 +22,20 @@ namespace ana::beta
     {
     }
 
-    virtual void HandleRecord(const RecT* rec, double weight) override
+    virtual void HandleRecord(const RecT* rec, double weight, int universeId) override
     {
       const double val = fVar(rec);
       if(!EnsureFinite(val)) return;
-      for(IValueSink* sink: fSinks) sink->Fill(val, weight);
+      for(IValueSink* sink: fSinks) sink->Fill(val, weight, universeId);
+    }
+
+    virtual void HandleEnsemble(const RecT* rec,
+                                const std::vector<double>& weights,
+                                int multiverseId) override
+    {
+      const double val = fVar(rec);
+      if(!EnsureFinite(val)) return;
+      for(IValueSink* sink: fSinks) sink->FillEnsemble(val, weights, multiverseId);
     }
 
     virtual void HandlePOT(double pot) override
@@ -61,8 +70,10 @@ namespace ana::beta
     {
     }
 
-    virtual void HandleRecord(const RecT* rec, double weight) override
+    virtual void HandleRecord(const RecT* rec, double weight, int universeId) override
     {
+      assert(universeId == 0); // nominal
+
       const double valx = fVarX(rec);
       const double valy = fVarY(rec);
       if(!EnsureFinite(valx) || !EnsureFinite(valy)) return;

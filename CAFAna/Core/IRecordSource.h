@@ -41,6 +41,9 @@ namespace ana::beta
       return GetCut(cut);
     }
 
+    _IRecordSource<RecT>& Ensemble(const std::vector<_Weight<RecT>>& weis,
+                                   int multiverseId);
+
     /*
     _IRecordSource<RecT>& operator[](const _Weight<RecT>& wei)
     {
@@ -58,6 +61,7 @@ namespace ana::beta
 
     std::unordered_map<int, std::unique_ptr<_IRecordSource<RecT>>> fCutSources;
     std::unordered_map<int, std::unique_ptr<_IRecordSource<RecT>>> fWeightSources;
+    std::unordered_map<int, std::unique_ptr<_IRecordSource<RecT>>> fEnsembleSources;
     std::unordered_map<int, std::unique_ptr<IValueSource>> fVarSources;
     std::unordered_map<int, std::unique_ptr<IValuePairSource>> fVarPairSources;
   };
@@ -67,9 +71,11 @@ namespace ana::beta
 #include "CAFAna/Core/CutApplier.h"
 #include "CAFAna/Core/VarApplier.h"
 #include "CAFAna/Core/WeightApplier.h"
+#include "CAFAna/Core/EnsembleSource.h"
 
 namespace ana::beta
 {
+  // TODO this is all repetive. Add some kind of cached dict type?
   template<class RecT> IValueSource&
   _IRecordSource<RecT>::GetVar(const _Var<RecT>& var)
   {
@@ -104,7 +110,7 @@ namespace ana::beta
 
     if(it != fCutSources.end()) return *it->second;
 
-    _CutApplier<RecT, SpillT>* ret = new  _CutApplier<RecT, SpillT>(cut);
+    _CutApplier<RecT, SpillT>* ret = new _CutApplier<RecT, SpillT>(cut);
     fCutSources[cut.ID()].reset(ret);
     Register(ret);
     return *ret;
@@ -117,8 +123,23 @@ namespace ana::beta
 
     if(it != fWeightSources.end()) return *it->second;
 
-    _WeightApplier<RecT>* ret = new  _WeightApplier<RecT>(wei);
+    _WeightApplier<RecT>* ret = new _WeightApplier<RecT>(wei);
     fWeightSources[wei.ID()].reset(ret);
+    Register(ret);
+    return *ret;
+  }
+
+  template<class RecT> _IRecordSource<RecT>& _IRecordSource<RecT>::
+  Ensemble(const std::vector<_Weight<RecT>>& weis, int multiverseId)
+  {
+    // TODO relying on the user to number their multiverses. Better to have a
+    // proper Multiverse class we can rely on?
+    auto it = fEnsembleSources.find(multiverseId);
+
+    if(it != fEnsembleSources.end()) return *it->second;
+
+    _EnsembleSource<RecT>* ret = new _EnsembleSource<RecT>(weis, multiverseId);
+    fEnsembleSources[multiverseId].reset(ret);
     Register(ret);
     return *ret;
   }
