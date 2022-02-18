@@ -11,7 +11,9 @@
 namespace ana::beta
 {
   class IValueSource;
+  class IValueEnsembleSource;
   template<class RecT> class _IRecordSource;
+  template<class RecT> class _IRecordEnsembleSource;
 
   /// Helper for implementation of _IRecordSourceDefaultImpl
   template<class ElemT> class IDDict
@@ -33,6 +35,52 @@ namespace ana::beta
 
   protected:
     std::unordered_map<int, std::unique_ptr<ElemT>> fElems;
+  };
+
+
+  template<class RecT> class _IRecordEnsembleSourceDefaultImpl
+  {
+  public:
+    using Record_t = RecT;
+
+    virtual ~_IRecordEnsembleSourceDefaultImpl() {}
+
+    virtual void Register(_IRecordEnsembleSink<RecT>* sink)
+    {
+      fSinks.push_back(sink);
+    }
+
+    IValueEnsembleSource& GetVar(const _Var<RecT>& var);
+
+    template<class SpillT> _IRecordEnsembleSource<RecT>& GetCut(const _Cut<RecT, SpillT>& cut);
+
+    //    _IRecordEnsembleSource<RecT>& Weighted(const _Weight<RecT>& wei);
+
+    IValueEnsembleSource& operator[](const _Var<RecT>& var)
+    {
+      return GetVar(var);
+    }
+
+    template<class SpillT> _IRecordEnsembleSource<RecT>& operator[](const _Cut<RecT, SpillT>& cut)
+    {
+      return GetCut(cut);
+    }
+
+    // TODO TODO
+    //    virtual int NUniverses() const = 0;
+    //    virtual int MultiverseID() const = 0;
+
+  protected:
+    _IRecordEnsembleSourceDefaultImpl(){}
+
+    _IRecordEnsembleSourceDefaultImpl(const _IRecordEnsembleSourceDefaultImpl&) = delete;
+    _IRecordEnsembleSourceDefaultImpl& operator=(const _IRecordEnsembleSourceDefaultImpl&) = delete;
+
+    std::vector<_IRecordEnsembleSink<RecT>*> fSinks;
+
+    IDDict<_IRecordEnsembleSource<RecT>> fCutSources, fWeightSources;
+
+    IDDict<IValueEnsembleSource> fVarSources;
   };
 
 
@@ -67,8 +115,8 @@ namespace ana::beta
       return GetCut(cut);
     }
 
-    _IRecordSource<RecT>& Ensemble(const std::vector<_Weight<RecT>>& weis,
-                                   int multiverseId);
+    _IRecordEnsembleSource<RecT>& Ensemble(const std::vector<_Weight<RecT>>& weis,
+                                           int multiverseId);
 
     /*
     _IRecordSource<RecT>& operator[](const _Weight<RecT>& wei)
@@ -85,7 +133,9 @@ namespace ana::beta
 
     std::vector<_IRecordSink<RecT>*> fSinks;
 
-    IDDict<_IRecordSource<RecT>> fCutSources, fWeightSources, fEnsembleSources;
+    IDDict<_IRecordSource<RecT>> fCutSources, fWeightSources;
+
+    IDDict<_IRecordEnsembleSource<RecT>> fEnsembleSources;
 
     IDDict<IValueSource> fVarSources;
     IDDict<IValuePairSource> fVarPairSources;
@@ -94,10 +144,12 @@ namespace ana::beta
 
   // By default, a RecordSource is implemented exactly as specified above. But
   // the user may choose to specialize it somehow.
+  template<class RecT> class _IRecordEnsembleSource : public _IRecordEnsembleSourceDefaultImpl<RecT> {};
   template<class RecT> class _IRecordSource : public _IRecordSourceDefaultImpl<RecT> {};
 
   // A source that will never provide anything
   template<class RecT> class NullSource : public _IRecordSource<RecT> {};
+  template<class RecT> class NullEnsembleSource : public _IRecordEnsembleSource<RecT> {};
 }
 
 
@@ -137,7 +189,7 @@ namespace ana::beta
   }
 
 
-  template<class RecT> _IRecordSource<RecT>& _IRecordSourceDefaultImpl<RecT>::
+  template<class RecT> _IRecordEnsembleSource<RecT>& _IRecordSourceDefaultImpl<RecT>::
   Ensemble(const std::vector<_Weight<RecT>>& weis, int multiverseId)
   {
     // TODO relying on the user to number their multiverses. Better to have a
@@ -145,4 +197,19 @@ namespace ana::beta
 
     return fEnsembleSources.template Get<_EnsembleSource<RecT>>(multiverseId, *this, weis, multiverseId);
   }
+
+
+  template<class RecT> IValueEnsembleSource&
+  _IRecordEnsembleSourceDefaultImpl<RecT>::GetVar(const _Var<RecT>& var)
+  {
+    return fVarSources.template Get<_EnsembleVarApplier<RecT>>(var.ID(), *this, var);
+  }
+
+
+  template<class RecT> template<class SpillT> _IRecordEnsembleSource<RecT>&
+  _IRecordEnsembleSourceDefaultImpl<RecT>::GetCut(const _Cut<RecT, SpillT>& cut)
+  {
+    return fCutSources.template Get<_EnsembleCutApplier<RecT, SpillT>>(cut.ID(), *this, cut);
+  }
+
 }

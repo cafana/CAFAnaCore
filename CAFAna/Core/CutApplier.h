@@ -20,14 +20,38 @@ namespace ana::beta
     {
     }
 
-    virtual void HandleRecord(const RecT* rec, double weight, int universeId) override
+    virtual void HandleRecord(const RecT* rec, double weight) override
     {
-      if(fCut(rec)) Passthrough<RecT>::HandleRecord(rec, weight, universeId);
+      if(fCut(rec)) Passthrough<RecT>::HandleRecord(rec, weight);
     }
 
-    virtual void HandleEnsemble(const RecT* rec, const std::vector<double>& weights, int multiverseId) override
+  protected:
+    _Cut<RecT, SpillT> fCut;
+  };
+
+
+
+  template<class RecT, class SpillT> class _EnsembleCutApplier: public PassthroughEnsemble<RecT>
+  {
+  public:
+    template<class SrcT> _EnsembleCutApplier(SrcT& src, const _Cut<RecT, SpillT>& cut)
+      : fCut(cut)
     {
-      if(fCut(rec)) Passthrough<RecT>::HandleEnsemble(rec, weights, multiverseId);
+      src.Register(this);
+    }
+
+    virtual ~_EnsembleCutApplier()
+    {
+    }
+
+    virtual void HandleSingleRecord(const RecT* rec, double weight, int universeId) override
+    {
+      if(fCut(rec)) PassthroughEnsemble<RecT>::HandleSingleRecord(rec, weight, universeId);
+    }
+
+    virtual void HandleEnsemble(const RecT* rec, const std::vector<double>& weights) override
+    {
+      if(fCut(rec)) PassthroughEnsemble<RecT>::HandleEnsemble(rec, weights);
     }
 
   protected:

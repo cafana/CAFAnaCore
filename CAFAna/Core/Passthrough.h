@@ -8,50 +8,69 @@ namespace ana::beta
   // Implementation detail for various source/sink classes
   //
   // TODO is this the best name?
-  template<class FromT, class ToT> class PassthroughUnlike: public _IRecordSink<FromT>, public _IRecordSource<ToT>
+  //
+  // This is a Mixin. You should inherit from it, and it should inherit from
+  // all your desired base classes.
+  template<class... BaseTs> class PassthroughExposure: public BaseTs...
   {
   public:
-    virtual void HandlePOT(double pot) override
+    virtual void FillPOT(double pot) override
     {
       // TODO make use of the SpillT part of fCut to modify the exposure where
       // necessary.
-      for(_IRecordSink<ToT>* sink: _IRecordSource<ToT>::fSinks) sink->HandlePOT(pot);
+      for(IExposureSink* sink: this->fSinks) sink->FillPOT(pot);
     }
 
-    virtual void HandleLivetime(double livetime) override
+    virtual void FillLivetime(double livetime) override
     {
-      for(_IRecordSink<ToT>* sink: _IRecordSource<ToT>::fSinks) sink->HandleLivetime(livetime);
+      for(IExposureSink* sink: this->fSinks) sink->FillLivetime(livetime);
     }
 
     virtual unsigned int NSinks() const override
     {
       unsigned int tot = 0;
-      for(_IRecordSink<ToT>* sink: _IRecordSource<ToT>::fSinks) tot += sink->NSinks();
+      for(IExposureSink* sink: this->fSinks) tot += sink->NSinks();
       return tot;
     }
 
   protected:
-    PassthroughUnlike(){}
+    PassthroughExposure(){}
   };
 
 
   // Implementation detail for various source/sink classes
   //
   // TODO is this the best name?
-  template<class RecT> class Passthrough: public PassthroughUnlike<RecT, RecT>
+  template<class RecT> class Passthrough: public PassthroughExposure<_IRecordSource<RecT>, _IRecordSink<RecT>>
   {
   public:
-    virtual void HandleRecord(const RecT* rec, double weight, int universeId) override
+    virtual void HandleRecord(const RecT* rec, double weight) override
     {
-      for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleRecord(rec, weight, universeId);
-    }
-
-    virtual void HandleEnsemble(const RecT* rec, const std::vector<double>& weights, int multiverseId) override
-    {
-      for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleEnsemble(rec, weights, multiverseId);
+      for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleRecord(rec, weight);
     }
 
   protected:
     Passthrough(){}
+  };
+
+
+  // Implementation detail for various source/sink classes
+  //
+  // TODO is this the best name?
+  template<class RecT> class PassthroughEnsemble: public PassthroughExposure<_IRecordEnsembleSource<RecT>, _IRecordEnsembleSink<RecT>>
+  {
+  public:
+    virtual void HandleSingleRecord(const RecT* rec, double weight, int universeId) override
+    {
+      for(_IRecordEnsembleSink<RecT>* sink: _IRecordEnsembleSource<RecT>::fSinks) sink->HandleSingleRecord(rec, weight, universeId);
+    }
+
+    virtual void HandleEnsemble(const RecT* rec, const std::vector<double>& weights) override
+    {
+      for(_IRecordEnsembleSink<RecT>* sink: _IRecordEnsembleSource<RecT>::fSinks) sink->HandleEnsemble(rec, weights);
+    }
+
+  protected:
+    PassthroughEnsemble(){}
   };
 }

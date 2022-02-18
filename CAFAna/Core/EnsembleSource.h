@@ -8,7 +8,7 @@
 namespace ana::beta
 {
   // TODO is this the best name?
-  template<class RecT> class _EnsembleSource: public _IRecordSink<RecT>, public _IRecordSource<RecT>
+  template<class RecT> class _EnsembleSource: public PassthroughExposure<_IRecordSink<RecT>, _IRecordEnsembleSource<RecT>>
   {
   public:
     template<class SrcT> _EnsembleSource(SrcT& src,
@@ -23,11 +23,8 @@ namespace ana::beta
     {
     }
 
-    virtual void HandleRecord(const RecT* rec, double weight,
-                              int universeId) override
+    virtual void HandleRecord(const RecT* rec, double weight) override
     {
-      assert(universeId == 0); // nominal
-
       if(weight == 0) return;
 
       std::vector<double> ws(fWeights.size(), weight);
@@ -36,34 +33,12 @@ namespace ana::beta
         ws[i] *= fWeights[i](rec);
       }
 
-      for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleEnsemble(rec, ws, fMultiverseId);
+      for(_IRecordEnsembleSink<RecT>* sink: _IRecordEnsembleSource<RecT>::fSinks) sink->HandleEnsemble(rec, ws);
     }
 
-    virtual void HandleEnsemble(const RecT* rec,
-                                const std::vector<double>& weights,
-                                int multiverseId) override
-    {
-      assert(false && "EnsembleSource::HandleEnsemble() doesn't make sense");
-      abort();
-    }
-
-    // TODO can we implement these three boilerplate functions somewhere shared?
-    virtual void HandlePOT(double pot) override
-    {
-      for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandlePOT(pot);
-    }
-
-    virtual void HandleLivetime(double livetime) override
-    {
-      for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) sink->HandleLivetime(livetime);
-    }
-
-    virtual unsigned int NSinks() const override
-    {
-      unsigned int tot = 0;
-      for(_IRecordSink<RecT>* sink: _IRecordSource<RecT>::fSinks) tot += sink->NSinks();
-      return tot;
-    }
+    // TODO TODO
+    //    virtual int NUniverses() const override {return fWeights.size();}
+    //    virtual int MultiverseID() const override {return fMultiverseId;}
 
   protected:
     std::vector<_Weight<RecT>> fWeights;

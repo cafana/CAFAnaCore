@@ -174,8 +174,7 @@ namespace ana
     Spectrum& operator=(const Spectrum& rhs);
     Spectrum& operator=(Spectrum&& rhs);
 
-    virtual void Fill(double x, double w, int universeId) override;
-    virtual void FillEnsemble(double x, const std::vector<double>& ws, int multiverseId) override;
+    virtual void Fill(double x, double w) override;
     virtual void FillPOT(double pot) override;
     virtual void FillLivetime(double livetime) override;
 

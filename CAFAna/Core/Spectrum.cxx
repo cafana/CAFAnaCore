@@ -333,19 +333,10 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  void Spectrum::Fill(double x, double w, int universeId)
+  void Spectrum::Fill(double x, double w)
   {
-    assert(universeId == 0); // nominal
-
     fHist.Fill(fAxis.GetBins1D(), x, w);
     // TODO Pull binning out of Hist entirely and just update an index?
-  }
-
-  //----------------------------------------------------------------------
-  void Spectrum::FillEnsemble(double x, const std::vector<double>& ws, int multiverseId)
-  {
-    std::cout << "Spectrum::FillEnsemble() makes no sense. You probably want an EnsembleSpectrum" << std::endl;
-    abort();
   }
 
   //----------------------------------------------------------------------
