@@ -10,7 +10,11 @@ namespace ana::beta
   template<class RecT, class SpillT> class _CutApplier: public Passthrough<RecT>
   {
   public:
-    _CutApplier(const _Cut<RecT, SpillT>& cut) : fCut(cut) {}
+    template<class SrcT> _CutApplier(SrcT& src, const _Cut<RecT, SpillT>& cut)
+      : fCut(cut)
+    {
+      src.Register(this);
+    }
 
     virtual ~_CutApplier()
     {

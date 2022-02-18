@@ -11,10 +11,12 @@ namespace ana::beta
   template<class RecT> class _EnsembleSource: public _IRecordSink<RecT>, public _IRecordSource<RecT>
   {
   public:
-    _EnsembleSource(const std::vector<_Weight<RecT>>& weis,
-                    int multiverseId)
+    template<class SrcT> _EnsembleSource(SrcT& src,
+                                         const std::vector<_Weight<RecT>>& weis,
+                                         int multiverseId)
       : fWeights(weis), fMultiverseId(multiverseId)
     {
+      src.Register(this);
     }
 
     virtual ~_EnsembleSource()

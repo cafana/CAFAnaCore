@@ -16,7 +16,11 @@ namespace ana::beta
   template<class RecT> class _VarApplier: public _IRecordSink<RecT>, public IValueSource, protected ApplierBase
   {
   public:
-    _VarApplier(const _Var<RecT>& var) : fVar(var) {}
+    template<class SrcT> _VarApplier(SrcT& src, const _Var<RecT>& var)
+      : fVar(var)
+    {
+      src.Register(this);
+    }
 
     virtual ~_VarApplier()
     {
@@ -63,8 +67,13 @@ namespace ana::beta
   template<class RecT> class _VarPairApplier: public _IRecordSink<RecT>, public IValuePairSource, protected ApplierBase
   {
   public:
-    _VarPairApplier(const _Var<RecT>& varx, 
-                    const _Var<RecT>& vary) : fVarX(varx), fVarY(vary) {}
+    template<class SrcT> _VarPairApplier(SrcT& src,
+                                         const _Var<RecT>& varx, 
+                                         const _Var<RecT>& vary)
+      : fVarX(varx), fVarY(vary)
+    {
+      src.Register(this);
+    }
 
     virtual ~_VarPairApplier()
     {

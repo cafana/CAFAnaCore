@@ -10,7 +10,11 @@ namespace ana::beta
   template<class RecT> class _WeightApplier: public Passthrough<RecT>
   {
   public:
-    _WeightApplier(const _Weight<RecT>& wei) : fWeight(wei) {}
+    template<class SrcT> _WeightApplier(SrcT& src, const _Weight<RecT>& wei)
+      : fWeight(wei)
+    {
+      src.Register(this);
+    }
 
     virtual ~_WeightApplier()
     {

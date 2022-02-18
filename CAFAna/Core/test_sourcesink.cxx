@@ -24,7 +24,9 @@ public:
 
 void test_sourcesink()
 {
-  _VarApplier<MyRec> vapp(myvar);
+  MyRecSource recsrc;
+
+  _VarApplier<MyRec> vapp(recsrc, myvar);
 
   MyRec rec;
   rec.a = 42;
@@ -34,7 +36,6 @@ void test_sourcesink()
   Spectrum spect(vapp, axis);
 
   _HistAxis<_Var<MyRec>> axis2("bar", Binning::Simple(100, 0, 100), myvar);
-  MyRecSource recsrc;
   Spectrum spect2(recsrc, axis2);
 
   spect.OverridePOT(1);

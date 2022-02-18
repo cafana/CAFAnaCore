@@ -13,6 +13,29 @@ namespace ana::beta
   class IValueSource;
   template<class RecT> class _IRecordSource;
 
+  /// Helper for implementation of _IRecordSourceDefaultImpl
+  template<class ElemT> class IDDict
+  {
+  public:
+    /// Return the element with ID 'id' or construct a new element of type
+    /// ConsT with arguments cons_args
+    template<class ConsT, class... Ts> ElemT& Get(int id, Ts&&... cons_args)
+    {
+      auto it = fElems.find(id);
+
+      if(it != fElems.end()) return *it->second;
+
+      ElemT* ret = new ConsT(cons_args...);
+      fElems[id].reset(ret);
+
+      return *ret;
+    }
+
+  protected:
+    std::unordered_map<int, std::unique_ptr<ElemT>> fElems;
+  };
+
+
   template<class RecT> class _IRecordSourceDefaultImpl
   {
   public:
@@ -62,11 +85,10 @@ namespace ana::beta
 
     std::vector<_IRecordSink<RecT>*> fSinks;
 
-    std::unordered_map<int, std::unique_ptr<_IRecordSource<RecT>>> fCutSources;
-    std::unordered_map<int, std::unique_ptr<_IRecordSource<RecT>>> fWeightSources;
-    std::unordered_map<int, std::unique_ptr<_IRecordSource<RecT>>> fEnsembleSources;
-    std::unordered_map<int, std::unique_ptr<IValueSource>> fVarSources;
-    std::unordered_map<int, std::unique_ptr<IValuePairSource>> fVarPairSources;
+    IDDict<_IRecordSource<RecT>> fCutSources, fWeightSources, fEnsembleSources;
+
+    IDDict<IValueSource> fVarSources;
+    IDDict<IValuePairSource> fVarPairSources;
   };
 
 
@@ -86,72 +108,41 @@ namespace ana::beta
 
 namespace ana::beta
 {
-  // TODO this is all repetive. Add some kind of cached dict type?
   template<class RecT> IValueSource&
   _IRecordSourceDefaultImpl<RecT>::GetVar(const _Var<RecT>& var)
   {
-    auto it = fVarSources.find(var.ID());
-
-    if(it != fVarSources.end()) return *it->second;
-
-    _VarApplier<RecT>* ret = new _VarApplier<RecT>(var);
-    fVarSources[var.ID()].reset(ret);
-    Register(ret);
-    return *ret;
+    return fVarSources.template Get<_VarApplier<RecT>>(var.ID(), *this, var);
   }
+
 
   template<class RecT> IValuePairSource&
   _IRecordSourceDefaultImpl<RecT>::GetVars(const _Var<RecT>& varx,
                                            const _Var<RecT>& vary)
   {
-    auto it = fVarPairSources.find((varx*vary).ID());
-
-    if(it != fVarPairSources.end()) return *it->second;
-
-    _VarPairApplier<RecT>* ret = new _VarPairApplier<RecT>(varx, vary);
-    fVarPairSources[(varx*vary).ID()].reset(ret);
-    Register(ret);
-    return *ret;
+    return fVarPairSources.template Get<_VarPairApplier<RecT>>((varx*vary).ID(), *this, varx, vary);
   }
+
 
   template<class RecT> template<class SpillT> _IRecordSource<RecT>&
   _IRecordSourceDefaultImpl<RecT>::GetCut(const _Cut<RecT, SpillT>& cut)
   {
-    auto it = fCutSources.find(cut.ID());
-
-    if(it != fCutSources.end()) return *it->second;
-
-    _CutApplier<RecT, SpillT>* ret = new _CutApplier<RecT, SpillT>(cut);
-    fCutSources[cut.ID()].reset(ret);
-    Register(ret);
-    return *ret;
+    return fCutSources.template Get<_CutApplier<RecT, SpillT>>(cut.ID(), *this, cut);
   }
+
 
   template<class RecT> _IRecordSource<RecT>&
   _IRecordSourceDefaultImpl<RecT>::Weighted(const _Weight<RecT>& wei)
   {
-    auto it = fWeightSources.find(wei.ID());
-
-    if(it != fWeightSources.end()) return *it->second;
-
-    _WeightApplier<RecT>* ret = new _WeightApplier<RecT>(wei);
-    fWeightSources[wei.ID()].reset(ret);
-    Register(ret);
-    return *ret;
+    return fWeightSources.template Get<_WeightApplier<RecT>>(wei.ID(), *this, wei);
   }
+
 
   template<class RecT> _IRecordSource<RecT>& _IRecordSourceDefaultImpl<RecT>::
   Ensemble(const std::vector<_Weight<RecT>>& weis, int multiverseId)
   {
     // TODO relying on the user to number their multiverses. Better to have a
     // proper Multiverse class we can rely on?
-    auto it = fEnsembleSources.find(multiverseId);
 
-    if(it != fEnsembleSources.end()) return *it->second;
-
-    _EnsembleSource<RecT>* ret = new _EnsembleSource<RecT>(weis, multiverseId);
-    fEnsembleSources[multiverseId].reset(ret);
-    Register(ret);
-    return *ret;
+    return fEnsembleSources.template Get<_EnsembleSource<RecT>>(multiverseId, *this, weis, multiverseId);
   }
 }
