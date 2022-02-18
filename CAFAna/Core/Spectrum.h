@@ -54,14 +54,9 @@ namespace ana
 
     /// \brief Shorthand construction with a source of records and a HistAxis
     /// defining the Var to extract from those records.
-    ///
-    /// Ideally I would just write _IRecordSource<RecT>& as the type of 'src',
-    /// but the compiler refuses to understand this if the source inherits from
-    /// multiple record sources, so we enforce the same thing with the clunky
-    /// type on 'sparse'
-    template<class SrcT, class RecT> Spectrum(SrcT& src,
-                                              const _HistAxis<_Var<RecT>>& axis,
-                                              std::enable_if_t<std::is_convertible_v<SrcT*, beta::_IRecordSource<RecT>*>, ESparse> sparse = kDense)
+    template<class RecT> Spectrum(beta::_IRecordSource<RecT>& src,
+                                  const _HistAxis<_Var<RecT>>& axis,
+                                  ESparse sparse = kDense)
       : Spectrum(src[axis.GetVar1D()], axis, sparse)
     {
     }

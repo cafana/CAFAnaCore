@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CAFAna/Core/ISource.h"
 #include "CAFAna/Core/IRecordSink.h"
 #include "CAFAna/Core/IValueSource.h"
 #include "CAFAna/Core/Cut.h"
@@ -38,17 +39,12 @@ namespace ana::beta
   };
 
 
-  template<class RecT> class _IRecordEnsembleSourceDefaultImpl
+  template<class RecT> class _IRecordEnsembleSourceDefaultImpl : public _ISource<_IRecordEnsembleSink<RecT>>
   {
   public:
     using Record_t = RecT;
 
     virtual ~_IRecordEnsembleSourceDefaultImpl() {}
-
-    virtual void Register(_IRecordEnsembleSink<RecT>* sink)
-    {
-      fSinks.push_back(sink);
-    }
 
     IValueEnsembleSource& GetVar(const _Var<RecT>& var);
 
@@ -71,30 +67,18 @@ namespace ana::beta
     //    virtual int MultiverseID() const = 0;
 
   protected:
-    _IRecordEnsembleSourceDefaultImpl(){}
-
-    _IRecordEnsembleSourceDefaultImpl(const _IRecordEnsembleSourceDefaultImpl&) = delete;
-    _IRecordEnsembleSourceDefaultImpl& operator=(const _IRecordEnsembleSourceDefaultImpl&) = delete;
-
-    std::vector<_IRecordEnsembleSink<RecT>*> fSinks;
-
     IDDict<_IRecordEnsembleSource<RecT>> fCutSources, fWeightSources;
 
     IDDict<IValueEnsembleSource> fVarSources;
   };
 
 
-  template<class RecT> class _IRecordSourceDefaultImpl
+  template<class RecT> class _IRecordSourceDefaultImpl : public _ISource<_IRecordSink<RecT>>
   {
   public:
     using Record_t = RecT;
 
     virtual ~_IRecordSourceDefaultImpl() {}
-
-    virtual void Register(_IRecordSink<RecT>* sink)
-    {
-      fSinks.push_back(sink);
-    }
 
     IValueSource& GetVar(const _Var<RecT>& var);
 
@@ -126,13 +110,6 @@ namespace ana::beta
     */
 
   protected:
-    _IRecordSourceDefaultImpl(){}
-
-    _IRecordSourceDefaultImpl(const _IRecordSourceDefaultImpl&) = delete;
-    _IRecordSourceDefaultImpl& operator=(const _IRecordSourceDefaultImpl&) = delete;
-
-    std::vector<_IRecordSink<RecT>*> fSinks;
-
     IDDict<_IRecordSource<RecT>> fCutSources, fWeightSources;
 
     IDDict<_IRecordEnsembleSource<RecT>> fEnsembleSources;

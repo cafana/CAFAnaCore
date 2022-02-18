@@ -11,9 +11,9 @@ namespace ana::beta
   template<class RecT> class _EnsembleSource: public PassthroughExposure<_IRecordSink<RecT>, _IRecordEnsembleSource<RecT>>
   {
   public:
-    template<class SrcT> _EnsembleSource(SrcT& src,
-                                         const std::vector<_Weight<RecT>>& weis,
-                                         int multiverseId)
+    _EnsembleSource(_ISource<_IRecordSink<RecT>>& src,
+                    const std::vector<_Weight<RecT>>& weis,
+                    int multiverseId)
       : fWeights(weis), fMultiverseId(multiverseId)
     {
       src.Register(this);

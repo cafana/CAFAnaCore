@@ -19,7 +19,7 @@ namespace ana::beta
   template<class RecT> class _VarApplier: public PassthroughExposure<_IRecordSink<RecT>, IValueSource>, protected ApplierBase
   {
   public:
-    template<class SrcT> _VarApplier(SrcT& src, const _Var<RecT>& var)
+    _VarApplier(_ISource<_IRecordSink<RecT>>& src, const _Var<RecT>& var)
       : fVar(var)
     {
       src.Register(this);
@@ -45,7 +45,7 @@ namespace ana::beta
   template<class RecT> class _EnsembleVarApplier: public PassthroughExposure<_IRecordEnsembleSink<RecT>, IValueEnsembleSource>, protected ApplierBase
   {
   public:
-    template<class SrcT> _EnsembleVarApplier(SrcT& src, const _Var<RecT>& var)
+    _EnsembleVarApplier(_ISource<_IRecordEnsembleSink<RecT>>& src, const _Var<RecT>& var)
       : fVar(var)
     {
       src.Register(this);
@@ -79,9 +79,9 @@ namespace ana::beta
   template<class RecT> class _VarPairApplier: public PassthroughExposure<_IRecordSink<RecT>, IValuePairSource>, protected ApplierBase
   {
   public:
-    template<class SrcT> _VarPairApplier(SrcT& src,
-                                         const _Var<RecT>& varx, 
-                                         const _Var<RecT>& vary)
+    _VarPairApplier(_ISource<_IRecordSink<RecT>>& src,
+                    const _Var<RecT>& varx, 
+                    const _Var<RecT>& vary)
       : fVarX(varx), fVarY(vary)
     {
       src.Register(this);
