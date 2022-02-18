@@ -11,11 +11,14 @@
 namespace ana::beta
 {
   class IValueSource;
+  template<class RecT> class _IRecordSource;
 
-  template<class RecT> class _IRecordSource
+  template<class RecT> class _IRecordSourceDefaultImpl
   {
   public:
-    virtual ~_IRecordSource() {}
+    using Record_t = RecT;
+
+    virtual ~_IRecordSourceDefaultImpl() {}
 
     virtual void Register(_IRecordSink<RecT>* sink)
     {
@@ -52,10 +55,10 @@ namespace ana::beta
     */
 
   protected:
-    _IRecordSource(){}
+    _IRecordSourceDefaultImpl(){}
 
-    _IRecordSource(const _IRecordSource&) = delete;
-    _IRecordSource& operator=(const _IRecordSource&) = delete;
+    _IRecordSourceDefaultImpl(const _IRecordSourceDefaultImpl&) = delete;
+    _IRecordSourceDefaultImpl& operator=(const _IRecordSourceDefaultImpl&) = delete;
 
     std::vector<_IRecordSink<RecT>*> fSinks;
 
@@ -65,6 +68,14 @@ namespace ana::beta
     std::unordered_map<int, std::unique_ptr<IValueSource>> fVarSources;
     std::unordered_map<int, std::unique_ptr<IValuePairSource>> fVarPairSources;
   };
+
+
+  // By default, a RecordSource is implemented exactly as specified above. But
+  // the user may choose to specialize it somehow.
+  template<class RecT> class _IRecordSource : public _IRecordSourceDefaultImpl<RecT> {};
+
+  // A source that will never provide anything
+  template<class RecT> class NullSource : public _IRecordSource<RecT> {};
 }
 
 
@@ -77,7 +88,7 @@ namespace ana::beta
 {
   // TODO this is all repetive. Add some kind of cached dict type?
   template<class RecT> IValueSource&
-  _IRecordSource<RecT>::GetVar(const _Var<RecT>& var)
+  _IRecordSourceDefaultImpl<RecT>::GetVar(const _Var<RecT>& var)
   {
     auto it = fVarSources.find(var.ID());
 
@@ -90,8 +101,8 @@ namespace ana::beta
   }
 
   template<class RecT> IValuePairSource&
-  _IRecordSource<RecT>::GetVars(const _Var<RecT>& varx,
-                                const _Var<RecT>& vary)
+  _IRecordSourceDefaultImpl<RecT>::GetVars(const _Var<RecT>& varx,
+                                           const _Var<RecT>& vary)
   {
     auto it = fVarPairSources.find((varx*vary).ID());
 
@@ -104,7 +115,7 @@ namespace ana::beta
   }
 
   template<class RecT> template<class SpillT> _IRecordSource<RecT>&
-  _IRecordSource<RecT>::GetCut(const _Cut<RecT, SpillT>& cut)
+  _IRecordSourceDefaultImpl<RecT>::GetCut(const _Cut<RecT, SpillT>& cut)
   {
     auto it = fCutSources.find(cut.ID());
 
@@ -117,7 +128,7 @@ namespace ana::beta
   }
 
   template<class RecT> _IRecordSource<RecT>&
-  _IRecordSource<RecT>::Weighted(const _Weight<RecT>& wei)
+  _IRecordSourceDefaultImpl<RecT>::Weighted(const _Weight<RecT>& wei)
   {
     auto it = fWeightSources.find(wei.ID());
 
@@ -129,7 +140,7 @@ namespace ana::beta
     return *ret;
   }
 
-  template<class RecT> _IRecordSource<RecT>& _IRecordSource<RecT>::
+  template<class RecT> _IRecordSource<RecT>& _IRecordSourceDefaultImpl<RecT>::
   Ensemble(const std::vector<_Weight<RecT>>& weis, int multiverseId)
   {
     // TODO relying on the user to number their multiverses. Better to have a
