@@ -158,7 +158,6 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-
   TH3* ToTH3(const Spectrum& s, double exposure, ana::EExposureType expotype,
              const Binning& binsx, const Binning& binsy, const Binning& binsz,
 	     ana::EBinType bintype)
@@ -171,7 +170,6 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-
   TH3* ToTH3(const Ratio& r,
              const Binning& binsx, const Binning& binsy, const Binning& binsz)
   {
@@ -293,10 +291,112 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  bool SAMDefinitionExists(const std::string& def)
+  bool SAMDefinitionExists(const std::string& expt, const std::string& def)
   {
     // I would be much much happier to do this in proper code, but I'm not sure
     // how, there's no samweb C++ API?
-    return system(TString::Format("samweb list-definitions --defname %s | grep %s", def.c_str(), def.c_str()).Data()) == 0;
+    return system(TString::Format("samweb -e %s list-definitions --defname %s | grep %s", expt.c_str(), def.c_str(), def.c_str()).Data()) == 0;
   }
+
+  //----------------------------------------------------------------------
+  bool RunningOnGrid()
+  {
+    static bool cache;
+    static bool cache_set = false;
+    if(!cache_set){
+      cache = (getenv("_CONDOR_SCRATCH_DIR") != 0);
+      cache_set = true;
+    }
+
+    return cache;
+  }
+
+  //----------------------------------------------------------------------
+  size_t Stride(bool allow_default)
+  {
+    static int cache = -1;
+
+    if(cache < 0){
+      char* env = getenv("CAFANA_STRIDE");
+      if(env){
+        cache = std::atoi(env);
+      }
+      else{
+        if(allow_default){
+          cache = 1;
+        }
+        else{
+          std::cout << "Stride() called, but CAFANA_STRIDE is not set (--stride not passed?)" << std::endl;
+          abort();
+        }
+      }
+    }
+
+    return cache;
+  }
+
+  //----------------------------------------------------------------------
+  size_t Offset(bool allow_default)
+  {
+    static int cache = -1;
+
+    if(cache < 0){
+      char* env = getenv("CAFANA_OFFSET");
+      if(env){
+        cache = std::atoi(env);
+      }
+      else{
+        if(allow_default){
+          cache = 0;
+        }
+        else{
+          std::cout << "Offset() called, but CAFANA_OFFSET is not set (--offset not passed?)" << std::endl;
+          abort();
+        }
+      }
+    }
+
+    return cache;
+  }
+
+  //----------------------------------------------------------------------
+  int Limit()
+  {
+    static int cache = 0;
+
+    if(cache == 0){
+      char* env = getenv("CAFANA_LIMIT");
+      if(env){
+        cache = std::atoi(env);
+      }
+      else{
+        cache = -1;
+      }
+    }
+
+    return cache;
+  }
+
+  //----------------------------------------------------------------------
+  size_t JobNumber()
+  {
+    if(!RunningOnGrid()){
+      std::cout << "JobNumber() called, but we are not running on the grid" <<  std::endl;
+      abort();
+    }
+
+    return Offset(false);
+  }
+
+  //----------------------------------------------------------------------
+  size_t NumJobs()
+  {
+    if(!RunningOnGrid()){
+      std::cout << "NumJobs() called, but we are not running on the grid" << std::endl;
+      abort();
+    }
+
+    return Stride(false);
+  }
+
 }

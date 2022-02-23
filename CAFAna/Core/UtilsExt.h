@@ -118,13 +118,28 @@ namespace ana
 
   template<class T> constexpr char* DemangledTypeName()
   {
-    return abi::__cxa_demangle(typeid(T).name(), 0, 0, 0); 
+    return abi::__cxa_demangle(typeid(T).name(), 0, 0, 0);
   }
 
   std::string pnfs2xrootd(std::string loc, bool unauth = false);
 
-  /// Find files matching a UNIX glob, plus expand environment variables        
+  /// Find files matching a UNIX glob, plus expand environment variables
   std::vector<std::string> Wildcard(const std::string& wildcardString);
 
-  bool SAMDefinitionExists(const std::string& def);
+  bool SAMDefinitionExists(const std::string& expt, const std::string& def);
+
+  /// Is this a grid (condor) job?
+  bool RunningOnGrid();
+
+  /// Value passed to --stride, or 1 if not specified
+  size_t Stride(bool allow_default = true);
+  /// Value passed to --offset, or 0 if not specified
+  size_t Offset(bool allow_default = true);
+  /// Value passed to --limit, or -1 if not specified
+  int Limit();
+
+  /// What's the process number for a grid job?
+  size_t JobNumber();
+  size_t NumJobs();
+
 }
