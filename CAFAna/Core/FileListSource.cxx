@@ -16,24 +16,9 @@ namespace ana
 				 int stride, int offset, int limit)
     : fInRetry(false), fFile(0)
   {
-    if(offset < 0){
-      if(getenv("CAFANA_OFFSET"))
-	offset = atoi(getenv("CAFANA_OFFSET"));
-
-      offset = std::max(offset, 0);
-    }
-
-    if(stride < 0){
-      if(getenv("CAFANA_STRIDE"))
-	stride = atoi(getenv("CAFANA_STRIDE"));
-
-      stride = std::max(stride, 1);
-    }
-
-    if(limit < 0){
-      if(getenv("CAFANA_LIMIT"))
-        limit = atoi(getenv("CAFANA_LIMIT"));
-    }
+    if(offset < 0) offset = Offset();
+    if(stride < 0) stride = Stride();
+    if(limit < 0) limit = Limit();
 
     if(!files.empty() && stride > int(files.size())){
       std::cerr << "Warning: stride " << stride
