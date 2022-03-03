@@ -13,6 +13,7 @@ namespace ana
     template<class FuncT> _Weight(const FuncT& func) : _Var<T>(func) {}
 
     _Weight operator*(const _Weight& w) const {return _Weight((_Var<T>&)(*this) * (_Var<T>&)w);}
+    _Weight operator/(const _Weight& w) const {return _Weight((_Var<T>&)(*this) / (_Var<T>&)w);}
 
     using _Var<T>::operator();
     using _Var<T>::ID;
