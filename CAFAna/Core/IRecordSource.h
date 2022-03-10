@@ -8,6 +8,7 @@
 #include "CAFAna/Core/Weight.h"
 
 #include <numeric>
+#include <unordered_map>
 
 namespace ana::beta
 {
