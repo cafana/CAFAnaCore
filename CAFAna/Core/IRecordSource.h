@@ -29,10 +29,7 @@ namespace ana::beta
 
       if(it != fElems.end()) return *it->second;
 
-      ElemT* ret = new ConsT(cons_args...);
-      fElems[id].reset(ret);
-
-      return *ret;
+      return *fElems.emplace(id, new ConsT(cons_args...)).first->second;
     }
 
   protected:
