@@ -9,6 +9,8 @@ namespace ana::beta
   template<class SinkT> class _ISource
   {
   public:
+    virtual ~_ISource(){}
+
     /// Where the objects we're sourcing will go
     virtual void Register(SinkT* sink)
     {
