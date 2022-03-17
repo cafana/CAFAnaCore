@@ -242,6 +242,18 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+  const Eigen::ArrayXd& Hist::GetEigenSqErrors() const
+  {
+    assert(fType == kDense);
+    if(fSqrtErrs){
+      // Need to make the errors real, not just implicit
+      fSumSq = fData.sqrt();
+      fSqrtErrs = false;
+    }
+    return fSumSq;
+  }
+
+  //----------------------------------------------------------------------
   int Hist::GetNbinsX() const
   {
     assert(Initialized());
