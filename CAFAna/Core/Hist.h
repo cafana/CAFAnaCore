@@ -47,12 +47,12 @@ namespace ana
     const Eigen::ArrayXstan& GetEigenStan() const {assert(fType == kDenseStan); return fDataStan;}
     const Eigen::ArrayXd& GetEigenSqErrors() const {
       assert(fType == kDense);
-      if (fSqrtErrs) {
+      if(fSqrtErrs){
         fSumSq = fData.sqrt();
-        return fSumSq;
-      } else {
-        return fSumSq;
+        fSqrtErrs = false;
       }
+      return fSumSq;
+    }
     }
 
     int GetNbinsX() const;
