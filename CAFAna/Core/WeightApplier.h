@@ -21,11 +21,11 @@ namespace ana::beta
     {
     }
 
-    virtual void HandleRecord(const RecT* rec, double weight, int universeId) override
+    virtual void HandleRecord(const RecT* rec, double weight) override
     {
       const double w = fWeight(rec);
       // TODO warning/error about negative weights?
-      if(w != 0) Passthrough<RecT>::HandleRecord(rec, w*weight, universeId);
+      if(w != 0) Passthrough<RecT>::HandleRecord(rec, w*weight);
     }
 
     // TODO does HandleEnsemble() make sense here? Or combine with EnsembleSource?
