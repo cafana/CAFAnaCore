@@ -1,33 +1,15 @@
 #pragma once
 
 #include "CAFAna/Core/ISource.h"
-#include "CAFAna/Core/IValueSink.h"
-
-#include <vector>
+#include "CAFAna/Core/Tags.h"
 
 namespace ana::beta
 {
-  class IValueSource: public _ISource<IValueSink> {};
+  typedef _ISource<double> IValueSource;
 
-  class IValueEnsembleSource: public _ISource<IValueEnsembleSink>
-  {
-  public:
-    IValueEnsembleSource()//int nuniv, int multiverseId)
-    //      : fNUnivs(nuniv), fMultiverseId(multiverseId)
-    {
-    }
+  typedef _ISource<EnsembleTag<double>> IValueEnsembleSource;
 
-    virtual ~IValueEnsembleSource() {}
-
-    // TODO based on a proper Multiverse class
-    //    virtual int NUniverses() const {return fNUnivs;}
-    //    virtual int MultiverseID() const {return fMultiverseId;}
-
-  protected:
-    //    int fNUnivs, fMultiverseId;
-  };
-
-  using IValuePairSource = _ISource<IValuePairSink>;
+  typedef _ISource<std::pair<double, double>> IValuePairSource;
 
 
   class NullValueSource: public IValueSource {};
@@ -36,7 +18,7 @@ namespace ana::beta
   class NullValueEnsembleSource: public IValueEnsembleSource
   {
   public:
-    NullValueEnsembleSource(){}// : IValueEnsembleSource(0, 0) {}
+    NullValueEnsembleSource(){}
   };
   static NullValueEnsembleSource kNullValueEnsembleSource;
 }

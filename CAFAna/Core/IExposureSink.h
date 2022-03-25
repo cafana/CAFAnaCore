@@ -1,12 +1,13 @@
 #pragma once
 
+#include "CAFAna/Core/ISink.h"
+#include "CAFAna/Core/Tags.h"
+
 namespace ana::beta
 {
-  class IExposureSink
+  template<> class SinkInterface<ExposureTag>
   {
   public:
-    virtual ~IExposureSink() {}
-
     virtual void FillPOT(double pot) = 0;
     virtual void FillLivetime(double livetime) = 0;
 
@@ -14,4 +15,5 @@ namespace ana::beta
     virtual unsigned int NSinks() const {return 1;}
   };
 
+  typedef _ISink<ExposureTag> IExposureSink;
 }

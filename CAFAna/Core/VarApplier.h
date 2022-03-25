@@ -3,6 +3,8 @@
 #include "CAFAna/Core/IRecordSink.h"
 #include "CAFAna/Core/IRecordSource.h"
 
+#include "CAFAna/Core/IValueSink.h"
+
 #include "CAFAna/Core/Passthrough.h"
 
 namespace ana::beta
@@ -19,7 +21,7 @@ namespace ana::beta
   template<class RecT> class _VarApplier: public PassthroughExposure<_IRecordSink<RecT>, IValueSource>, protected ApplierBase
   {
   public:
-    _VarApplier(_ISource<_IRecordSink<RecT>>& src, const _Var<RecT>& var)
+    _VarApplier(_ISource<RecT>& src, const _Var<RecT>& var)
       : fVar(var)
     {
       src.Register(this);
@@ -45,7 +47,7 @@ namespace ana::beta
   template<class RecT> class _EnsembleVarApplier: public PassthroughExposure<_IRecordEnsembleSink<RecT>, IValueEnsembleSource>, protected ApplierBase
   {
   public:
-    _EnsembleVarApplier(_ISource<_IRecordEnsembleSink<RecT>>& src, const _Var<RecT>& var)
+    _EnsembleVarApplier(_ISource<EnsembleTag<RecT>>& src, const _Var<RecT>& var)
       : fVar(var)
     {
       src.Register(this);
@@ -79,7 +81,7 @@ namespace ana::beta
   template<class RecT> class _VarPairApplier: public PassthroughExposure<_IRecordSink<RecT>, IValuePairSource>, protected ApplierBase
   {
   public:
-    _VarPairApplier(_ISource<_IRecordSink<RecT>>& src,
+    _VarPairApplier(_ISource<RecT>& src,
                     const _Var<RecT>& varx, 
                     const _Var<RecT>& vary)
       : fVarX(varx), fVarY(vary)

@@ -12,11 +12,6 @@
 
 namespace ana::beta
 {
-  class IValueSource;
-  class IValueEnsembleSource;
-  template<class RecT> class _IRecordSource;
-  template<class RecT> class _IRecordEnsembleSource;
-
   /// Helper for implementation of _IRecordSourceDefaultImpl
   template<class ElemT> class IDDict
   {
@@ -37,7 +32,11 @@ namespace ana::beta
   };
 
 
-  template<class RecT> class _IRecordEnsembleSourceDefaultImpl : public _ISource<_IRecordEnsembleSink<RecT>>
+  template<class RecT> class _IRecordEnsembleSource;
+  template<class RecT> class _IRecordSource;
+
+
+  template<class RecT> class _IRecordEnsembleSourceDefaultImpl : public _ISource<EnsembleTag<RecT>>
   {
   public:
     using Record_t = RecT;
@@ -71,7 +70,7 @@ namespace ana::beta
   };
 
 
-  template<class RecT> class _IRecordSourceDefaultImpl : public _ISource<_IRecordSink<RecT>>
+  template<class RecT> class _IRecordSourceDefaultImpl : public _ISource<RecT>
   {
   public:
     using Record_t = RecT;

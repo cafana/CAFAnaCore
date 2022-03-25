@@ -2,22 +2,26 @@
 
 #include "CAFAna/Core/IExposureSink.h"
 
+#include "CAFAna/Core/Tags.h"
+
 namespace ana::beta
 {
-  template<class RecT> class _IRecordSink : public IExposureSink
+  // TODO can we enforce RecT is not exposure or ensemble?
+  //
+  // Do we need a RecordTag?
+  template<class RecT> class SinkInterface: public IExposureSink
   {
   public:
-    virtual ~_IRecordSink(){}
-
     virtual void HandleRecord(const RecT* rec, double weight) = 0;
   };
 
+  // TODO TODO
+  template<class RecT> using _IRecordSink = _ISink<RecT>;
 
-  template<class RecT> class _IRecordEnsembleSink : public IExposureSink
+
+  template<class RecT> class SinkInterface<EnsembleTag<RecT>>: public IExposureSink
   {
   public:
-    virtual ~_IRecordEnsembleSink(){}
-
     virtual void HandleSingleRecord(const RecT* rec, double weight,
                                     int universeId) = 0;
 
@@ -30,4 +34,6 @@ namespace ana::beta
       }
     }
   };
+
+  template<class RecT> using _IRecordEnsembleSink = _ISink<EnsembleTag<RecT>>;
 }

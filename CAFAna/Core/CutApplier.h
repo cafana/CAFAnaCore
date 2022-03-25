@@ -10,8 +10,7 @@ namespace ana::beta
   template<class RecT, class SpillT> class _CutApplier: public Passthrough<RecT>
   {
   public:
-    _CutApplier(_ISource<_IRecordSink<RecT>>& src,
-                const _Cut<RecT, SpillT>& cut)
+    _CutApplier(_ISource<RecT>& src, const _Cut<RecT, SpillT>& cut)
       : fCut(cut)
     {
       src.Register(this);
@@ -35,7 +34,7 @@ namespace ana::beta
   template<class RecT, class SpillT> class _EnsembleCutApplier: public PassthroughEnsemble<RecT>
   {
   public:
-    _EnsembleCutApplier(_ISource<_IRecordEnsembleSink<RecT>>& src,
+    _EnsembleCutApplier(_ISource<EnsembleTag<RecT>>& src,
                         const _Cut<RecT, SpillT>& cut)
       : fCut(cut)
     {

@@ -10,8 +10,7 @@ namespace ana::beta
   template<class RecT> class _WeightApplier: public Passthrough<RecT>
   {
   public:
-    _WeightApplier(_ISource<_IRecordSink<RecT>>& src,
-                   const _Weight<RecT>& wei)
+    _WeightApplier(_ISource<RecT>& src, const _Weight<RecT>& wei)
       : fWeight(wei)
     {
       src.Register(this);
