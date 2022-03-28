@@ -33,6 +33,12 @@ namespace ana::beta
       return tot;
     }
 
+    virtual void PrintGraph(std::ostream& os) const
+    {
+      // Invoke PrintGraphs() on all the base classes
+      (BaseTs::PrintGraph(os), ...);
+    }
+
   protected:
     PassthroughExposure(){}
   };

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CAFAna/Core/IGraphElem.h"
+
 #include <unordered_set>
 
 namespace ana::beta
@@ -15,7 +17,7 @@ namespace ana::beta
   /// takes care of that, and notifying the source if the sink is deleted or
   /// moved. The SinkInterface base class implements the various interaces a
   /// sink is expected to have, depending on the template type.
-  template<class RecT> class _ISink: public SinkInterface<RecT>
+  template<class RecT> class _ISink: public SinkInterface<RecT>, virtual public IGraphElem
   {
   public:
     virtual ~_ISink()
@@ -64,6 +66,12 @@ namespace ana::beta
     {
       auto it = std::find(fSources.begin(), fSources.end(), src);
       if(it != fSources.end()) fSources.erase(it);
+    }
+
+    virtual void PrintGraph(std::ostream& os) const override
+    {
+      PrintNode(os, this);
+      for(_ISource<RecT>* src: fSources) PrintEdge(os, this, src, "gray");
     }
 
   protected:

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CAFAna/Core/IGraphElem.h"
+
 #include <algorithm>
 #include <vector>
 
@@ -13,7 +15,7 @@ namespace ana::beta
   /// events / livetime / etc. It provides methods to allow the sink to move or
   /// unregister itself. All the detailed implementation of sources happens in
   /// derived classes.
-  template<class RecT> class _ISource
+  template<class RecT> class _ISource : virtual public IGraphElem
   {
   public:
     virtual ~_ISource()
@@ -37,6 +39,15 @@ namespace ana::beta
     void Move(_ISink<RecT>* from, _ISink<RecT>* to)
     {
       for(_ISink<RecT>*& sink: fSinks) if(sink == from) sink = to;
+    }
+
+    virtual void PrintGraph(std::ostream& os) const override
+    {
+      PrintNode(os, this);
+      for(_ISink<RecT>* sink: fSinks){
+        PrintEdge(os, this, sink);
+        sink->PrintGraph(os);
+      }
     }
 
   protected:
