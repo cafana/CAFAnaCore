@@ -45,6 +45,7 @@ namespace ana
     bool HasStan() const {return fType == kDenseStan;}
     const Eigen::ArrayXd& GetEigen() const {assert(fType == kDense); return fData;}
     const Eigen::ArrayXstan& GetEigenStan() const {assert(fType == kDenseStan); return fDataStan;}
+    const Eigen::ArrayXd& GetEigenSqErrors() const;
 
     int GetNbinsX() const;
     double GetBinError(int i) const;
@@ -79,7 +80,8 @@ namespace ana
     Eigen::SparseVector<double> fDataSparse;
     Eigen::ArrayXstan fDataStan;
     Eigen::ArrayXd fData;
-    Eigen::ArrayXd fSumSq; ///< Accumulate errors, if enabled
-    bool fSqrtErrs; ///< Special case when filled with unweighted data
+
+    mutable Eigen::ArrayXd fSumSq; ///< Accumulate errors, if enabled
+    mutable bool fSqrtErrs; ///< Special case when filled with unweighted data
   };
 }

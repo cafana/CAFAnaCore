@@ -208,9 +208,11 @@ namespace ana
     /// NB these don't have POT scaling. For expert high performance ops only!
     const Eigen::ArrayXd& GetEigen() const {return fHist.GetEigen();}
     const Eigen::ArrayXstan& GetEigenStan() const {return fHist.GetEigenStan();}
+    const Eigen::ArrayXd& GetEigenSqErrors() const {return fHist.GetEigenSqErrors();}
 
     Eigen::ArrayXd GetEigen(double exposure, EExposureType expotype = kPOT) const;
     Eigen::ArrayXstan GetEigenStan(double exposure, EExposureType expotype = kPOT) const;
+    Eigen::ArrayXd GetEigenSqErrors(double exposure, EExposureType expotype = kPOT) const;
 
     /// \brief Return total number of events scaled to \a pot
     ///
