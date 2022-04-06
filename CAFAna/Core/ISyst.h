@@ -1,6 +1,7 @@
 #pragma once
 
-#include "CAFAna/Core/INamed.h"
+#include "CAFAna/Core/IFitSyst.h"
+
 #include "CAFAna/Core/Registry.h"
 
 namespace ana
@@ -9,28 +10,17 @@ namespace ana
   ///
   /// The Shift() function alters the record or the weight associated with the
   /// event.
-  template<class RecT> class _ISyst: public INamed
+  template<class RecT> class _ISyst: public IFitSyst
   {
   public:
     _ISyst(const std::string& shortName,
            const std::string& latexName)
-      : INamed(shortName, latexName)
+      : IFitSyst(shortName, latexName)
     {
-      Registry<_ISyst>::Register(this);
     }
 
-    _ISyst(const _ISyst&) = delete;   // no copying.
-    _ISyst(_ISyst&& rhs) = delete;    // no moving either.
+    // Inherits no copying / moving from IFitSyst
 
-    virtual ~_ISyst()
-    {
-      // Normally ISysts should last for the life of the process, but in case
-      // one is deleted it's best not to leave a dangling pointer in Registry.
-      Registry<_ISyst>::UnRegister(this);
-    }
-
-    _ISyst& operator=(const _ISyst&) = delete;  // still no copying.
-    _ISyst& operator=(_ISyst&&)      = delete;  // etc.
 
     /// \brief Perform the systematic shift
     ///
