@@ -291,7 +291,7 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  void Hist::Fill(const Binning& bins, double x, double w)
+  void Hist::Fill(int bin, double x, double w)
   {
     assert(Initialized());
 
@@ -301,14 +301,13 @@ namespace ana
 
     switch(fType){
     case kSparse:
-      fDataSparse.coeffRef(bins.FindBin(x)) += w;
+      fDataSparse.coeffRef(bin) += w;
       break;
     case kDenseStan:
       std::cout << "Hist::Fill() not supported for stan vars" << std::endl;
       abort();
     case kDense:
       {
-        const int bin = bins.FindBin(x);
         fData[bin] += w;
         if(gStatErrs){
           if(fSumSq.size() == 0) fSumSq.resize(fData.size());

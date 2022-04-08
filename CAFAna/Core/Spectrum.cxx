@@ -344,8 +344,8 @@ namespace ana
   //----------------------------------------------------------------------
   void Spectrum::Fill(double x, double w)
   {
-    fHist.Fill(fAxis.GetBins1D(), x, w);
-    // TODO Pull binning out of Hist entirely and just update an index?
+    const int bin = fAxis.GetBins1D().FindBin(x);
+    fHist.Fill(bin, x, w);
   }
 
   //----------------------------------------------------------------------
