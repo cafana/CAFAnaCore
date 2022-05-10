@@ -40,6 +40,9 @@ namespace ana
 
     static Hist FromDirectory(TDirectory* dir);
 
+    /// Set by CAFANA_STAT_ERRS environment variable
+    static bool StatErrorsEnabled();
+
     TH1D* ToTH1(const Binning& bins) const;
 
     bool HasStan() const {return fType == kDenseStan;}
@@ -66,6 +69,7 @@ namespace ana
     void Divide(const Hist& rhs);
 
     void Write(const Binning& bins) const;
+
   protected:
     Hist();
 
