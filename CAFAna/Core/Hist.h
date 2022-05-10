@@ -51,7 +51,7 @@ namespace ana
     double GetBinError(int i) const;
     double Integral() const;
 
-    void Fill(int bin, double x, double w);
+    void Fill(int bin, double w);
     void Scale(double s);
     void Scale(const stan::math::var& s);
     void ResetErrors();

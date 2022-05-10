@@ -345,7 +345,7 @@ namespace ana
   void Spectrum::Fill(double x, double w)
   {
     const int bin = fAxis.GetBins1D().FindBin(x);
-    fHist.Fill(bin, x, w);
+    fHist.Fill(bin, w);
   }
 
   //----------------------------------------------------------------------

@@ -291,7 +291,7 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  void Hist::Fill(int bin, double x, double w)
+  void Hist::Fill(int bin, double w)
   {
     assert(Initialized());
 
