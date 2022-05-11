@@ -34,6 +34,13 @@ namespace ana
     {
     }
 
+    Ratio(Eigen::ArrayXstan&& arr,
+          const std::vector<std::string>& labels,
+          const std::vector<Binning>& bins)
+      : fHist(Hist::AdoptStan(std::move(arr))), fAxis(labels, bins)
+    {
+    }
+
     virtual ~Ratio();
 
     Ratio(const Ratio& rhs) = default;
