@@ -47,7 +47,7 @@ namespace ana::beta
   template<class RecT> class _EnsembleVarApplier: public PassthroughExposure<_IRecordEnsembleSink<RecT>, IValueEnsembleSource>, protected ApplierBase
   {
   public:
-    _EnsembleVarApplier(_ISource<EnsembleTag<RecT>>& src, const _Var<RecT>& var)
+    _EnsembleVarApplier(_IEnsembleSource<RecT>& src, const _Var<RecT>& var)
       : fVar(var)
     {
       src.Register(this);

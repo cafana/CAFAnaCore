@@ -60,5 +60,4 @@ namespace ana::beta
 
     std::vector<_ISink<RecT>*> fSinks;
   };
-
 }

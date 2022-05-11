@@ -36,7 +36,7 @@ namespace ana::beta
   template<class RecT> class _IRecordSource;
 
 
-  template<class RecT> class _IRecordEnsembleSourceDefaultImpl : public _ISource<EnsembleTag<RecT>>
+  template<class RecT> class _IRecordEnsembleSourceDefaultImpl : public _IEnsembleSource<RecT>
   {
   public:
     using Record_t = RecT;
@@ -58,10 +58,6 @@ namespace ana::beta
     {
       return GetCut(cut);
     }
-
-    // TODO TODO
-    //    virtual int NUniverses() const = 0;
-    //    virtual int MultiverseID() const = 0;
 
   protected:
     IDDict<_IRecordEnsembleSource<RecT>> fCutSources, fWeightSources;

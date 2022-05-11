@@ -34,7 +34,7 @@ namespace ana::beta
   template<class RecT, class SpillT> class _EnsembleCutApplier: public PassthroughEnsemble<RecT>
   {
   public:
-    _EnsembleCutApplier(_ISource<EnsembleTag<RecT>>& src,
+    _EnsembleCutApplier(_IEnsembleSource<RecT>& src,
                         const _Cut<RecT, SpillT>& cut)
       : fCut(cut)
     {
