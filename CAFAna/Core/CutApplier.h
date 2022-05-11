@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CAFAna/Core/Passthrough.h"
+#include "CAFAna/Core/PassthroughEnsemble.h"
 
 #include "CAFAna/Core/Cut.h"
 
