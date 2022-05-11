@@ -48,7 +48,7 @@ namespace ana::beta
   {
   public:
     _EnsembleVarApplier(_IEnsembleSource<RecT>& src, const _Var<RecT>& var)
-      : fVar(var)
+      : fMultiverse(src.GetMultiverse()), fVar(var)
     {
       src.Register(this);
     }
@@ -72,7 +72,10 @@ namespace ana::beta
       for(IValueEnsembleSink* sink: this->fSinks) sink->FillEnsemble(val, weights);
     }
 
+    virtual const FitMultiverse* GetMultiverse() const override {return fMultiverse;}
+
   protected:
+    const FitMultiverse* fMultiverse;
     _Var<RecT> fVar;
   };
 

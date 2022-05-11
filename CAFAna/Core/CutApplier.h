@@ -36,7 +36,7 @@ namespace ana::beta
   public:
     _EnsembleCutApplier(_IEnsembleSource<RecT>& src,
                         const _Cut<RecT, SpillT>& cut)
-      : fCut(cut)
+      : PassthroughEnsemble<RecT>(src), fCut(cut)
     {
       src.Register(this);
     }

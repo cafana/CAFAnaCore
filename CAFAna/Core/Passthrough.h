@@ -76,7 +76,17 @@ namespace ana::beta
       for(_IRecordEnsembleSink<RecT>* sink: _IRecordEnsembleSource<RecT>::fSinks) sink->HandleEnsemble(rec, weights);
     }
 
+    virtual const FitMultiverse* GetMultiverse() const override
+    {
+      return fMultiverse;
+    }
+
   protected:
-    PassthroughEnsemble(){}
+    PassthroughEnsemble(const _IEnsembleSource<RecT>& src)
+      : fMultiverse(src.GetMultiverse())
+    {
+    }
+
+    const FitMultiverse* fMultiverse;
   };
 }

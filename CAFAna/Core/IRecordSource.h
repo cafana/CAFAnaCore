@@ -10,25 +10,27 @@
 #include <numeric>
 #include <unordered_map>
 
+namespace ana{class FitMultiverse;} // TODO TODO import fully
+
 namespace ana::beta
 {
   /// Helper for implementation of _IRecordSourceDefaultImpl
-  template<class ElemT> class IDDict
+  template<class KeyT, class ElemT> class IDDict
   {
   public:
     /// Return the element with ID 'id' or construct a new element of type
     /// ConsT with arguments cons_args
-    template<class ConsT, class... Ts> ElemT& Get(int id, Ts&&... cons_args)
+    template<class ConsT, class... Ts> ElemT& Get(KeyT key, Ts&&... cons_args)
     {
-      auto it = fElems.find(id);
+      auto it = fElems.find(key);
 
       if(it != fElems.end()) return *it->second;
 
-      return *fElems.emplace(id, new ConsT(cons_args...)).first->second;
+      return *fElems.emplace(key, new ConsT(cons_args...)).first->second;
     }
 
   protected:
-    std::unordered_map<int, std::unique_ptr<ElemT>> fElems;
+    std::unordered_map<KeyT, std::unique_ptr<ElemT>> fElems;
   };
 
 
@@ -60,9 +62,9 @@ namespace ana::beta
     }
 
   protected:
-    IDDict<_IRecordEnsembleSource<RecT>> fCutSources, fWeightSources;
+    IDDict<int, _IRecordEnsembleSource<RecT>> fCutSources, fWeightSources;
 
-    IDDict<IValueEnsembleSource> fVarSources;
+    IDDict<int, IValueEnsembleSource> fVarSources;
   };
 
 
@@ -93,7 +95,7 @@ namespace ana::beta
     }
 
     _IRecordEnsembleSource<RecT>& Ensemble(const std::vector<_Weight<RecT>>& weis,
-                                           int multiverseId);
+                                           const FitMultiverse& multiverse);
 
     /*
     _IRecordSource<RecT>& operator[](const _Weight<RecT>& wei)
@@ -103,12 +105,12 @@ namespace ana::beta
     */
 
   protected:
-    IDDict<_IRecordSource<RecT>> fCutSources, fWeightSources;
+    IDDict<int, _IRecordSource<RecT>> fCutSources, fWeightSources;
 
-    IDDict<_IRecordEnsembleSource<RecT>> fEnsembleSources;
+    IDDict<const ana::FitMultiverse*, _IRecordEnsembleSource<RecT>> fEnsembleSources;
 
-    IDDict<IValueSource> fVarSources;
-    IDDict<IValuePairSource> fVarPairSources;
+    IDDict<int, IValueSource> fVarSources;
+    IDDict<int, IValuePairSource> fVarPairSources;
   };
 
 
@@ -160,12 +162,10 @@ namespace ana::beta
 
 
   template<class RecT> _IRecordEnsembleSource<RecT>& _IRecordSourceDefaultImpl<RecT>::
-  Ensemble(const std::vector<_Weight<RecT>>& weis, int multiverseId)
+  Ensemble(const std::vector<_Weight<RecT>>& weis, const FitMultiverse& multiverse)
   {
-    // TODO relying on the user to number their multiverses. Better to have a
-    // proper Multiverse class we can rely on?
-
-    return fEnsembleSources.template Get<_EnsembleSource<RecT>>(multiverseId, *this, weis, multiverseId);
+    // TODO don't duplicate info between weis and multiverse
+    return fEnsembleSources.template Get<_EnsembleSource<RecT>>(&multiverse, *this, weis, multiverse);
   }
 
 

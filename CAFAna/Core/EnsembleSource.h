@@ -13,8 +13,8 @@ namespace ana::beta
   public:
     _EnsembleSource(_ISource<RecT>& src,
                     const std::vector<_Weight<RecT>>& weis,
-                    int multiverseId)
-      : fWeights(weis), fMultiverseId(multiverseId)
+                    const FitMultiverse& multiverse)
+      : fWeights(weis), fMultiverse(&multiverse)
     {
       src.Register(this);
     }
@@ -36,12 +36,13 @@ namespace ana::beta
       for(_IRecordEnsembleSink<RecT>* sink: _IRecordEnsembleSource<RecT>::fSinks) sink->HandleEnsemble(rec, ws);
     }
 
-    // TODO TODO
-    //    virtual int NUniverses() const override {return fWeights.size();}
-    //    virtual int MultiverseID() const override {return fMultiverseId;}
+    virtual const FitMultiverse* GetMultiverse() const override
+    {
+      return fMultiverse;
+    }
 
   protected:
     std::vector<_Weight<RecT>> fWeights;
-    int fMultiverseId;
+    const FitMultiverse* fMultiverse;
   };
 }

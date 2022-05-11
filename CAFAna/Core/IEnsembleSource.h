@@ -4,15 +4,13 @@
 
 #include "CAFAna/Core/Tags.h"
 
-namespace ana{class FitMultiverse;} // TODO TODO
+namespace ana{class FitMultiverse;} // TODO TODO import fully
 
 namespace ana::beta
 {
   template<class RecT> class _IEnsembleSource: public _ISource<EnsembleTag<RecT>>
   {
   public:
-    // TODO TODO
-    virtual ana::FitMultiverse* GetMultiverse() const{return 0;}// = 0;
-
+    virtual const ana::FitMultiverse* GetMultiverse() const = 0;
   };
 }

@@ -19,6 +19,9 @@ namespace ana::beta
   {
   public:
     NullValueEnsembleSource(){}
+
+    // TODO do we need to return a dummy here? Or make EnsembleSpectrum lazier?
+    virtual const ana::FitMultiverse* GetMultiverse() const override {return 0;}
   };
   static NullValueEnsembleSource kNullValueEnsembleSource;
 }
