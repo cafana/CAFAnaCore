@@ -49,7 +49,7 @@ namespace ana::beta
 
     template<class SpillT> _IRecordEnsembleSource<RecT>& GetCut(const _Cut<RecT, SpillT>& cut);
 
-    //    _IRecordEnsembleSource<RecT>& Weighted(const _Weight<RecT>& wei);
+    _IRecordEnsembleSource<RecT>& Weighted(const _Weight<RecT>& wei);
 
     IValueEnsembleSource& operator[](const _Var<RecT>& var)
     {
@@ -96,13 +96,6 @@ namespace ana::beta
 
     _IRecordEnsembleSource<RecT>& Ensemble(const std::vector<_Weight<RecT>>& weis,
                                            const FitMultiverse& multiverse);
-
-    /*
-    _IRecordSource<RecT>& operator[](const _Weight<RecT>& wei)
-    {
-      return Weighted(wei);
-    }
-    */
 
   protected:
     IDDict<int, _IRecordSource<RecT>> fCutSources, fWeightSources;
@@ -180,6 +173,13 @@ namespace ana::beta
   _IRecordEnsembleSourceDefaultImpl<RecT>::GetCut(const _Cut<RecT, SpillT>& cut)
   {
     return fCutSources.template Get<_EnsembleCutApplier<RecT, SpillT>>(cut.ID(), *this, cut);
+  }
+
+
+  template<class RecT> _IRecordEnsembleSource<RecT>&
+  _IRecordEnsembleSourceDefaultImpl<RecT>::Weighted(const _Weight<RecT>& wei)
+  {
+    return fWeightSources.template Get<_EnsembleWeightApplier<RecT>>(wei.ID(), *this, wei);
   }
 
 }
