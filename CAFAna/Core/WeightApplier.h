@@ -37,7 +37,7 @@ namespace ana::beta
   public:
     _EnsembleWeightApplier(_IEnsembleSource<RecT>& src,
                            const _Weight<RecT>& wei)
-      : fWeight(wei)
+      : PassthroughEnsemble<RecT>(src), fWeight(wei)
     {
       src.Register(this);
     }
