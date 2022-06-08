@@ -107,4 +107,45 @@ namespace ana::beta
   protected:
     _Var<RecT> fVarX, fVarY;
   };
+
+
+  template<class RecT> class _EnsembleVarPairApplier: public PassthroughExposure<_IRecordEnsembleSink<RecT>, IValuePairEnsembleSource>, protected ApplierBase
+  {
+  public:
+    _EnsembleVarPairApplier(_IEnsembleSource<RecT>& src,
+                            const _Var<RecT>& varx, 
+                            const _Var<RecT>& vary)
+      : fMultiverse(src.GetMultiverse()), fVarX(varx), fVarY(vary)
+    {
+      src.Register(this);
+    }
+
+    virtual ~_EnsembleVarPairApplier()
+    {
+    }
+
+
+    virtual void HandleSingleRecord(const RecT* rec, double weight, int universeId) override
+    {
+      const double valx = fVarX(rec);
+      const double valy = fVarY(rec);
+      if(!EnsureFinite(valx) || !EnsureFinite(valy)) return;
+      for(IValuePairEnsembleSink* sink: this->fSinks) sink->FillSingle(valx, valy, weight, universeId);
+    }
+
+    virtual void HandleEnsemble(const RecT* rec,
+                                const std::vector<double>& weights) override
+    {
+      const double valx = fVarX(rec);
+      const double valy = fVarY(rec);
+      if(!EnsureFinite(valx) || !EnsureFinite(valy)) return;
+      for(IValuePairEnsembleSink* sink: this->fSinks) sink->FillEnsemble(valx, valy, weights);
+    }
+
+    virtual const FitMultiverse* GetMultiverse() const override {return fMultiverse;}
+
+  protected:
+    const FitMultiverse* fMultiverse;
+    _Var<RecT> fVarX, fVarY;
+  };
 }

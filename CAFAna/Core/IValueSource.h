@@ -11,6 +11,8 @@ namespace ana::beta
 
   typedef _ISource<std::pair<double, double>> IValuePairSource;
 
+  typedef _IEnsembleSource<std::pair<double, double>> IValuePairEnsembleSource;
+
 
   class NullValueSource: public IValueSource {};
   static NullValueSource kNullValueSource;

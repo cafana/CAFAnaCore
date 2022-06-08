@@ -47,6 +47,10 @@ namespace ana::beta
 
     IValueEnsembleSource& GetVar(const _Var<RecT>& var);
 
+    IValuePairEnsembleSource& GetVars(const _Var<RecT>& varx,
+                                      const _Var<RecT>& vary);
+
+
     template<class SpillT> _IRecordEnsembleSource<RecT>& GetCut(const _Cut<RecT, SpillT>& cut);
 
     _IRecordEnsembleSource<RecT>& Weighted(const _Weight<RecT>& wei);
@@ -65,6 +69,7 @@ namespace ana::beta
     IDDict<int, _IRecordEnsembleSource<RecT>> fCutSources, fWeightSources;
 
     IDDict<int, IValueEnsembleSource> fVarSources;
+    IDDict<int, IValuePairEnsembleSource> fVarPairSources;
   };
 
 
@@ -168,6 +173,12 @@ namespace ana::beta
     return fVarSources.template Get<_EnsembleVarApplier<RecT>>(var.ID(), *this, var);
   }
 
+  template<class RecT> IValuePairEnsembleSource&
+  _IRecordEnsembleSourceDefaultImpl<RecT>::GetVars(const _Var<RecT>& varx,
+                                                   const _Var<RecT>& vary)
+  {
+    return fVarPairSources.template Get<_EnsembleVarPairApplier<RecT>>((varx*vary).ID(), *this, varx, vary);
+  }
 
   template<class RecT> template<class SpillT> _IRecordEnsembleSource<RecT>&
   _IRecordEnsembleSourceDefaultImpl<RecT>::GetCut(const _Cut<RecT, SpillT>& cut)
