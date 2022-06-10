@@ -48,7 +48,7 @@ namespace ana::beta
   {
   public:
     _EnsembleVarApplier(_IEnsembleSource<RecT>& src, const _Var<RecT>& var)
-      : fMultiverse(src.GetMultiverse()), fVar(var)
+      : fSource(&src), fVar(var)
     {
       src.Register(this);
     }
@@ -72,10 +72,10 @@ namespace ana::beta
       for(IValueEnsembleSink* sink: this->fSinks) sink->FillEnsemble(val, weights);
     }
 
-    virtual const FitMultiverse* GetMultiverse() const override {return fMultiverse;}
+    virtual const FitMultiverse* GetMultiverse() const override {return fSource->GetMultiverse();}
 
   protected:
-    const FitMultiverse* fMultiverse;
+    const _IEnsembleSource<RecT>* fSource;
     _Var<RecT> fVar;
   };
 
@@ -115,7 +115,7 @@ namespace ana::beta
     _EnsembleVarPairApplier(_IEnsembleSource<RecT>& src,
                             const _Var<RecT>& varx, 
                             const _Var<RecT>& vary)
-      : fMultiverse(src.GetMultiverse()), fVarX(varx), fVarY(vary)
+      : fSource(&src), fVarX(varx), fVarY(vary)
     {
       src.Register(this);
     }
@@ -142,10 +142,10 @@ namespace ana::beta
       for(IValuePairEnsembleSink* sink: this->fSinks) sink->FillEnsemble(valx, valy, weights);
     }
 
-    virtual const FitMultiverse* GetMultiverse() const override {return fMultiverse;}
+    virtual const FitMultiverse* GetMultiverse() const override {return fSource->GetMultiverse();}
 
   protected:
-    const FitMultiverse* fMultiverse;
+    const _IEnsembleSource<RecT>* fSource;
     _Var<RecT> fVarX, fVarY;
   };
 }

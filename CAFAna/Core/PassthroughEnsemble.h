@@ -25,15 +25,15 @@ namespace ana::beta
 
     virtual const FitMultiverse* GetMultiverse() const override
     {
-      return fMultiverse;
+      return fSource->GetMultiverse();
     }
 
   protected:
     PassthroughEnsemble(const _IEnsembleSource<RecT>& src)
-      : fMultiverse(src.GetMultiverse())
+      : fSource(&src)
     {
     }
 
-    const FitMultiverse* fMultiverse;
+    const _IEnsembleSource<RecT>* fSource;
   };
 }
