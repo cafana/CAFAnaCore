@@ -5,20 +5,13 @@
 
 #include "CAFAna/Core/IValueSink.h"
 
+#include "CAFAna/Core/EnsureFiniteBase.h"
 #include "CAFAna/Core/Passthrough.h"
 
 namespace ana::beta
 {
-  class ApplierBase
-  {
-  protected:
-    ApplierBase(){}
-    bool EnsureFinite(double val) const;
-  };
-
-
   // TODO is this the best name?
-  template<class RecT> class _VarApplier: public PassthroughExposure<_IRecordSink<RecT>, IValueSource>, protected ApplierBase
+  template<class RecT> class _VarApplier: public PassthroughExposure<_IRecordSink<RecT>, IValueSource>, protected EnsureFiniteBase
   {
   public:
     _VarApplier(_ISource<RecT>& src, const _Var<RecT>& var)
@@ -34,7 +27,7 @@ namespace ana::beta
     virtual void HandleRecord(const RecT* rec, double weight) override
     {
       const double val = fVar(rec);
-      if(!EnsureFinite(val)) return;
+      if(!EnsureFinite(val, "Var")) return;
       for(IValueSink* sink: this->fSinks) sink->Fill(val, weight);
     }
 
@@ -44,7 +37,7 @@ namespace ana::beta
 
 
   // TODO is this the best name?
-  template<class RecT> class _EnsembleVarApplier: public PassthroughExposure<_IRecordEnsembleSink<RecT>, IValueEnsembleSource>, protected ApplierBase
+  template<class RecT> class _EnsembleVarApplier: public PassthroughExposure<_IRecordEnsembleSink<RecT>, IValueEnsembleSource>, protected EnsureFiniteBase
   {
   public:
     _EnsembleVarApplier(_IEnsembleSource<RecT>& src, const _Var<RecT>& var)
@@ -60,7 +53,7 @@ namespace ana::beta
     virtual void HandleSingleRecord(const RecT* rec, double weight, int universeId) override
     {
       const double val = fVar(rec);
-      if(!EnsureFinite(val)) return;
+      if(!EnsureFinite(val, "Var")) return;
       for(IValueEnsembleSink* sink: this->fSinks) sink->FillSingle(val, weight, universeId);
     }
 
@@ -68,7 +61,7 @@ namespace ana::beta
                                 const std::vector<double>& weights) override
     {
       const double val = fVar(rec);
-      if(!EnsureFinite(val)) return;
+      if(!EnsureFinite(val, "Var")) return;
       for(IValueEnsembleSink* sink: this->fSinks) sink->FillEnsemble(val, weights);
     }
 
@@ -81,7 +74,7 @@ namespace ana::beta
 
 
   // TODO OK we definitely need a template for this
-  template<class RecT> class _VarPairApplier: public PassthroughExposure<_IRecordSink<RecT>, IValuePairSource>, protected ApplierBase
+  template<class RecT> class _VarPairApplier: public PassthroughExposure<_IRecordSink<RecT>, IValuePairSource>, protected EnsureFiniteBase
   {
   public:
     _VarPairApplier(_ISource<RecT>& src,
@@ -100,7 +93,7 @@ namespace ana::beta
     {
       const double valx = fVarX(rec);
       const double valy = fVarY(rec);
-      if(!EnsureFinite(valx) || !EnsureFinite(valy)) return;
+      if(!EnsureFinite(valx, "Var") || !EnsureFinite(valy, "Var")) return;
       for(IValuePairSink* sink: this->fSinks) sink->Fill(valx, valy, weight);
     }
 
@@ -109,7 +102,7 @@ namespace ana::beta
   };
 
 
-  template<class RecT> class _EnsembleVarPairApplier: public PassthroughExposure<_IRecordEnsembleSink<RecT>, IValuePairEnsembleSource>, protected ApplierBase
+  template<class RecT> class _EnsembleVarPairApplier: public PassthroughExposure<_IRecordEnsembleSink<RecT>, IValuePairEnsembleSource>, protected EnsureFiniteBase
   {
   public:
     _EnsembleVarPairApplier(_IEnsembleSource<RecT>& src,
@@ -129,7 +122,7 @@ namespace ana::beta
     {
       const double valx = fVarX(rec);
       const double valy = fVarY(rec);
-      if(!EnsureFinite(valx) || !EnsureFinite(valy)) return;
+      if(!EnsureFinite(valx, "Var") || !EnsureFinite(valy, "Var")) return;
       for(IValuePairEnsembleSink* sink: this->fSinks) sink->FillSingle(valx, valy, weight, universeId);
     }
 
@@ -138,7 +131,7 @@ namespace ana::beta
     {
       const double valx = fVarX(rec);
       const double valy = fVarY(rec);
-      if(!EnsureFinite(valx) || !EnsureFinite(valy)) return;
+      if(!EnsureFinite(valx, "Var") || !EnsureFinite(valy, "Var")) return;
       for(IValuePairEnsembleSink* sink: this->fSinks) sink->FillEnsemble(valx, valy, weights);
     }
 

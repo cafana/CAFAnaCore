@@ -2,12 +2,14 @@
 
 #include "CAFAna/Core/Passthrough.h"
 
+#include "CAFAna/Core/EnsureFiniteBase.h"
+
 #include "CAFAna/Core/Weight.h"
 
 namespace ana::beta
 {
   /// Transform a source of records by weighting them
-  template<class RecT> class _Weighter: public Passthrough<RecT>
+  template<class RecT> class _Weighter: public Passthrough<RecT>, protected EnsureFiniteBase
   {
   public:
     _Weighter(_ISource<RecT>& src, const _Weight<RecT>& wei)
@@ -23,8 +25,8 @@ namespace ana::beta
     virtual void HandleRecord(const RecT* rec, double weight) override
     {
       const double w = fWeight(rec);
-      // TODO warning/error about negative weights?
-      if(w != 0) Passthrough<RecT>::HandleRecord(rec, w*weight);
+      // TODO also warn/error about negative weights?
+      if(EnsureFinite(w, "Weight") && w != 0) Passthrough<RecT>::HandleRecord(rec, w*weight);
     }
 
   protected:
