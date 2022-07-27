@@ -2,7 +2,7 @@
 
 #include "CAFAna/Core/PassthroughExposure.h"
 
-#include "CAFAna/Core/IRecordSink.h"
+#include "CAFAna/Core/IRecordEnsembleSink.h"
 #include "CAFAna/Core/IRecordSource.h"
 
 namespace ana::beta
