@@ -5,8 +5,6 @@ class TFile;
 namespace ana
 {
   /// \brief Interface class for accessing ROOT files in sequence
-  ///
-  /// Used internally by \ref SpectrumLoaderBase etc.
   class IFileSource
   {
   public:

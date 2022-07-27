@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CAFAna/Core/Spectrum.h"
+#include "CAFAna/Core/IValueSink.h"
 
 #include <string>
 
@@ -16,12 +17,13 @@ namespace ana
   template<class T> _Weight<T> Unweighted();
 
   /// %Spectrum with the value of a second variable, allowing for reweighting
-  class ReweightableSpectrum
+  class ReweightableSpectrum: public IValuePairSink
   {
   public:
     friend class ReweightableSpectrumSink;
     friend class SpectrumSinkBase<ReweightableSpectrum>;
 
+#ifdef CAFANACORE_SPECTRUMLOADERBASE
     template<class T, class U>
     ReweightableSpectrum(SpectrumLoaderBase& loader,
                          const _HistAxis<_Var<T>>& recoAxis,
@@ -29,11 +31,23 @@ namespace ana
                          const _Cut<T, U>& cut,
                          const SystShifts& shift = kNoShift,
                          const _Weight<T>& wei = Unweighted<T>());
+#endif
 
     ReweightableSpectrum(const Eigen::MatrixXd&& mat,
                          const LabelsAndBins& recoAxis,
                          const LabelsAndBins& trueAxis,
                          double pot, double livetime);
+
+    ReweightableSpectrum(IValuePairSource& src,
+                         const LabelsAndBins& recoAxis,
+                         const LabelsAndBins& trueAxis);
+
+    template<class T> ReweightableSpectrum(_IRecordSource<T>& src,
+                                           const _HistAxis<_Var<T>>& recoAxis,
+                                           const _HistAxis<_Var<T>>& trueAxis)
+      : ReweightableSpectrum(src.GetVars(recoAxis.GetVar1D(), trueAxis.GetVar1D()), recoAxis, trueAxis)
+    {
+    }
 
     /// The only valid thing to do with such a spectrum is to assign something
     /// else into it.
@@ -44,7 +58,9 @@ namespace ana
     ReweightableSpectrum(const ReweightableSpectrum& rhs);
     ReweightableSpectrum& operator=(const ReweightableSpectrum& rhs);
 
-    void Fill(double x, double y, double w = 1);
+    virtual void Fill(double x, double y, double w) override;
+    virtual void FillPOT(double pot) override;
+    virtual void FillLivetime(double livetime) override;
 
     TH2D* ToTH2(double pot) const;
 
@@ -116,8 +132,7 @@ namespace ana
 
     LabelsAndBins fAxisX, fAxisY;
 
-    /// Things that point at this ReweightableSpectrum. Maintained by
-    /// SpectrumLoader
+    /// Things that point at this ReweightableSpectrum
     std::set<ReweightableSpectrum**> fReferences;
   };
 }

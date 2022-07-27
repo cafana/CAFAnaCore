@@ -15,6 +15,18 @@
 namespace ana
 {
   //----------------------------------------------------------------------
+  ReweightableSpectrum::ReweightableSpectrum(IValuePairSource& src,
+                                             const LabelsAndBins& recoAxis,
+                                             const LabelsAndBins& trueAxis)
+    : ReweightableSpectrum(recoAxis, trueAxis)
+  {
+    fMat.resize(trueAxis.GetBins1D().NBins()+2, recoAxis.GetBins1D().NBins()+2);
+    fMat.setZero();
+
+    src.Register(this);
+  }
+
+  //----------------------------------------------------------------------
   ReweightableSpectrum::ReweightableSpectrum(const Eigen::MatrixXd&& mat,
                                              const LabelsAndBins& recoAxis,
                                              const LabelsAndBins& trueAxis,
@@ -94,6 +106,18 @@ namespace ana
   void ReweightableSpectrum::Fill(double x, double y, double w)
   {
     fMat(fAxisY.GetBins1D().FindBin(y), fAxisX.GetBins1D().FindBin(x)) += w;
+  }
+
+  //----------------------------------------------------------------------
+  void ReweightableSpectrum::FillPOT(double pot)
+  {
+    fPOT += pot;
+  }
+
+  //----------------------------------------------------------------------
+  void ReweightableSpectrum::FillLivetime(double livetime)
+  {
+    fLivetime += livetime;
   }
 
   /// Helper for \ref Unweighted

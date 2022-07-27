@@ -24,6 +24,23 @@ namespace ana
     {
     }
 
+    Ratio(Eigen::ArrayXd&& arr,
+          Eigen::ArrayXd&& sqerrarr,
+          const std::vector<std::string>& labels,
+          const std::vector<Binning>& bins)
+      : fHist(Hist::AdoptWithErrors(std::move(arr),
+                                    std::move(sqerrarr))),
+              fAxis(labels, bins)
+    {
+    }
+
+    Ratio(Eigen::ArrayXstan&& arr,
+          const std::vector<std::string>& labels,
+          const std::vector<Binning>& bins)
+      : fHist(Hist::AdoptStan(std::move(arr))), fAxis(labels, bins)
+    {
+    }
+
     virtual ~Ratio();
 
     Ratio(const Ratio& rhs) = default;
