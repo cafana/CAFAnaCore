@@ -4,7 +4,7 @@
 
 #include "CAFAna/Core/Tags.h"
 
-namespace ana{class FitMultiverse;} // TODO TODO import fully
+namespace ana{class FitMultiverse;}
 
 namespace ana::beta
 {

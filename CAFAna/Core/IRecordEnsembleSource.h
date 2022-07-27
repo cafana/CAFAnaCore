@@ -9,7 +9,7 @@
 #include "CAFAna/Core/Var.h"
 #include "CAFAna/Core/Weight.h"
 
-namespace ana{class FitMultiverse;} // TODO TODO import fully
+namespace ana{class FitMultiverse;}
 
 namespace ana::beta
 {
