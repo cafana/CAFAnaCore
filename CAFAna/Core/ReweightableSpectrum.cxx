@@ -15,7 +15,7 @@
 namespace ana
 {
   //----------------------------------------------------------------------
-  ReweightableSpectrum::ReweightableSpectrum(beta::IValuePairSource& src,
+  ReweightableSpectrum::ReweightableSpectrum(IValuePairSource& src,
                                              const LabelsAndBins& recoAxis,
                                              const LabelsAndBins& trueAxis)
     : ReweightableSpectrum(recoAxis, trueAxis)

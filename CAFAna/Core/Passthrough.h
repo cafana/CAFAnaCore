@@ -5,7 +5,7 @@
 #include "CAFAna/Core/IRecordSink.h"
 #include "CAFAna/Core/IRecordSource.h"
 
-namespace ana::beta
+namespace ana
 {
   /// Implementation detail for various source/sink classes
   template<class RecT> class Passthrough: public PassthroughExposure<_IRecordSource<RecT>, _IRecordSink<RecT>>

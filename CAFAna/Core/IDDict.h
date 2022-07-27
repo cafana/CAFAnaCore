@@ -3,7 +3,7 @@
 #include <memory>
 #include <unordered_map>
 
-namespace ana::beta
+namespace ana
 {
   /// Implementation detail for _IRecordSourceDefaultImpl et al
   template<class KeyT, class ElemT> class IDDict

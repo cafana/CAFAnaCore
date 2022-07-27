@@ -3,7 +3,7 @@
 #include <cmath>
 #include <iostream>
 
-namespace ana::beta
+namespace ana
 {
   bool EnsureFiniteBase::EnsureFinite(double val, const char* type) const
   {

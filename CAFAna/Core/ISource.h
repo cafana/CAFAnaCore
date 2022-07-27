@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <vector>
 
-namespace ana::beta
+namespace ana
 {
   template<class RecT> class _ISink;
 

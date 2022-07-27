@@ -2,7 +2,6 @@
 #include "CAFAna/Core/Valuer.h"
 #include "CAFAna/Core/Var.h"
 using namespace ana;
-using namespace ana::beta;
 
 #include "TH1.h"
 #include "TPad.h"

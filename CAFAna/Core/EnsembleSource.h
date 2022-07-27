@@ -5,7 +5,7 @@
 
 #include "CAFAna/Core/Weight.h"
 
-namespace ana::beta
+namespace ana
 {
   // TODO is this the best name?
   template<class RecT> class _EnsembleSource: public PassthroughExposure<_IRecordSink<RecT>, _IRecordEnsembleSource<RecT>>

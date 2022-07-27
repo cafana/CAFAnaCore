@@ -8,7 +8,7 @@
 #include "CAFAna/Core/EnsureFiniteBase.h"
 #include "CAFAna/Core/PassthroughExposure.h"
 
-namespace ana::beta
+namespace ana
 {
   /// Transform a source of records into a source of values using a Var
   template<class RecT>

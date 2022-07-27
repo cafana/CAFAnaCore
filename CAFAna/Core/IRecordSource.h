@@ -9,10 +9,10 @@
 #include "CAFAna/Core/Var.h"
 #include "CAFAna/Core/Weight.h"
 
-namespace ana{class FitMultiverse;}
-
-namespace ana::beta
+namespace ana
 {
+  class FitMultiverse;
+
   template<class RecT> class _IRecordEnsembleSource;
   template<class RecT> class _IRecordSource;
 
@@ -71,7 +71,7 @@ namespace ana::beta
 #include "CAFAna/Core/Weighter.h"
 #include "CAFAna/Core/EnsembleSource.h"
 
-namespace ana::beta
+namespace ana
 {
   template<class RecT> IValueSource&
   _IRecordSourceDefaultImpl<RecT>::GetVar(const _Var<RecT>& var)

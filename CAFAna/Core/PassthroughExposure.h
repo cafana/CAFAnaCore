@@ -2,7 +2,7 @@
 
 #include "CAFAna/Core/IExposureSink.h"
 
-namespace ana::beta
+namespace ana
 {
   /// \brief Implementation detail for various source/sink classes
   //

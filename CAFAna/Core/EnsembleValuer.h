@@ -8,7 +8,7 @@
 #include "CAFAna/Core/EnsureFiniteBase.h"
 #include "CAFAna/Core/PassthroughExposure.h"
 
-namespace ana::beta
+namespace ana
 {
   /// Transform a source of ensemble records into a source of ensemble values
   /// using a Var

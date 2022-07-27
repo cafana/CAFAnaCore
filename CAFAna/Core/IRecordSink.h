@@ -4,7 +4,7 @@
 
 #include "CAFAna/Core/Tags.h"
 
-namespace ana::beta
+namespace ana
 {
   template<class RecT> class SinkInterface<RecordTag<RecT>>: public IExposureSink
   {

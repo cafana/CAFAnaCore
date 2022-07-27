@@ -2,7 +2,7 @@
 
 #include <iosfwd>
 
-namespace ana::beta
+namespace ana
 {
   /// Element of a graph to be rendered to dot format
   class IGraphElem

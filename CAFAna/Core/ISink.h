@@ -4,7 +4,7 @@
 
 #include <unordered_set>
 
-namespace ana::beta
+namespace ana
 {
   template<class RecT> class _ISource;
 

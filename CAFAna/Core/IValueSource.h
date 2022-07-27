@@ -3,7 +3,7 @@
 #include "CAFAna/Core/ISource.h"
 #include "CAFAna/Core/IEnsembleSource.h"
 
-namespace ana::beta
+namespace ana
 {
   typedef _ISource<double> IValueSource;
 

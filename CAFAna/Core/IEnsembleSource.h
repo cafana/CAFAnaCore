@@ -4,10 +4,10 @@
 
 #include "CAFAna/Core/Tags.h"
 
-namespace ana{class FitMultiverse;}
-
-namespace ana::beta
+namespace ana
 {
+  class FitMultiverse;
+
   template<class RecT> class _IEnsembleSource: public _ISource<EnsembleTag<RecT>>
   {
   public:

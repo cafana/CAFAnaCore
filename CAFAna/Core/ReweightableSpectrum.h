@@ -17,7 +17,7 @@ namespace ana
   template<class T> _Weight<T> Unweighted();
 
   /// %Spectrum with the value of a second variable, allowing for reweighting
-  class ReweightableSpectrum: public beta::IValuePairSink
+  class ReweightableSpectrum: public IValuePairSink
   {
   public:
     friend class ReweightableSpectrumSink;
@@ -38,11 +38,11 @@ namespace ana
                          const LabelsAndBins& trueAxis,
                          double pot, double livetime);
 
-    ReweightableSpectrum(beta::IValuePairSource& src,
+    ReweightableSpectrum(IValuePairSource& src,
                          const LabelsAndBins& recoAxis,
                          const LabelsAndBins& trueAxis);
 
-    template<class T> ReweightableSpectrum(beta::_IRecordSource<T>& src,
+    template<class T> ReweightableSpectrum(_IRecordSource<T>& src,
                                            const _HistAxis<_Var<T>>& recoAxis,
                                            const _HistAxis<_Var<T>>& trueAxis)
       : ReweightableSpectrum(src.GetVars(recoAxis.GetVar1D(), trueAxis.GetVar1D()), recoAxis, trueAxis)

@@ -4,7 +4,7 @@
 
 #include "CAFAna/Core/Cut.h"
 
-namespace ana::beta
+namespace ana
 {
   /// Transforms an ensemble record source by removing records according to a
   /// cut

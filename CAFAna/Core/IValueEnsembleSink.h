@@ -3,7 +3,7 @@
 #include "CAFAna/Core/ISink.h"
 #include "CAFAna/Core/IExposureSink.h"
 
-namespace ana::beta
+namespace ana
 {
   template<> class SinkInterface<EnsembleTag<double>>: public IExposureSink
   {

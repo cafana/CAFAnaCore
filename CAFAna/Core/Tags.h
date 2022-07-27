@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ana::beta
+namespace ana
 {
   // Helpers to be able to name ExposureSource/Sink and various
   // EnsembleSource/Sinks

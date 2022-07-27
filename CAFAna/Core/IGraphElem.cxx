@@ -4,7 +4,7 @@
 
 #include <ostream>
 
-namespace ana::beta
+namespace ana
 {
   //----------------------------------------------------------------------
   void IGraphElem::PrintNode(std::ostream& os,

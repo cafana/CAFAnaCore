@@ -6,7 +6,7 @@
 
 #include "CAFAna/Core/Weight.h"
 
-namespace ana::beta
+namespace ana
 {
   /// Transform a source of ensemble records by weighting them
   template<class RecT> class _EnsembleWeighter: public PassthroughEnsemble<RecT>, protected EnsureFiniteBase
