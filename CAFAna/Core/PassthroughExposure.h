@@ -4,9 +4,7 @@
 
 namespace ana::beta
 {
-  // Implementation detail for various source/sink classes
-  //
-  // TODO is this the best name?
+  /// \brief Implementation detail for various source/sink classes
   //
   // This is a Mixin. You should inherit from it, and it should inherit from
   // all your desired base classes.

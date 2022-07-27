@@ -7,9 +7,7 @@
 
 namespace ana::beta
 {
-  // Implementation detail for various source/sink classes
-  //
-  // TODO is this the best name?
+  /// Implementation detail for various source/sink classes
   template<class RecT> class Passthrough: public PassthroughExposure<_IRecordSource<RecT>, _IRecordSink<RecT>>
   {
   public:
