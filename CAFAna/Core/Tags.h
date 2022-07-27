@@ -6,7 +6,5 @@ namespace ana::beta
   // EnsembleSource/Sinks
   class ExposureTag;
   template<class RecT> class EnsembleTag;
-
-  // We might want to introduce this one to reduce potential ambiguity
-  // template<class RecT> class RecordTag;
+  template<class RecT> class RecordTag;
 }

@@ -10,7 +10,7 @@ namespace ana::beta
   template<class RecT, class SpillT> class _Cutter: public Passthrough<RecT>
   {
   public:
-    _Cutter(_ISource<RecT>& src, const _Cut<RecT, SpillT>& cut)
+    _Cutter(_ISource<RecordTag<RecT>>& src, const _Cut<RecT, SpillT>& cut)
       : fCut(cut)
     {
       src.Register(this);

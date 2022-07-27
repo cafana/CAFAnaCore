@@ -6,17 +6,13 @@
 
 namespace ana::beta
 {
-  // TODO can we enforce RecT is not exposure or ensemble?
-  //
-  // Do we need a RecordTag?
-  template<class RecT> class SinkInterface: public IExposureSink
+  template<class RecT> class SinkInterface<RecordTag<RecT>>: public IExposureSink
   {
   public:
     virtual void HandleRecord(const RecT* rec, double weight) = 0;
   };
 
-  // TODO TODO
-  template<class RecT> using _IRecordSink = _ISink<RecT>;
+  template<class RecT> using _IRecordSink = _ISink<RecordTag<RecT>>;
 
 
   template<class RecT> class SinkInterface<EnsembleTag<RecT>>: public IExposureSink

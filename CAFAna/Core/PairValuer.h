@@ -18,7 +18,7 @@ namespace ana::beta
     protected EnsureFiniteBase
   {
   public:
-    _PairValuer(_ISource<RecT>& src,
+    _PairValuer(_ISource<RecordTag<RecT>>& src,
                 const _Var<RecT>& varx, 
                 const _Var<RecT>& vary)
       : fVarX(varx), fVarY(vary)

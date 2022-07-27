@@ -12,7 +12,7 @@ namespace ana::beta
   template<class RecT> class _Weighter: public Passthrough<RecT>, protected EnsureFiniteBase
   {
   public:
-    _Weighter(_ISource<RecT>& src, const _Weight<RecT>& wei)
+    _Weighter(_ISource<RecordTag<RecT>>& src, const _Weight<RecT>& wei)
       : fWeight(wei)
     {
       src.Register(this);

@@ -18,7 +18,7 @@ namespace ana::beta
     protected EnsureFiniteBase
   {
   public:
-    _Valuer(_ISource<RecT>& src, const _Var<RecT>& var)
+    _Valuer(_ISource<RecordTag<RecT>>& src, const _Var<RecT>& var)
       : fVar(var)
     {
       src.Register(this);

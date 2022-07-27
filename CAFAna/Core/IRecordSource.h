@@ -73,7 +73,7 @@ namespace ana::beta
   };
 
 
-  template<class RecT> class _IRecordSourceDefaultImpl : public _ISource<RecT>
+  template<class RecT> class _IRecordSourceDefaultImpl : public _ISource<RecordTag<RecT>>
   {
   public:
     using Record_t = RecT;
