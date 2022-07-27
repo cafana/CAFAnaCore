@@ -6,12 +6,14 @@
 
 namespace ana::beta
 {
+  //----------------------------------------------------------------------
   void IGraphElem::PrintNode(std::ostream& os,
                              const IGraphElem* node) const
   {
-    os << "\"" << node << "\" [ label = \"" << DemangledTypeName(node) << /*"@" << node <<*/ "\" ]" << std::endl;
+    os << "\"" << node << "\" [ label = \"" << DemangledTypeName(node) << "\" ]" << std::endl;
   }
 
+  //----------------------------------------------------------------------
   void IGraphElem::PrintEdge(std::ostream& os,
                              const IGraphElem* from,
                              const IGraphElem* to,
