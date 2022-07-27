@@ -123,9 +123,11 @@ namespace ana::beta
 }
 
 
-#include "CAFAna/Core/CutApplier.h"
+#include "CAFAna/Core/Cutter.h"
+#include "CAFAna/Core/EnsembleCutter.h"
 #include "CAFAna/Core/VarApplier.h"
-#include "CAFAna/Core/WeightApplier.h"
+#include "CAFAna/Core/Weighter.h"
+#include "CAFAna/Core/EnsembleWeighter.h"
 #include "CAFAna/Core/EnsembleSource.h"
 
 namespace ana::beta
@@ -148,14 +150,14 @@ namespace ana::beta
   template<class RecT> template<class SpillT> _IRecordSource<RecT>&
   _IRecordSourceDefaultImpl<RecT>::GetCut(const _Cut<RecT, SpillT>& cut)
   {
-    return fCutSources.template Get<_CutApplier<RecT, SpillT>>(cut.ID(), *this, cut);
+    return fCutSources.template Get<_Cutter<RecT, SpillT>>(cut.ID(), *this, cut);
   }
 
 
   template<class RecT> _IRecordSource<RecT>&
   _IRecordSourceDefaultImpl<RecT>::Weighted(const _Weight<RecT>& wei)
   {
-    return fWeightSources.template Get<_WeightApplier<RecT>>(wei.ID(), *this, wei);
+    return fWeightSources.template Get<_Weighter<RecT>>(wei.ID(), *this, wei);
   }
 
 
@@ -183,14 +185,14 @@ namespace ana::beta
   template<class RecT> template<class SpillT> _IRecordEnsembleSource<RecT>&
   _IRecordEnsembleSourceDefaultImpl<RecT>::GetCut(const _Cut<RecT, SpillT>& cut)
   {
-    return fCutSources.template Get<_EnsembleCutApplier<RecT, SpillT>>(cut.ID(), *this, cut);
+    return fCutSources.template Get<_EnsembleCutter<RecT, SpillT>>(cut.ID(), *this, cut);
   }
 
 
   template<class RecT> _IRecordEnsembleSource<RecT>&
   _IRecordEnsembleSourceDefaultImpl<RecT>::Weighted(const _Weight<RecT>& wei)
   {
-    return fWeightSources.template Get<_EnsembleWeightApplier<RecT>>(wei.ID(), *this, wei);
+    return fWeightSources.template Get<_EnsembleWeighter<RecT>>(wei.ID(), *this, wei);
   }
 
 }

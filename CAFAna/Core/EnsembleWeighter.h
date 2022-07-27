@@ -1,48 +1,23 @@
 #pragma once
 
-#include "CAFAna/Core/Passthrough.h"
+#include "CAFAna/Core/PassthroughEnsemble.h"
 
 #include "CAFAna/Core/Weight.h"
 
 namespace ana::beta
 {
-  // TODO is this the best name?
-  template<class RecT> class _WeightApplier: public Passthrough<RecT>
+  /// Transform a source of ensemble records by weighting them
+  template<class RecT> class _EnsembleWeighter: public PassthroughEnsemble<RecT>
   {
   public:
-    _WeightApplier(_ISource<RecT>& src, const _Weight<RecT>& wei)
-      : fWeight(wei)
-    {
-      src.Register(this);
-    }
-
-    virtual ~_WeightApplier()
-    {
-    }
-
-    virtual void HandleRecord(const RecT* rec, double weight) override
-    {
-      const double w = fWeight(rec);
-      // TODO warning/error about negative weights?
-      if(w != 0) Passthrough<RecT>::HandleRecord(rec, w*weight);
-    }
-
-  protected:
-    _Weight<RecT> fWeight;
-  };
-
-
-  template<class RecT> class _EnsembleWeightApplier: public PassthroughEnsemble<RecT>
-  {
-  public:
-    _EnsembleWeightApplier(_IEnsembleSource<RecT>& src,
+    _EnsembleWeighter(_IEnsembleSource<RecT>& src,
                            const _Weight<RecT>& wei)
       : PassthroughEnsemble<RecT>(src), fWeight(wei)
     {
       src.Register(this);
     }
 
-    virtual ~_EnsembleWeightApplier()
+    virtual ~_EnsembleWeighter()
     {
     }
 
