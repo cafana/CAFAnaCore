@@ -1,5 +1,5 @@
 #include "CAFAna/Core/Spectrum.h"
-#include "CAFAna/Core/VarApplier.h"
+#include "CAFAna/Core/Valuer.h"
 #include "CAFAna/Core/Var.h"
 using namespace ana;
 using namespace ana::beta;
@@ -26,7 +26,7 @@ void test_sourcesink()
 {
   MyRecSource recsrc;
 
-  _VarApplier<MyRec> vapp(recsrc, myvar);
+  _Valuer<MyRec> vapp(recsrc, myvar);
 
   MyRec rec;
   rec.a = 42;

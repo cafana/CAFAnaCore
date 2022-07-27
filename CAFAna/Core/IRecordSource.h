@@ -125,7 +125,10 @@ namespace ana::beta
 
 #include "CAFAna/Core/Cutter.h"
 #include "CAFAna/Core/EnsembleCutter.h"
-#include "CAFAna/Core/VarApplier.h"
+#include "CAFAna/Core/Valuer.h"
+#include "CAFAna/Core/PairValuer.h"
+#include "CAFAna/Core/EnsembleValuer.h"
+#include "CAFAna/Core/EnsemblePairValuer.h"
 #include "CAFAna/Core/Weighter.h"
 #include "CAFAna/Core/EnsembleWeighter.h"
 #include "CAFAna/Core/EnsembleSource.h"
@@ -135,7 +138,7 @@ namespace ana::beta
   template<class RecT> IValueSource&
   _IRecordSourceDefaultImpl<RecT>::GetVar(const _Var<RecT>& var)
   {
-    return fVarSources.template Get<_VarApplier<RecT>>(var.ID(), *this, var);
+    return fVarSources.template Get<_Valuer<RecT>>(var.ID(), *this, var);
   }
 
 
@@ -143,7 +146,7 @@ namespace ana::beta
   _IRecordSourceDefaultImpl<RecT>::GetVars(const _Var<RecT>& varx,
                                            const _Var<RecT>& vary)
   {
-    return fVarPairSources.template Get<_VarPairApplier<RecT>>((varx*vary).ID(), *this, varx, vary);
+    return fVarPairSources.template Get<_PairValuer<RecT>>((varx*vary).ID(), *this, varx, vary);
   }
 
 
@@ -172,14 +175,14 @@ namespace ana::beta
   template<class RecT> IValueEnsembleSource&
   _IRecordEnsembleSourceDefaultImpl<RecT>::GetVar(const _Var<RecT>& var)
   {
-    return fVarSources.template Get<_EnsembleVarApplier<RecT>>(var.ID(), *this, var);
+    return fVarSources.template Get<_EnsembleValuer<RecT>>(var.ID(), *this, var);
   }
 
   template<class RecT> IValuePairEnsembleSource&
   _IRecordEnsembleSourceDefaultImpl<RecT>::GetVars(const _Var<RecT>& varx,
                                                    const _Var<RecT>& vary)
   {
-    return fVarPairSources.template Get<_EnsembleVarPairApplier<RecT>>((varx*vary).ID(), *this, varx, vary);
+    return fVarPairSources.template Get<_EnsemblePairValuer<RecT>>((varx*vary).ID(), *this, varx, vary);
   }
 
   template<class RecT> template<class SpillT> _IRecordEnsembleSource<RecT>&
