@@ -3,7 +3,7 @@
 #include "CAFAna/Core/IRecordSink.h"
 #include "CAFAna/Core/IRecordSource.h"
 
-#include "CAFAna/Core/IValueSink.h"
+#include "CAFAna/Core/IValuePairSink.h"
 
 #include "CAFAna/Core/EnsureFiniteBase.h"
 #include "CAFAna/Core/PassthroughExposure.h"
