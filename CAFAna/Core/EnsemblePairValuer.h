@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CAFAna/Core/IRecordEnsembleSink.h"
-#include "CAFAna/Core/IRecordSource.h"
+#include "CAFAna/Core/IRecordEnsembleSource.h"
 
 #include "CAFAna/Core/IValuePairEnsembleSink.h"
 
