@@ -237,6 +237,7 @@ namespace ana
     TObjString* tag = (TObjString*)dir->Get("type");
     assert(tag);
     assert(tag->GetString() == "Binning");
+    delete tag;
 
     TVectorD* vMinMax = (TVectorD*)dir->Get("nminmax");
     assert(vMinMax);
@@ -253,14 +254,18 @@ namespace ana
       const TVectorD* vEdges = (TVectorD*)dir->Get("edges");
       std::vector<double> edges(vEdges->GetNrows());
       for(int i = 0; i < vEdges->GetNrows(); ++i) edges[i] = (*vEdges)[i];
+      delete vEdges;
 
       ret = Binning::Custom(edges);
     }
+
+    delete vMinMax;
 
     for(unsigned int i = 0; ; ++i){
       TObjString* s = (TObjString*)dir->Get(TString::Format("label%d", i).Data());
       if(!s) break;
       ret.fLabels.push_back(s->GetString().Data());
+      delete s;
     }
 
     delete dir;

@@ -15,23 +15,19 @@ namespace
   namespace util{template<class T> T sqr(const T& x){return x*x;}}
 }
 
-class StatErrorsEnabled
-{
-public:
-  StatErrorsEnabled()
-  {
-    fEnabled = (getenv("CAFANA_STAT_ERRS") != 0);
-    if(fEnabled) std::cout << "Propagation of statistical uncertainties enabled" << std::endl;
-  }
-
-  operator bool() const {return fEnabled;}
-
-protected:
-  bool fEnabled;
-} gStatErrs;
-
 namespace ana
 {
+  //----------------------------------------------------------------------
+  bool Hist::StatErrorsEnabled()
+  {
+    static bool enabled = (getenv("CAFANA_STAT_ERRS") != 0);
+    static bool once = true;
+    if(once && enabled) std::cout << "CAFAna: Propagation of statistical uncertainties enabled" << std::endl << std::endl;
+    once = false;
+
+    return enabled;
+  }
+
   //----------------------------------------------------------------------
   Hist::Hist() : fType(kUninitialized), fSqrtErrs(false)
   {
@@ -159,7 +155,7 @@ namespace ana
   {
     // Function to let user manually set fSumSq for a Hist.
 
-    if(!gStatErrs){
+    if(!StatErrorsEnabled()){
       std::cout << "Hist::AdoptWithErrors: must have stat errors enabled (via $CAFANA_STAT_ERRS env var) to use this constructor" << std::endl;
       abort();
     }
@@ -184,7 +180,7 @@ namespace ana
       ret.fType = kDense;
       ret.fData = Eigen::Map<Eigen::ArrayXd>(h->GetArray(), h->GetNbinsX()+2);
 
-      if(gStatErrs){
+      if(StatErrorsEnabled()){
         const int N = h->GetNbinsX()+2;
         ret.fSumSq.resize(N);
         for(int i = 0; i < N; ++i) ret.fSumSq[i] = util::sqr(h->GetBinError(i));
@@ -291,26 +287,25 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  void Hist::Fill(const Binning& bins, double x, double w)
+  void Hist::Fill(int bin, double w)
   {
     assert(Initialized());
 
     if(w != 1) fSqrtErrs = false;
 
-    if(fType == kDense && gStatErrs && fSumSq.size() == 0) fSumSq.resize(fData.size());
+    if(fType == kDense && StatErrorsEnabled() && fSumSq.size() == 0) fSumSq.resize(fData.size());
 
     switch(fType){
     case kSparse:
-      fDataSparse.coeffRef(bins.FindBin(x)) += w;
+      fDataSparse.coeffRef(bin) += w;
       break;
     case kDenseStan:
       std::cout << "Hist::Fill() not supported for stan vars" << std::endl;
       abort();
     case kDense:
       {
-        const int bin = bins.FindBin(x);
         fData[bin] += w;
-        if(gStatErrs){
+        if(StatErrorsEnabled()){
           if(fSumSq.size() == 0) fSumSq.resize(fData.size());
           fSumSq[bin] += w*w;
         }

@@ -4,6 +4,8 @@
 #include "CAFAna/Core/FwdDeclare.h"
 #include "CAFAna/Core/HistAxis.h"
 #include "CAFAna/Core/Hist.h"
+#include "CAFAna/Core/IValueSource.h"
+#include "CAFAna/Core/IRecordSource.h"
 #include "CAFAna/Core/UtilsExt.h"
 
 #include <Eigen/Dense>
@@ -37,7 +39,7 @@ namespace ana
   template<class T> class SpectrumSinkBase;
 
   /// Representation of a spectrum in any variable, with associated POT
-  class Spectrum
+  class Spectrum: public IValueSink
   {
   public:
     friend class SpectrumLoaderBase;
@@ -47,6 +49,19 @@ namespace ana
 
     enum ESparse{kDense, kSparse};
 
+    /// Construct a spectrum from a source of values and an axis definition
+    Spectrum(IValueSource& src, const LabelsAndBins& axis, ESparse sparse = kDense);
+
+    /// \brief Shorthand construction with a source of records and a HistAxis
+    /// defining the Var to extract from those records.
+    template<class RecT> Spectrum(_IRecordSource<RecT>& src,
+                                  const _HistAxis<_Var<RecT>>& axis,
+                                  ESparse sparse = kDense)
+      : Spectrum(src[axis.GetVar1D()], axis, sparse)
+    {
+    }
+
+#ifdef CAFANACORE_SPECTRUMLOADERBASE
     /// One constructor to rule them all
     template<class T, class U>
     Spectrum(SpectrumLoaderBase& loader,
@@ -73,6 +88,7 @@ namespace ana
              const _Cut<T, U>& cut,
              const SystShifts& shift = kNoShift,
              const _Weight<T>& wei = Unweighted<T>());
+#endif
 
     /// Makes a spectrum from an eigen array
     Spectrum(Eigen::ArrayXd&& h,
@@ -83,7 +99,7 @@ namespace ana
     Spectrum(Eigen::ArrayXstan&& h,
              const LabelsAndBins& axis,
              double pot, double livetime);
- 
+
     /// Makes a spectrum from two eigen arrays
     /// One array is for bin contents, the other for squared errors
     /// Only to be used with stat errors enabled
@@ -91,7 +107,9 @@ namespace ana
              Eigen::ArrayXd&& sqerr,
              const LabelsAndBins& axis,
              double pot, double livetime);
-	  
+
+#ifdef CAFANACORE_SPECTRUMLOADERBASE
+
     /// 2D Spectrum taking 2 HistAxis
     template<class T, class U>
     Spectrum(SpectrumLoaderBase& loader,
@@ -138,6 +156,7 @@ namespace ana
              const SystShifts& shift = kNoShift,
              const _Weight<T>& wei = Unweighted<T>(),
 	     ESparse sparse = kDense);
+#endif
 
     /// The only valid thing to do with such a spectrum is to assign something
     /// else into it.
@@ -150,7 +169,9 @@ namespace ana
     Spectrum& operator=(const Spectrum& rhs);
     Spectrum& operator=(Spectrum&& rhs);
 
-    void Fill(double x, double w = 1);
+    virtual void Fill(double x, double w) override;
+    virtual void FillPOT(double pot) override;
+    virtual void FillLivetime(double livetime) override;
 
     /// \brief Histogram made from this Spectrum, scaled to some exposure
     ///
