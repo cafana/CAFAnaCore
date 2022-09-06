@@ -24,7 +24,7 @@ else
     echo root v6_22_08d -q${QUAL}:p392
     echo boost v1_75_0 -q$QUAL
 
-    echo ifdhc v2_5_16 -q${QUAL}:p392
+    echo ifdhc v2_6_4 -q${QUAL}:p392
 fi
 
 echo stan_math v4_0_1 -q$QUAL
