@@ -198,8 +198,8 @@ namespace ana
       ret.fDataSparse.resize(nbins);
       ret.fDataSparse.setZero();
       for(int i = 0; i < hSparse->GetNbins(); ++i){
-        int idx[N];
-        const double y = hSparse->GetBinContent(i, idx);
+        std::vector<int> idx(N);
+        const double y = hSparse->GetBinContent(i, &idx.front());
         int idx1d = idx[0];
         int mult = 1;
         for(int d = 1; d < N; ++d){
