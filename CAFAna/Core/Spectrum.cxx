@@ -67,6 +67,7 @@ namespace ana
 	
   //----------------------------------------------------------------------
   Spectrum::Spectrum(const Spectrum& rhs):
+    IValueSink(rhs),
     fHist(rhs.fHist),
     fPOT(rhs.fPOT),
     fLivetime(rhs.fLivetime),
@@ -77,6 +78,7 @@ namespace ana
 
   //----------------------------------------------------------------------
   Spectrum::Spectrum(Spectrum&& rhs):
+    IValueSink(rhs),
     fHist(std::move(rhs.fHist)),
     fPOT(rhs.fPOT),
     fLivetime(rhs.fLivetime),

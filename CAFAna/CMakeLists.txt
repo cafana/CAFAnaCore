@@ -1,5 +1,1 @@
 add_subdirectory(Core)
-#add_subdirectory(Experiment)
-#add_subdirectory(Extrap)
-#add_subdirectory(Prediction)
-#add_subdirectory(Vars)

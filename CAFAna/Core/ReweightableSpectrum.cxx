@@ -44,7 +44,7 @@ namespace ana
 
   //----------------------------------------------------------------------
   ReweightableSpectrum::ReweightableSpectrum(const ReweightableSpectrum& rhs)
-    : fAxisX(rhs.fAxisX), fAxisY(rhs.fAxisY)
+    : IValuePairSink(rhs), fAxisX(rhs.fAxisX), fAxisY(rhs.fAxisY)
   {
     DontAddDirectory guard;
 

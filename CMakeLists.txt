@@ -38,7 +38,7 @@ endif()
 
 # Record what flags were used. Can dump with
 # readelf -p .GCC.command.line libCAFAnaCoreExt.so 
-set(common_flags "-fdiagnostics-color -grecord-gcc-switches -D_REENTRANT")
+set(common_flags "-fdiagnostics-color -grecord-gcc-switches -D_REENTRANT -Wall -Wextra")
 
 # If we can't find "2019" in the version, ie it's newer than that
 if(NOT TBB_VERSION MATCHES 2019)
