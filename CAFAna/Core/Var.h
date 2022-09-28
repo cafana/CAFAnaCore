@@ -77,6 +77,11 @@ namespace ana
     {
     }
 
+    _Var(const _Var&) = default;
+    _Var(_Var&&) = default;
+    _Var& operator=(const _Var&) = default;
+    _Var& operator=(_Var&&) = default;
+
     /// Allows a variable to be called with double value = myVar(rec) syntax
     double operator()(const T* rec) const
     {

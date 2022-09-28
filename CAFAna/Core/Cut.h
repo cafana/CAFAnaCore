@@ -75,11 +75,17 @@ namespace ana
     {
     }
 
+    _Cut(const _Cut&) = default;
+    _Cut(_Cut&&) = default;
+
     // Convert from cuts without spillT to those with a typed spillT but null
     // function pointer
     _Cut(const _Cut<RecT, void>& c) : CutBase(c)
     {
     }
+
+    _Cut& operator=(const _Cut& c) = default;
+    _Cut& operator=(_Cut&& c) = default;
 
     /// Allows a cut to be called with bool result = myCut(rec) syntax
     bool operator()(const RecT* rec) const
