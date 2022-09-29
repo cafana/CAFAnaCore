@@ -2,6 +2,7 @@
 
 #include "CAFAna/Core/IGraphElem.h"
 
+#include <algorithm>
 #include <unordered_set>
 
 namespace ana
