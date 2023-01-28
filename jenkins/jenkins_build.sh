@@ -3,15 +3,15 @@
 set +ex
 env
 
-if [[ $QUALIFIER != *:n308* && $QUALIFIER != *:n311* ]]
+if [[ $QUALIFIER != *:n311* && $QUALIFIER != *:n313* ]]
 then
-    echo Unspecified nutools version in qualifier $QUALIFIER -- must be n308 or n311
+    echo Unspecified nutools version in qualifier $QUALIFIER -- must be n311 or n313
     exit 1
 fi
 
-if [[ $QUALIFIER != *e19* && $QUALIFIER != *e20* && $QUALIFIER != *c7* ]]
+if [[ $QUALIFIER != *e20* && $QUALIFIER != *c7* ]]
 then
-    echo Unknown compiler in qualifier $QUALIFIER -- must be e19, e20, or c7
+    echo Unknown compiler in qualifier $QUALIFIER -- must be e20, or c7
     exit 1
 fi
 
@@ -21,7 +21,7 @@ then
     exit 1
 fi
 
-if [[ $EXPERIMENT == *n308* ]]
+if [[ $EXPERIMENT == *n313* ]]
 then
     source /cvmfs/nova.opensciencegrid.org/externals/setup || exit 1
 else
@@ -36,7 +36,7 @@ cat $TMPFILE
 source $TMPFILE
 
 setup cmake v3_14_3 || exit 1
-setup ninja v1_8_2 || exit 1
+setup ninja v1_10_0 || exit 1
 
 make clean
 
