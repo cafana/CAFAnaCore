@@ -29,5 +29,5 @@ else
     echo ifdhc v2_6_11 -q${QUAL}:p392
 fi
 
-echo stan_math v4_2_1 -q$QUAL
-echo eigen v3_4_0
+echo stan_math v4_0_1 -q$QUAL
+echo eigen v3_3_9a
