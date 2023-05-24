@@ -26,6 +26,7 @@ then
     source /cvmfs/nova.opensciencegrid.org/externals/setup || exit 1
 else
     source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
+    export PRODUCTS=/cvmfs/nova.opensciencegrid.org/externals:$PRODUCTS
 fi
 
 # Looping over lines is a total pain in bash. Easier to just send it to a file
