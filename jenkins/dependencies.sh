@@ -22,12 +22,13 @@ then
     echo ifdhc v2_6_4 -q${QUAL}:p392
 
 else
-    # These are the current (February 2023) nova versions (nutools v3_13_03)
+    # These are the current (May 2023) nova versions (nutools v3_13_04b)
     echo root v6_22_08d -q${QUAL}:p392
     echo boost v1_75_0 -q$QUAL
 
-    echo ifdhc v2_6_11 -q${QUAL}:p392
+    echo ifdhc v2_6_19 -q${QUAL}:p392
+
 fi
 
-echo stan_math v4_0_1 -q$QUAL
-echo eigen v3_3_9a
+echo stan_math v4_2_1 -q$QUAL
+echo eigen v3_4_0
