@@ -30,5 +30,5 @@ else
 
 fi
 
-echo stan_math v4_0_1 -q$QUAL
-echo eigen v3_3_9a
+echo stan_math v4_5_0a
+echo eigen v3_4_0
