@@ -31,4 +31,5 @@ else
 fi
 
 echo stan_math v4_5_0a
+echo sundials v6_5_0
 echo eigen v3_4_0
