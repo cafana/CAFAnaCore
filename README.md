@@ -10,6 +10,8 @@
 
 This document briefly describes the build process of the CAFAna framework contained in this package.
 
+For documentation on the classes themselves, automatically generated Doxygen pages are maintained on our [GitHub Pages site](https://cafana.github.io/CAFAnaCore/).  (These are automatically updated when pull requests are merged to the `master` branch.)
+
 ## Prerequisites
 * A compiler that understands C++14 (tested with gcc)
 * ROOT v6.00.00 or above
