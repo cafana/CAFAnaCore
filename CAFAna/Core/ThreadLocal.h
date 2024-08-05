@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <thread>
 #include <shared_mutex>
 #include <unordered_map>
@@ -13,12 +14,6 @@ namespace ana
   template<class T> class ThreadLocal
   {
   public:
-    ~ThreadLocal()
-    {
-      // No good way to know a thread exited, so we can't cleanup until here
-      for(auto it: fVals) delete it.second;
-    }
-
     T* operator->()
     {
       const std::thread::id id = std::this_thread::get_id();
@@ -29,20 +24,19 @@ namespace ana
 
         auto it = fVals.find(id);
         // We found the variable for this thread
-        if(it != fVals.end()) return it->second;
+        if(it != fVals.end()) return it->second.get();
       }
 
       // If we've never seen this thread before we need to create a new entry,
       // and we have to have exclusive access for that to be safe.
       std::unique_lock lock(fMutex);
 
-      T* val = new T;
-      fVals.emplace(id, val);
-      return val;
+      auto it_success_pair = fVals.emplace(id, std::make_unique<T>());
+      return it_success_pair.first->second.get();
     }
 
   protected:
-    std::unordered_map<std::thread::id, T*> fVals;
+    std::unordered_map<std::thread::id, std::unique_ptr<T>> fVals;
     std::shared_mutex fMutex;
   };
 }
