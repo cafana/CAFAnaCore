@@ -2,6 +2,7 @@
 
 #include "CAFAna/Core/Binning.h"
 
+#include <optional>
 #include <string>
 
 namespace ana
