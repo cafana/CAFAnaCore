@@ -17,14 +17,28 @@ endif()
 execute_process(COMMAND git describe --tags OUTPUT_VARIABLE CAFANACORE_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCAFANACORE_VERSION=\\\"${CAFANACORE_VERSION}\\\"")
 
+option (SPACK "Building through Spack")
 
 # non-negotiable dependencies
-find_package(ROOT REQUIRED)
-find_package(StanMath REQUIRED)
-find_package(Eigen REQUIRED)
-find_package(Boost REQUIRED)
-find_package(Sundials REQUIRED)
-find_package(TBB REQUIRED)
+if (SPACK)
+    find_package(ROOT REQUIRED CONFIG)
+    find_package(Eigen3 REQUIRED CONFIG)
+    find_package(Boost REQUIRED CONFIG)
+    find_package(SUNDIALS REQUIRED CONFIG)
+    find_package(TBB REQUIRED CONFIG)
+
+    function(link_tbb target)
+        target_link_libraries(${target} PUBLIC TBB::tbb)
+    endfunction()
+else()
+    find_package(ROOT REQUIRED MODULE)
+    find_package(Eigen REQUIRED MODULE)
+    find_package(Boost REQUIRED MODULE)
+    find_package(Sundials REQUIRED MODULE)
+    find_package(TBB REQUIRED MODULE)
+endif()
+
+find_package(StanMath REQUIRED MODULE)
 
 # pthread / std::thread
 find_package(Threads REQUIRED)
