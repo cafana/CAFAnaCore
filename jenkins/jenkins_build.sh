@@ -3,15 +3,15 @@
 set +ex
 env
 
-if [[ $QUALIFIER != *:n311* && $QUALIFIER != *:n313* ]]
+if [[ $QUALIFIER != *:n311* && $QUALIFIER != *:n319* ]]
 then
-    echo Unspecified nutools version in qualifier $QUALIFIER -- must be n311 or n313
+    echo Unspecified nutools version in qualifier $QUALIFIER -- must be n311 or n319
     exit 1
 fi
 
-if [[ $QUALIFIER != *e20* && $QUALIFIER != *c7* ]]
+if [[ $QUALIFIER != *e26* && $QUALIFIER != *c14* ]]
 then
-    echo Unknown compiler in qualifier $QUALIFIER -- must be e20, or c7
+    echo Unknown compiler in qualifier $QUALIFIER -- must be e26, or c14
     exit 1
 fi
 
@@ -21,7 +21,7 @@ then
     exit 1
 fi
 
-if [[ $EXPERIMENT == *n313* ]]
+if [[ $EXPERIMENT == *n319* ]]
 then
     source /cvmfs/nova.opensciencegrid.org/externals/setup || exit 1
 else
@@ -36,8 +36,8 @@ jenkins/dependencies.sh $QUALIFIER | sed 's/^/setup /' > $TMPFILE
 cat $TMPFILE
 source $TMPFILE
 
-setup cmake v3_14_3 || exit 1
-setup ninja v1_10_0 || exit 1
+setup cmake v3_27_4 || exit 1
+setup ninja v1_11_1 || exit 1
 
 make clean
 
@@ -50,7 +50,7 @@ else
     FLAGS=$FLAGS' CMAKE_BUILD_TYPE=Debug' || exit 2
 fi
 
-if [[ $QUALIFIER == *c7* ]]
+if [[ $QUALIFIER == *c14* ]]
 then
     FLAGS=$FLAGS' CMAKE_CXX_COMPILER=clang++' || exit 2
 else
