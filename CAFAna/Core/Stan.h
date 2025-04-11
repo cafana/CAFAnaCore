@@ -14,6 +14,10 @@
 // gets triggered a lot. Hopefully stan updates before tbb does.
 #define __TBB_show_deprecation_message_task_scheduler_init_H
 
+// enable legacy SUNDIALS typedefs
+#define realtype sunrealtype
+#define RCONST SUN_RCONST
+
 // Stan's dependencies trigger some warnings...
 #pragma GCC diagnostic push
 #if __GNUC__ >= 6
@@ -23,6 +27,6 @@
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Wignored-qualifiers"
+#include "sundials/sundials_context.hpp"
 #include "stan/math/rev.hpp"
 #pragma GCC diagnostic pop
-
