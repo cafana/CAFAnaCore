@@ -3,15 +3,15 @@
 set +ex
 env
 
-if [[ $QUALIFIER != *:n308* && $QUALIFIER != *:n311* ]]
+if [[ $QUALIFIER != *:n319* ]]
 then
-    echo Unspecified nutools version in qualifier $QUALIFIER -- must be n308 or n311
+    echo Unspecified nutools version in qualifier $QUALIFIER -- must be n319
     exit 1
 fi
 
-if [[ $QUALIFIER != *e19* && $QUALIFIER != *e20* && $QUALIFIER != *c7* ]]
+if [[ $QUALIFIER != *e26* && $QUALIFIER != *c14* ]]
 then
-    echo Unknown compiler in qualifier $QUALIFIER -- must be e19, e20, or c7
+    echo Unknown compiler in qualifier $QUALIFIER -- must be e26, or c14
     exit 1
 fi
 
@@ -30,8 +30,8 @@ jenkins/dependencies.sh $QUALIFIER | sed 's/^/setup /' > $TMPFILE
 cat $TMPFILE
 source $TMPFILE
 
-setup cmake v3_14_3 || exit 1
-setup ninja v1_8_2 || exit 1
+setup cmake v3_27_4 || exit 1
+setup ninja v1_11_1 || exit 1
 
 make clean
 
@@ -44,7 +44,7 @@ else
     FLAGS=$FLAGS' CMAKE_BUILD_TYPE=Debug' || exit 2
 fi
 
-if [[ $QUALIFIER == *c7* ]]
+if [[ $QUALIFIER == *c14* ]]
 then
     FLAGS=$FLAGS' CMAKE_CXX_COMPILER=clang++' || exit 2
 else
