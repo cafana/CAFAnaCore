@@ -67,7 +67,8 @@ set(CMAKE_CXX_FLAGS_MINSIZEREL "${common_flags} -Os")
 #    and apparently doesn't often offer much in the way of performance increases.
 #    so let's not cause ourselves headaches
 # NDEBUG needed to ensure assert() causes an abort() even in optimized builds
-set(CMAKE_CXX_FLAGS_RELEASE "${common_flags} -O2 -DNDEBUG -g")
+# boost is noisy pointing out deprecated declarations
+set(CMAKE_CXX_FLAGS_RELEASE "${common_flags} -O2 -DNDEBUG -g -Wno-deprecated-declarations")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}  -Wl,-undefined,error")
@@ -113,7 +114,7 @@ include_directories(
         ${STAN_MATH_INC}
         ${EIGEN_INC}
         ${BOOST_INC}
-        ${SUNDIALS_INC}
+	${SUNDIALS_INC}
         ${TBB_INC}
 )
 
