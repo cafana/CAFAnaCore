@@ -3,15 +3,15 @@
 set +ex
 env
 
-if [[ $QUALIFIER != *:n319* ]]
+if [[ $QUALIFIER != *:n311* && $QUALIFIER != *:n319* ]]
 then
-    echo Unspecified nutools version in qualifier $QUALIFIER -- must be n319
+    echo Unspecified nutools version in qualifier $QUALIFIER -- must be n311 or n319
     exit 1
 fi
 
-if [[ $QUALIFIER != *e26* && $QUALIFIER != *c14* ]]
+if [[ $QUALIFIER != *e20* && $QUALIFIER != *c7* && $QUALIFIER != *e26* && $QUALIFIER != *c14* ]]
 then
-    echo Unknown compiler in qualifier $QUALIFIER -- must be e26, or c14
+    echo Unknown compiler in qualifier $QUALIFIER -- must be e20, e26, c7, or c14
     exit 1
 fi
 
