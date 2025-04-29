@@ -13,6 +13,12 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# make Stan dependency optional, but use it by default
+set(CAFANACORE_USE_STAN True CACHE BOOL "Build against Stan?")
+if(CAFANACORE_USE_STAN)
+    add_compile_definitions(-DCAFANACORE_USE_STAN)
+endif()
+
 # Bake version number into the library (CAFAna/Core/Version.cxx)
 execute_process(COMMAND git describe --tags OUTPUT_VARIABLE CAFANACORE_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCAFANACORE_VERSION=\\\"${CAFANACORE_VERSION}\\\"")
@@ -23,9 +29,12 @@ option (SPACK "Building through Spack")
 if (SPACK)
     find_package(ROOT REQUIRED CONFIG)
     find_package(Eigen3 REQUIRED CONFIG)
-    find_package(Boost REQUIRED CONFIG)
-    find_package(SUNDIALS REQUIRED CONFIG)
-    find_package(TBB REQUIRED CONFIG)
+
+    if (CAFANACORE_USE_STAN)
+        find_package(Boost REQUIRED CONFIG)
+        find_package(SUNDIALS REQUIRED CONFIG)
+        find_package(TBB REQUIRED CONFIG)
+    endif()
 
     function(link_tbb target)
         target_link_libraries(${target} PUBLIC TBB::tbb)
@@ -33,12 +42,17 @@ if (SPACK)
 else()
     find_package(ROOT REQUIRED CONFIG)
     find_package(Eigen REQUIRED MODULE)
-    find_package(Boost REQUIRED MODULE)
-    find_package(Sundials REQUIRED MODULE)
-    find_package(TBB REQUIRED MODULE)
+
+    if (CAFANACORE_USE_STAN)
+        find_package(Boost REQUIRED MODULE)
+        find_package(Sundials REQUIRED MODULE)
+        find_package(TBB REQUIRED MODULE)
+    endif()
 endif()
 
-find_package(StanMath REQUIRED MODULE)
+if (CAFANACORE_USE_STAN)
+    find_package(StanMath REQUIRED MODULE)
+endif()
 
 # pthread / std::thread
 find_package(Threads REQUIRED)
@@ -55,7 +69,7 @@ endif()
 set(common_flags "-fdiagnostics-color -grecord-gcc-switches -D_REENTRANT -Wall -Wextra")
 
 # If we can't find "2019" in the version, ie it's newer than that
-if(NOT TBB_VERSION MATCHES 2019)
+if(TBB_VERSION AND NOT TBB_VERSION MATCHES 2019)
     set(common_flags "${common_flags} -DTBB_INTERFACE_NEW")
 endif()
 
@@ -111,7 +125,13 @@ set(TARGET_BINDIR bin)
 include_directories(
         ${CMAKE_SOURCE_DIR}
         ${ROOT_INCLUDE_DIRS}
-        ${STAN_MATH_INC}
+)
+# this is clunky, but Stan-Math needs to be included before Eigen,
+# because it adds some type traits to Eigen templates for Stan types
+if (CAFANACORE_USE_STAN)
+    include_directories(${STAN_MATH_INC})
+endif()
+include_directories(
         ${EIGEN_INC}
         ${BOOST_INC}
 	${SUNDIALS_INC}
