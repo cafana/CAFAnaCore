@@ -53,10 +53,16 @@ namespace ana
 
     TH1D* ToTH1(const Binning& bins) const;
 
+    bool HasStan() const
+#ifdef CAFANACORE_USE_STAN
+      {return fType == kDenseStan;}
+#else
+      {return false;}
+#endif
+
     const Eigen::ArrayXd& GetEigen() const {assert(fType == kDense); return fData;}
     const Eigen::ArrayXd& GetEigenSqErrors() const;
 #ifdef CAFANACORE_USE_STAN
-    bool HasStan() const {return fType == kDenseStan;}
     const Eigen::ArrayXstan& GetEigenStan() const {assert(fType == kDenseStan); return fDataStan;}
 #endif
 
