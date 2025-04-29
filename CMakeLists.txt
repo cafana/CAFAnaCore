@@ -19,6 +19,22 @@ if(CAFANACORE_USE_STAN)
     add_compile_definitions(CAFANACORE_USE_STAN)
 endif()
 
+# try to get ahold of unifdef, which we'll use to strip all the #ifdef CAFANACORE_USE_STANs out of the packaged include files
+include(ExternalProject)
+set(UNIFDEF_PREFIX ${PROJECT_BINARY_DIR}/extern-unifdef)
+set(UNIFDEF_BIN ${UNIFDEF_PREFIX}/bin) # this is hard-coded in the unifdef makefile
+message(STATUS "unifdef will be installed to: ${UNIFDEF_BIN}")
+ExternalProject_Add(unifdef
+    GIT_REPOSITORY https://github.com/fanf2/unifdef
+    GIT_TAG unifdef-2.12
+    # do not attempt to use backslashes in regexes in the PATCH_COMMAND, or your head is likely to explode
+    PATCH_COMMAND sed -i -e "s|.*prefix =.*|prefix=./|g" -e "s|ln -s .*||g"  <SOURCE_DIR>/Makefile
+    CONFIGURE_COMMAND ""
+    INSTALL_DIR ${UNIFDEF_PREFIX}
+    BUILD_COMMAND make DESTDIR=${UNIFDEF_PREFIX}/ install
+    BUILD_IN_SOURCE TRUE
+)
+
 # Bake version number into the library (CAFAna/Core/Version.cxx)
 execute_process(COMMAND git describe --tags OUTPUT_VARIABLE CAFANACORE_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCAFANACORE_VERSION=\\\"${CAFANACORE_VERSION}\\\"")
@@ -108,12 +124,31 @@ function(link_root target)
     endforeach()
 endfunction()
 
-# we want to keep the subdirectory structure for the headers
+# we want to keep the subdirectory structure for the headers.
+# all this unifdef stuff replaces the #ifdef CAFANACORE_USE_STAN blocks
+# with either the #ifdef or the #else block as appropriate
+set(unifdef_var_flag CAFANACORE_USE_STAN)
+if(CAFANACORE_USE_STAN)
+    set(unifdef_var_flag -iD${unifdef_var_flag})    # assume CAFANACORE_USE_STAN is *defined*
+else()
+    set(unifdef_var_flag -iU${unifdef_var_flag})    # assume CAFANACORE_USE_STAN is *undefined*
+endif()
 function(install_headers headers)
     foreach(header ${headers})
         string(REGEX REPLACE "${CMAKE_SOURCE_DIR}/(.*)/[^/]*" "\\1" dir ${header})
-        install(FILES ${header} DESTINATION inc/${dir})
-    endforeach(header headers)
+        get_filename_component(basename ${header} NAME)
+        set(output ${PROJECT_BINARY_DIR}/stripped-headers/${dir}/${basename})
+        add_custom_command(OUTPUT ${output}
+                           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                           COMMAND mkdir -p ${PROJECT_BINARY_DIR}/stripped-headers/${dir}
+                           # the 'x' argument makes it only exit with nonzero code in case of error
+                           COMMAND "${UNIFDEF_BIN}/unifdef" -x 2 ${unifdef_var_flag} -o ${output} ${header}
+                DEPENDS unifdef)
+        set_source_files_properties(${output} PROPERTIES GENERATED TRUE)
+        add_custom_target(${basename} ALL DEPENDS ${output})
+        message(STATUS "using ${UNIFDEF_BIN}/unifdef to convert header ${header} to ${output}")
+        install(FILES ${output} DESTINATION inc/${dir})
+    endforeach(header ${headers})
 endfunction()
 
 
