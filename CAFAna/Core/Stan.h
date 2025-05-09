@@ -25,8 +25,7 @@
 #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #pragma GCC diagnostic ignored "-Wsign-compare"
-#include "sundials/sundials_context.hpp"
-#include "sundials/sundials_types_deprecated.h"
+#include "sundials/sundials_context.h"
 #include "stan/math/rev.hpp"
 #pragma GCC diagnostic pop
 
