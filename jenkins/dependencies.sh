@@ -13,6 +13,9 @@ QUAL=$1
 if [[ $QUAL == *:n311* ]]; then NQUAL=n311; QUAL=${QUAL/:n311/}; fi
 if [[ $QUAL == *:n319* ]]; then NQUAL=n319; QUAL=${QUAL/:n319/}; fi
 
+WANTSTAN=yes
+if [[ $QUAL == *:stanfree ]]; then WANTSTAN=no; QUAL=${QUAL}/:stanfree/}; else QUAL=${QUAL/:stan/}; fi
+
 if [[ $NQUAL == n311 ]]
 then
     # These are the current (Jul 2022) sbn versions (nutools v3_12_03)
@@ -30,6 +33,10 @@ else
 
 fi
 
-echo stan_math v4_9_0a
-echo sundials v7_1_1
 echo eigen v23_08_01_66e8f
+
+if [ $WANTSTAN == yes ]
+then 
+    echo stan_math v4_9_0a
+    echo sundials v6_1_1
+fi
