@@ -33,10 +33,10 @@ else
 
 fi
 
-echo eigen v23_08_01_66e8f
-
 if [ $WANTSTAN == yes ]
 then 
     echo stan_math v4_9_0a
     echo sundials v6_1_1
 fi
+
+echo eigen v23_08_01_66e8f
