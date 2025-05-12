@@ -10,7 +10,7 @@
 
 This document briefly describes the build process of the CAFAna framework contained in this package.
 
-For documentation on the classes themselves, automatically generated Doxygen pages are maintained on our [GitHub Pages site](https://cafana.github.io/CAFAnaCore/).  (These are automatically updated when pull requests are merged to the `master` branch.)
+For documentation on the classes themselves, automatically generated Doxygen pages are maintained on our [GitHub Pages site](https://cafana.github.io/CAFAnaCore/).  (These are automatically updated when pull requests are merged to the `main` branch.)
 
 ## Prerequisites
 * A compiler that understands C++14 (tested with gcc)
@@ -33,7 +33,8 @@ $ make install
 
 ## How to build and and test your changes locally
 
-- `export QUALIFIER=e19:prof` or `e17:debug`, etc
+- `export QUALIFIER=e26:prof` or `e26:debug`, etc
+- `export STAN=stan` or `stanfree`
 - `jenkins/jenkins_build.sh` (or paste parts of it into your terminal)
 - set `CAFANACORE_LIB` and `CAFANACORE_INC` manually to point to what you just built
 - rebuild your test release
