@@ -18,10 +18,12 @@ namespace
 {
   namespace util{template<class T> T sqr(const T& x){return x*x;}}
 
+#ifndef CAFANACORE_USE_STAN
   void StanHistError(const std::string & loc)
   {
     throw std::runtime_error(loc + ": Attempt to use Stan-aware Hist, but Stan support was not enabled in CAFAnaCore");
   }
+#endif
 }
 
 class StatErrorsEnabled
