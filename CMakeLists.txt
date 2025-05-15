@@ -16,7 +16,7 @@ endif()
 # make Stan dependency optional, but use it by default
 set(CAFANACORE_USE_STAN True CACHE BOOL "Build against Stan?")
 if(CAFANACORE_USE_STAN)
-    add_compile_definitions(-DCAFANACORE_USE_STAN)
+    add_compile_definitions(CAFANACORE_USE_STAN)
 endif()
 
 # Bake version number into the library (CAFAna/Core/Version.cxx)
