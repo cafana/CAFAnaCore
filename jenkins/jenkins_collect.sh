@@ -19,6 +19,7 @@ do
     newdir=${newdir/OS=SLF7/slf7.x86_64}
     newdir=${newdir/OS=ALMA9/slf7.x86_64}
     newdir=${newdir/QUALIFIER=/}
+    newdir=${newdir/STAN=/}
     newdir=${newdir//,/.}
     newdir=${newdir//:/.}
     echo mv $olddir $newdir
