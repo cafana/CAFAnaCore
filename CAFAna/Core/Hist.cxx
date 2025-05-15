@@ -1,9 +1,13 @@
 #include "CAFAna/Core/Hist.h"
 
+#include <iostream>
+
 #include "CAFAna/Core/Binning.h"
 #include "CAFAna/Core/UtilsExt.h"
 
+#ifdef CAFANACORE_USE_STAN
 #include "CAFAna/Core/Stan.h"
+#endif
 
 #include "TH1.h"
 #include "THnSparse.h"
@@ -13,6 +17,11 @@
 namespace
 {
   namespace util{template<class T> T sqr(const T& x){return x*x;}}
+
+  void StanHistError(const std::string & loc)
+  {
+    throw std::runtime_error(loc + ": Attempt to use Stan-aware Hist, but Stan support was not enabled in CAFAnaCore");
+  }
 }
 
 class StatErrorsEnabled
@@ -66,8 +75,11 @@ namespace ana
     fType = rhs.fType;
     // Only one of these will actually have contents
     fDataSparse = rhs.fDataSparse;
-    fDataStan   = rhs.fDataStan;
     fData       = rhs.fData;
+#ifdef CAFANACORE_USE_STAN
+    fDataStan   = rhs.fDataStan;
+#endif
+
     fSumSq      = rhs.fSumSq;
     fSqrtErrs   = rhs.fSqrtErrs;
   }
@@ -80,8 +92,11 @@ namespace ana
 
     fType = rhs.fType;
     std::swap(fDataSparse, rhs.fDataSparse);
-    std::swap(fDataStan,   rhs.fDataStan);
     std::swap(fData,       rhs.fData);
+#ifdef CAFANACORE_USE_STAN
+    std::swap(fDataStan,   rhs.fDataStan);
+#endif
+
     std::swap(fSumSq,      rhs.fSumSq);
     fSqrtErrs = rhs.fSqrtErrs;
   }
@@ -97,8 +112,11 @@ namespace ana
 
     fType = rhs.fType;
     fDataSparse = rhs.fDataSparse;
-    fDataStan   = rhs.fDataStan;
     fData       = rhs.fData;
+#ifdef CAFANACORE_USE_STAN
+    fDataStan   = rhs.fDataStan;
+#endif
+
     fSumSq      = rhs.fSumSq;
     fSqrtErrs   = rhs.fSqrtErrs;
 
@@ -114,8 +132,11 @@ namespace ana
 
     fType = rhs.fType;
     std::swap(fDataSparse, rhs.fDataSparse);
-    std::swap(fDataStan,   rhs.fDataStan);
     std::swap(fData,       rhs.fData);
+#ifdef CAFANACORE_USE_STAN
+    std::swap(fDataStan,   rhs.fDataStan);
+#endif
+
     std::swap(fSumSq,      rhs.fSumSq);
     fSqrtErrs = rhs.fSqrtErrs;
 
@@ -137,6 +158,7 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+#ifdef CAFANACORE_USE_STAN
   Hist Hist::AdoptStan(Eigen::ArrayXstan&& v)
   {
     Hist ret;
@@ -144,6 +166,7 @@ namespace ana
     ret.fDataStan = std::move(v);
     return ret;
   }
+#endif
 
   //----------------------------------------------------------------------
   Hist Hist::Adopt(Eigen::ArrayXd&& v)
@@ -230,8 +253,15 @@ namespace ana
     for(int i = 0; i < bins.NBins()+2; ++i){
       switch(fType){
       case kDense:     ret->SetBinContent(i, fData[i]); break;
-      case kDenseStan: ret->SetBinContent(i, fDataStan[i].val()); break;
-        // Interface requires returning literally a TH1D in any case
+      case kDenseStan:
+#ifdef CAFANACORE_USE_STAN
+        ret->SetBinContent(i, fDataStan[i].val());
+#else
+        StanHistError("Hist::ToTH1()");
+#endif
+      break;
+
+      // Interface requires returning literally a TH1D in any case
       case kSparse:    ret->SetBinContent(i, fDataSparse.coeff(i)); break;
       default:
         abort(); // unreachable
@@ -260,8 +290,14 @@ namespace ana
 
     switch(fType){
     case kSparse:    return fDataSparse.size()-2;
-    case kDenseStan: return fDataStan  .size()-2;
     case kDense:     return fData      .size()-2;
+    case kDenseStan:
+#ifdef CAFANACORE_USE_STAN
+      return fDataStan  .size()-2;
+#else
+      StanHistError("Hist::GetNbinsX()"); return -1;
+#endif
+
     default: abort(); // unreachable
     }
   }
@@ -284,8 +320,13 @@ namespace ana
 
     switch(fType){
     case kSparse:    return fDataSparse.sum();
-    case kDenseStan: return fDataStan  .sum().val();
     case kDense:     return fData      .sum();
+    case kDenseStan:
+#ifdef CAFANACORE_USE_STAN
+      return fDataStan  .sum().val();
+#else
+      StanHistError("Hist::Integral()"); return -1;
+#endif
     default: abort(); // unreachable
     }
   }
@@ -328,8 +369,14 @@ namespace ana
 
     switch(fType){
     case kSparse:    fDataSparse *= s; break;
-    case kDenseStan: fDataStan   *= s; break;
     case kDense:     fData       *= s; break;
+    case kDenseStan:
+#ifdef CAFANACORE_USE_STAN
+      fDataStan   *= s;
+#else
+      StanHistError("Hist::Scale()");
+#endif
+      break;
     default:
       abort(); // unreachable
     }
@@ -339,6 +386,7 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+#ifdef CAFANACORE_USE_STAN
   void Hist::Scale(const stan::math::var& s)
   {
     assert(Initialized());
@@ -366,6 +414,7 @@ namespace ana
     if(s != 1) fSqrtErrs = false;
     fSumSq *= s.val();
   }
+#endif
 
   //----------------------------------------------------------------------
   void Hist::ResetErrors()
@@ -381,8 +430,13 @@ namespace ana
 
     switch(fType){
     case kSparse: return fDataSparse.coeff(i);
-    case kDenseStan: return fDataStan[i].val();
     case kDense: return fData[i];
+    case kDenseStan:
+#ifdef CAFANACORE_USE_STAN
+      return fDataStan[i].val();
+#else
+      StanHistError("Hist::GetBinContent()"); return std::numeric_limits<double>::signaling_NaN();
+#endif
     default:
       abort(); // unreachable
     }
@@ -412,8 +466,14 @@ namespace ana
   {
     switch(fType){
     case kSparse:    fDataSparse.setZero(); break;
-    case kDenseStan: fDataStan  .setZero(); break;
     case kDense:     fData      .setZero(); break;
+    case kDenseStan:
+#ifdef CAFANACORE_USE_STAN
+      fDataStan  .setZero();
+#else
+      StanHistError("Hist::Reset()");
+#endif
+      break;
     default: ; // OK?
     }
 
@@ -426,13 +486,19 @@ namespace ana
   {
     switch(fType){
     case kSparse:    fDataSparse += rhs * scale; break;
-    case kDenseStan: fDataStan   += rhs * scale; break;
     case kDense:     fData       += rhs * scale; break;
+    case kDenseStan:
+#ifdef CAFANACORE_USE_STAN
+      fDataStan   += rhs * scale; break;
+#else
+      StanHistError("Hist::Add(const Eigen::SparseVector<double>&)"); break;
+#endif
     default: abort(); // unreachable
     }
   }
 
   //----------------------------------------------------------------------
+#ifdef CAFANACORE_USE_STAN
   void Hist::Add(const Eigen::ArrayXstan& rhs, double scale)
   {
     switch(fType){
@@ -456,6 +522,7 @@ namespace ana
     default: abort(); // unreachable
     }
   }
+#endif
 
   //----------------------------------------------------------------------
   void Hist::Add(const Eigen::ArrayXd& rhs, double scale)
@@ -469,7 +536,11 @@ namespace ana
       break;
 
     case kDenseStan:
+#ifdef CAFANACORE_USE_STAN
       fDataStan += rhs * scale;
+#else
+      StanHistError("Hist::Add(const Eigen::ArrayXd&)");
+#endif
       break;
 
     case kDense:
@@ -488,8 +559,14 @@ namespace ana
 
     switch(rhs.fType){
     case kSparse:    Add(rhs.fDataSparse, scale); break;
-    case kDenseStan: Add(rhs.fDataStan,   scale); break;
     case kDense:     Add(rhs.fData,       scale); break;
+    case kDenseStan:
+#ifdef CAFANACORE_USE_STAN
+      Add(rhs.fDataStan,   scale);
+#else
+      StanHistError("Hist::Add(const Hist&)");
+#endif
+      break;
     default: abort(); // unreachable
     }
 
@@ -516,18 +593,26 @@ namespace ana
     }
 
     if(fType == kDenseStan){
+#ifdef CAFANACORE_USE_STAN
       if(rhs.fType == kDenseStan){
         fDataStan *= rhs.fDataStan;
       }
       else{
         fDataStan *= rhs.fData;
       }
+#else
+      StanHistError("Hist::Multiply()");
+#endif
     }
     else{
       if(rhs.fType == kDenseStan){
+#ifdef CAFANACORE_USE_STAN
         fType = kDenseStan;
         fDataStan = fData * rhs.fDataStan;
         fData.resize(0);
+#else
+        StanHistError("Hist::Multiply()");
+#endif
       }
       else{
         fData *= rhs.fData;
@@ -568,18 +653,26 @@ namespace ana
     }
 
     if(fType == kDenseStan){
+#ifdef CAFANACORE_USE_STAN
       if(rhs.fType == kDenseStan){
         fDataStan /= rhs.fDataStan;
       }
       else{
         fDataStan /= rhs.fData;
       }
+#else
+      StanHistError("Hist::Divide()");
+#endif
     }
     else{
       if(rhs.fType == kDenseStan){
+#ifdef CAFANACORE_USE_STAN
         fType = kDenseStan;
         fDataStan = fData / rhs.fDataStan;
         fData.resize(0);
+#else
+        StanHistError("Hist::Divide()");
+#endif
       }
       else{
         fData /= rhs.fData;

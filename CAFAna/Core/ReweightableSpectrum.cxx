@@ -2,7 +2,10 @@
 
 #include "CAFAna/Core/Binning.h"
 #include "CAFAna/Core/Ratio.h"
+
+#ifdef CAFANACORE_USE_STAN
 #include "CAFAna/Core/Stan.h"
+#endif
 
 #include "TDirectory.h"
 #include "TH2.h"
@@ -130,9 +133,13 @@ namespace ana
                       fAxisX, fPOT, fLivetime);
     }
     else{
+#ifdef CAFANACORE_USE_STAN
       const Eigen::VectorXstan& vec = ws.GetEigenStan();
 
       return Spectrum(vec.transpose() * fMat, fAxisX, fPOT, fLivetime);
+#else
+      throw std::runtime_error("ReweightableSpectrum::WeightedBy(): Attempt to use Stan-aware ReweightableSpectrum, but Stan support was not enabled in CAFAnaCore");
+#endif
     }
   }
 

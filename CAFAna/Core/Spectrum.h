@@ -80,10 +80,12 @@ namespace ana
              double pot, double livetime);
 
     /// Makes a spectrum from an eigen array of stan vars
+#ifdef CAFANACORE_USE_STAN
     Spectrum(Eigen::ArrayXstan&& h,
              const LabelsAndBins& axis,
              double pot, double livetime);
- 
+#endif
+
     /// Makes a spectrum from two eigen arrays
     /// One array is for bin contents, the other for squared errors
     /// Only to be used with stat errors enabled
@@ -183,14 +185,24 @@ namespace ana
     TH1* ToTHX(double exposure, EExposureType expotype = kPOT,
                EBinType bintype = kBinContent) const;
 
-    bool HasStan() const {return fHist.HasStan();}
+    bool HasStan() const
+#ifdef CAFANACORE_USE_STAN
+    {return fHist.HasStan();}
+#else
+    {return false;}
+#endif
+
     /// NB these don't have POT scaling. For expert high performance ops only!
     const Eigen::ArrayXd& GetEigen() const {return fHist.GetEigen();}
+#ifdef CAFANACORE_USE_STAN
     const Eigen::ArrayXstan& GetEigenStan() const {return fHist.GetEigenStan();}
+#endif
     const Eigen::ArrayXd& GetEigenSqErrors() const {return fHist.GetEigenSqErrors();}
 
     Eigen::ArrayXd GetEigen(double exposure, EExposureType expotype = kPOT) const;
+#ifdef CAFANACORE_USE_STAN
     Eigen::ArrayXstan GetEigenStan(double exposure, EExposureType expotype = kPOT) const;
+#endif
     Eigen::ArrayXd GetEigenSqErrors(double exposure, EExposureType expotype = kPOT) const;
 
     /// \brief Return total number of events scaled to \a pot
@@ -240,7 +252,9 @@ namespace ana
 
     /// Multiply this spectrum by a constant c
     void Scale(double c);
+#ifdef CAFANACORE_USE_STAN
     void Scale(const stan::math::var& v);
+#endif
 
     // Arithmetic operators are as if these are unlike samples, each a
     // contribution to one total, not seperate sources of stats for the same
