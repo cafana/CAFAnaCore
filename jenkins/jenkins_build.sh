@@ -57,6 +57,13 @@ else
     FLAGS=$FLAGS' CMAKE_CXX_COMPILER=g++' || exit 2
 fi
 
+if [[ $STAN == "stan" ]]
+then 
+    FLAGS=$FLAGS' CAFANACORE_USE_STAN=yes' || exit 2
+else
+    FLAGS=$FLAGS' CAFANACORE_USE_STAN=no' || exit 2
+fi
+
 time make $FLAGS || exit 2
 
 mkdir -p CAFAna/ups
