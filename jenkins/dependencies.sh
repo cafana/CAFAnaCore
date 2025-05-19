@@ -14,7 +14,7 @@ if [[ $QUAL == *:n311* ]]; then NQUAL=n311; QUAL=${QUAL/:n311/}; fi
 if [[ $QUAL == *:n319* ]]; then NQUAL=n319; QUAL=${QUAL/:n319/}; fi
 
 WANTSTAN=yes
-if [[ $QUAL == *:stanfree ]]; then WANTSTAN=no; QUAL=${QUAL}/:stanfree/}; else QUAL=${QUAL/:stan/}; fi
+if [[ $QUAL == *:stanfree ]]; then WANTSTAN=no; QUAL=${QUAL/:stanfree/}; else QUAL=${QUAL/:stan/}; fi
 
 if [[ $NQUAL == n311 ]]
 then
