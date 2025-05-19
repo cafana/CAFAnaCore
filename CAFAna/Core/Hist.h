@@ -1,18 +1,24 @@
 #pragma once
 
+#ifdef CAFANACORE_USE_STAN
 #include "CAFAna/Core/StanVar.h"
+#endif
 
 class TDirectory;
 
 class TH1D;
 
+#include <cassert>
+
 #include <Eigen/Dense>
 #include <Eigen/SparseCore>
 
+#ifdef CAFANACORE_USE_STAN
 namespace Eigen{
   using ArrayXstan = Eigen::Array<stan::math::var, Eigen::Dynamic, 1>;
   using VectorXstan = Eigen::Matrix<stan::math::var, Eigen::Dynamic, 1>;
 }
+#endif
 
 namespace ana
 {
@@ -34,18 +40,22 @@ namespace ana
     static Hist ZeroSparse(int nbins);
 
     static Hist AdoptSparse(Eigen::SparseVector<double>&& v);
-    static Hist AdoptStan(Eigen::ArrayXstan&& v);
     static Hist Adopt(Eigen::ArrayXd&& v);
     static Hist AdoptWithErrors(Eigen::ArrayXd&& v, Eigen::ArrayXd&& sqerr);
+#ifdef CAFANACORE_USE_STAN
+    static Hist AdoptStan(Eigen::ArrayXstan&& v);
+#endif
 
     static Hist FromDirectory(TDirectory* dir);
 
     TH1D* ToTH1(const Binning& bins) const;
 
-    bool HasStan() const {return fType == kDenseStan;}
     const Eigen::ArrayXd& GetEigen() const {assert(fType == kDense); return fData;}
-    const Eigen::ArrayXstan& GetEigenStan() const {assert(fType == kDenseStan); return fDataStan;}
     const Eigen::ArrayXd& GetEigenSqErrors() const;
+#ifdef CAFANACORE_USE_STAN
+    bool HasStan() const {return fType == kDenseStan;}
+    const Eigen::ArrayXstan& GetEigenStan() const {assert(fType == kDenseStan); return fDataStan;}
+#endif
 
     int GetNbinsX() const;
     double GetBinError(int i) const;
@@ -53,7 +63,9 @@ namespace ana
 
     void Fill(const Binning& bins, double x, double w);
     void Scale(double s);
+#ifdef CAFANACORE_USE_STAN
     void Scale(const stan::math::var& s);
+#endif
     void ResetErrors();
 
     double GetBinContent(int i) const;
@@ -71,15 +83,19 @@ namespace ana
 
     // Helpers for the public Add() function
     void Add(const Eigen::SparseVector<double>& rhs, double scale);
-    void Add(const Eigen::ArrayXstan& rhs, double scale);
     void Add(const Eigen::ArrayXd& rhs, double scale);
+#ifdef CAFANACORE_USE_STAN
+    void Add(const Eigen::ArrayXstan& rhs, double scale);
+#endif
 
     enum EType{kUninitialized, kDense, kDenseStan, kSparse};
     EType fType;
 
     Eigen::SparseVector<double> fDataSparse;
-    Eigen::ArrayXstan fDataStan;
     Eigen::ArrayXd fData;
+#ifdef CAFANACORE_USE_STAN
+    Eigen::ArrayXstan fDataStan;
+#endif
 
     mutable Eigen::ArrayXd fSumSq; ///< Accumulate errors, if enabled
     mutable bool fSqrtErrs; ///< Special case when filled with unweighted data

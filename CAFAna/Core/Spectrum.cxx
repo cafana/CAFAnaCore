@@ -1,7 +1,10 @@
 #include "CAFAna/Core/Spectrum.h"
 
 #include "CAFAna/Core/Ratio.h"
+
+#ifdef CAFANACORE_USE_STAN
 #include "CAFAna/Core/Stan.h"
+#endif
 
 #include "TDirectory.h"
 #include "TH2.h"
@@ -42,12 +45,14 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+#ifdef CAFANACORE_USE_STAN
   Spectrum::Spectrum(Eigen::ArrayXstan&& h,
                      const LabelsAndBins& axis,
                      double pot, double livetime)
     : fHist(Hist::AdoptStan(std::move(h))), fPOT(pot), fLivetime(livetime), fAxis(axis)
   {
   }
+#endif
 
   //----------------------------------------------------------------------
   Spectrum::Spectrum(Eigen::ArrayXd&& h,
@@ -261,6 +266,7 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+#ifdef CAFANACORE_USE_STAN
   Eigen::ArrayXstan Spectrum::GetEigenStan(double exposure, EExposureType expotype) const
   {
     if(expotype == kPOT)
@@ -268,6 +274,7 @@ namespace ana
     else
       return (exposure/fLivetime) * fHist.GetEigenStan();
   }
+#endif
 
   //----------------------------------------------------------------------
   Eigen::ArrayXd Spectrum::GetEigenSqErrors(double exposure, EExposureType expotype) const
@@ -285,10 +292,12 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+#ifdef CAFANACORE_USE_STAN
   void Spectrum::Scale(const stan::math::var& c)
   {
     fHist.Scale(c);
   }
+#endif
 
   //----------------------------------------------------------------------
   double Spectrum::Integral(double exposure, double* err,

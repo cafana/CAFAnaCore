@@ -21,18 +21,18 @@ then
     exit 1
 fi
 
-if [[ $EXPERIMENT == *n319* ]]
+if [[ x$STAN != *stan* ]]
 then
-    source /cvmfs/nova.opensciencegrid.org/externals/setup || exit 1
-else
-    source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
-    export PRODUCTS=/cvmfs/nova.opensciencegrid.org/externals:$PRODUCTS
+    echo Must specify stan or stanfree in STAN variable $STAN
+    exit 1
 fi
+
+source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
 
 # Looping over lines is a total pain in bash. Easier to just send it to a file
 TMPFILE=`mktemp`
 # Expect to be run in the directory one above....
-jenkins/dependencies.sh $QUALIFIER | sed 's/^/setup /' > $TMPFILE
+jenkins/dependencies.sh $QUALIFIER:$STAN | sed 's/^/setup /' > $TMPFILE
 cat $TMPFILE
 source $TMPFILE
 
@@ -55,6 +55,13 @@ then
     FLAGS=$FLAGS' CMAKE_CXX_COMPILER=clang++' || exit 2
 else
     FLAGS=$FLAGS' CMAKE_CXX_COMPILER=g++' || exit 2
+fi
+
+if [[ $STAN == "stan" ]]
+then 
+    FLAGS=$FLAGS' CAFANACORE_USE_STAN=On' || exit 2
+else
+    FLAGS=$FLAGS' CAFANACORE_USE_STAN=Off' || exit 2
 fi
 
 time make $FLAGS || exit 2

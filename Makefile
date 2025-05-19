@@ -5,9 +5,10 @@
 # Defaults
 CMAKE_BUILD_TYPE ?= Release
 CMAKE_CXX_COMPILER ?= g++
+CAFANACORE_USE_STAN ?= On
 
 all:
-	if [ ! -e build ]; then mkdir -p build; cd build; cmake -GNinja .. -DCMAKE_BUILD_TYPE=$(CMAKE_BUILD_TYPE) -DCMAKE_CXX_COMPILER=$(CMAKE_CXX_COMPILER); fi
+	if [ ! -e build ]; then mkdir -p build; cd build; cmake -GNinja .. -DCMAKE_BUILD_TYPE=$(CMAKE_BUILD_TYPE) -DCMAKE_CXX_COMPILER=$(CMAKE_CXX_COMPILER) -DCAFANACORE_USE_STAN=$(CAFANACORE_USE_STAN); fi
 	ninja -C build -j`nproc --all` install
 
 clean:
