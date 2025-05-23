@@ -29,7 +29,8 @@ do
     then
         once=yes
         mv $newdir/CAFAna/ups $TAG/
-        mv $newdir/inc $TAG/include
+        echo mv $newdir/inc $newdir/include
+        mv $newdir/inc $newdir/include
         for k in `find $newdir/CAFAna -name '*.h' -o -name '*.cxx' -o -name '*.txx'`
         do
             fname=${k/$newdir/}
