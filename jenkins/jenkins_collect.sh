@@ -24,12 +24,15 @@ do
     newdir=${newdir//:/.}
     echo mv $olddir $newdir
     mv $olddir $newdir
+
+    echo mv $newdir/inc $newdir/include
+    mv $newdir/inc $newdir/include
+
     # All versions should be the same
     if [ $once != yes ]
     then
         once=yes
         mv $newdir/CAFAna/ups $TAG/
-        mv $newdir/inc $TAG/include
         for k in `find $newdir/CAFAna -name '*.h' -o -name '*.cxx' -o -name '*.txx'`
         do
             fname=${k/$newdir/}
@@ -38,16 +41,16 @@ do
             mv $k $TAG/src/$fname
         done
     fi
+
+    # Include the version number in a header file as well as the library
+    echo '#define CAFANACORE_VERSION "'$TAG'"' >> $newdir/include/CAFAna/Core/Version.h
+
     rm -r $newdir/CAFAna
     rm -r $newdir/build
-    rm -r $newdir/inc
 done
 
 cp -r jenkins/version ${TAG}.version
 sed -i s/vXX.YY/$TAG/g ${TAG}.version/*
-
-# Include the version number in a header file as well as the library
-echo '#define CAFANACORE_VERSION "'$TAG'"' >> $TAG/include/CAFAna/Core/Version.h
 
 # Jenkins doesn't deal well with symlinks
 # cd $TAG/include
