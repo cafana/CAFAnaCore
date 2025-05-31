@@ -32,8 +32,8 @@ do
 		done
 		echo
 		echo '  EnvSet(CAFANACORE_VERSION, ${UPS_PROD_VERSION} )'
-		echo '  EnvSet(CAFANACORE_INC, ${CAFANACORE_FQ_DIR}/include )'
 		echo '  EnvSet(CAFANACORE_FQ_DIR, ${CAFANACORE_DIR}`get-directory-name subdir`.`echo ${UPS_PROD_QUALIFIERS} | tr ":" "."` )'
+		echo '  EnvSet(CAFANACORE_INC, ${CAFANACORE_FQ_DIR}/include )'
 		echo '  EnvSet(CAFANACORE_LIB, ${CAFANACORE_FQ_DIR}/lib )'
 		echo '  pathPrepend(LD_LIBRARY_PATH, ${CAFANACORE_LIB})'
 		echo
