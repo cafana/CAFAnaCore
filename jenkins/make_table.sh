@@ -14,7 +14,7 @@ do
     do
         for COMPILER in e26 c14
         do
-	    for STAN in stan stanfree
+	    for STAN in stan stanfree stanthread
 	    do
 		echo FLAVOR=ANY
 		echo QUALIFIERS=\"${OPT}:${COMPILER}:${EXPT}:${STAN}\"

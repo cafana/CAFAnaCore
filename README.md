@@ -34,7 +34,7 @@ $ make install
 ## How to build and and test your changes locally
 
 - `export QUALIFIER=e26:prof` or `e26:debug`, etc
-- `export STAN=stan` or `stanfree`
+- `export STAN=stan` or `stanfree` or `stanthread`
 - `jenkins/jenkins_build.sh` (or paste parts of it into your terminal)
 - set `CAFANACORE_LIB` and `CAFANACORE_INC` manually to point to what you just built
 - rebuild your test release
