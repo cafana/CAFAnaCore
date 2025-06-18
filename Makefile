@@ -9,7 +9,7 @@ CAFANACORE_USE_STAN ?= On
 USE_STAN_THREADS ?= Off
 
 all:
-	if [ ! -e build ]; then mkdir -p build; cd build; cmake -GNinja .. -DCMAKE_BUILD_TYPE=$(CMAKE_BUILD_TYPE) -DCMAKE_CXX_COMPILER=$(CMAKE_CXX_COMPILER) -DCAFANACORE_USE_STAN=$(CAFANACORE_USE_STAN); -DUSE_STAN_THREADS=$(USE_STAN_THREADS); fi
+	if [ ! -e build ]; then mkdir -p build; cd build; cmake -GNinja .. -DCMAKE_BUILD_TYPE=$(CMAKE_BUILD_TYPE) -DCMAKE_CXX_COMPILER=$(CMAKE_CXX_COMPILER) -DCAFANACORE_USE_STAN=$(CAFANACORE_USE_STAN) -DUSE_STAN_THREADS=$(USE_STAN_THREADS); fi
 	ninja -C build -j`nproc --all` install
 
 clean:
