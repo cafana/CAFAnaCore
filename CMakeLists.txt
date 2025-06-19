@@ -15,6 +15,7 @@ endif()
 
 # make Stan dependency optional, but use it by default
 option(CAFANACORE_USE_STAN "Build against Stan?" True)
+option(USE_STAN_THREADS "Use threading with Stan?" True)
 if(CAFANACORE_USE_STAN)
     add_compile_definitions(CAFANACORE_USE_STAN)
 endif()
@@ -61,6 +62,10 @@ else()
         find_package(Sundials REQUIRED MODULE)
         find_package(TBB REQUIRED MODULE)
     endif()
+endif()
+
+if(USE_STAN_THREADS)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSTAN_THREADS")
 endif()
 
 if (CAFANACORE_USE_STAN)
