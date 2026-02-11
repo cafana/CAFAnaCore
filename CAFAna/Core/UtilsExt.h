@@ -130,6 +130,8 @@ namespace ana
 
   /// Is this a grid (condor) job?
   bool RunningOnGrid();
+  /// Is this a slurm job?
+  bool RunningOnSlurm();
 
   /// Value passed to --stride, or 1 if not specified
   size_t Stride(bool allow_default = true);
@@ -139,7 +141,7 @@ namespace ana
   int Limit();
 
   /// What's the process number for a grid job?
-  size_t JobNumber();
-  size_t NumJobs();
+  size_t JobNumber(bool allow_default = false);
+  size_t NumJobs(bool allow_default = false);
 
 }
