@@ -312,6 +312,19 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
+  bool RunningOnSlurm()
+  {
+    static bool cache;
+    static bool cache_set = false;
+    if(!cache_set){
+      cache = (getenv("SLURM_JOB_ID") != 0);
+      cache_set = true;
+    }
+
+    return cache;
+  }
+
+  //----------------------------------------------------------------------
   size_t Stride(bool allow_default)
   {
     static int cache = -1;
@@ -378,25 +391,25 @@ namespace ana
   }
 
   //----------------------------------------------------------------------
-  size_t JobNumber()
+  size_t JobNumber(bool allow_default)
   {
-    if(!RunningOnGrid()){
-      std::cout << "JobNumber() called, but we are not running on the grid" <<  std::endl;
+    if( !allow_default && (!RunningOnGrid()||!RunningOnSlurm()) ){
+      std::cout << "JobNumber() called, but we are not running a parallel job" <<  std::endl;
       abort();
     }
 
-    return Offset(false);
+    return Offset(allow_default);
   }
 
   //----------------------------------------------------------------------
-  size_t NumJobs()
+  size_t NumJobs(bool allow_default)
   {
-    if(!RunningOnGrid()){
-      std::cout << "NumJobs() called, but we are not running on the grid" << std::endl;
+    if( !allow_default && (!RunningOnGrid()||!RunningOnSlurm()) ){
+      std::cout << "NumJobs() called, but we are not running a parallel job" << std::endl;
       abort();
     }
 
-    return Stride(false);
+    return Stride(allow_default);
   }
 
 }
