@@ -128,10 +128,8 @@ namespace ana
 
   bool SAMDefinitionExists(const std::string& expt, const std::string& def);
 
-  /// Is this a grid (condor) job?
+  /// Is this a grid (condor) or other cluster job?
   bool RunningOnGrid();
-  /// Is this a slurm job?
-  bool RunningOnSlurm();
 
   /// Value passed to --stride, or 1 if not specified
   size_t Stride(bool allow_default = true);
