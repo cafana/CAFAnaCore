@@ -304,20 +304,10 @@ namespace ana
     static bool cache;
     static bool cache_set = false;
     if(!cache_set){
-      cache = (getenv("_CONDOR_SCRATCH_DIR") != 0);
-      cache_set = true;
-    }
-
-    return cache;
-  }
-
-  //----------------------------------------------------------------------
-  bool RunningOnSlurm()
-  {
-    static bool cache;
-    static bool cache_set = false;
-    if(!cache_set){
-      cache = (getenv("SLURM_JOB_ID") != 0);
+      // Condor checks for whether we're running on Fermigrid.
+      cache = (getenv("_CONDOR_SCRATCH_DIR") != 0
+      // Use hostname to check for other clusters used by collaborators.
+            || std::string(getenv("HOSTNAME")).find(".pax.tufts.edu") != std::string::npos );
       cache_set = true;
     }
 
@@ -393,7 +383,7 @@ namespace ana
   //----------------------------------------------------------------------
   size_t JobNumber(bool allow_default)
   {
-    if( !allow_default && (!RunningOnGrid()||!RunningOnSlurm()) ){
+    if( !allow_default && !RunningOnGrid() ){
       std::cout << "JobNumber() called, but we are not running a parallel job" <<  std::endl;
       abort();
     }
@@ -404,7 +394,7 @@ namespace ana
   //----------------------------------------------------------------------
   size_t NumJobs(bool allow_default)
   {
-    if( !allow_default && (!RunningOnGrid()||!RunningOnSlurm()) ){
+    if( !allow_default && !RunningOnGrid() ){
       std::cout << "NumJobs() called, but we are not running a parallel job" << std::endl;
       abort();
     }
