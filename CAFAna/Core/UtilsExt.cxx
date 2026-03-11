@@ -9,6 +9,8 @@
 #include "TH3.h"
 
 #include <iostream>
+#include <limits.h>
+#include <unistd.h>
 
 #include "wordexp.h"
 
@@ -305,9 +307,11 @@ namespace ana
     static bool cache_set = false;
     if(!cache_set){
       // Condor checks for whether we're running on Fermigrid.
-      cache = (getenv("_CONDOR_SCRATCH_DIR") != 0
       // Use hostname to check for other clusters used by collaborators.
-            || std::string(getenv("HOSTNAME")).find(".pax.tufts.edu") != std::string::npos );
+      char hname[HOST_NAME_MAX];
+      gethostname(hname,HOST_NAME_MAX);
+      cache = (getenv("_CONDOR_SCRATCH_DIR") != 0)
+           || (std::string(hname).find(".pax.tufts.edu") != std::string::npos);
       cache_set = true;
     }
 
