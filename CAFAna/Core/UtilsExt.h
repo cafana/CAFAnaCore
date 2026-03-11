@@ -128,7 +128,7 @@ namespace ana
 
   bool SAMDefinitionExists(const std::string& expt, const std::string& def);
 
-  /// Is this a grid (condor) job?
+  /// Is this a grid (condor) or other cluster job?
   bool RunningOnGrid();
 
   /// Value passed to --stride, or 1 if not specified
@@ -139,7 +139,7 @@ namespace ana
   int Limit();
 
   /// What's the process number for a grid job?
-  size_t JobNumber();
-  size_t NumJobs();
+  size_t JobNumber(bool allow_default = false);
+  size_t NumJobs(bool allow_default = false);
 
 }
