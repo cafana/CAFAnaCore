@@ -14,20 +14,12 @@
 
 namespace ana
 {
-  std::atomic_flag cafanaQuitRequested = ATOMIC_FLAG_INIT;   // this is initialization to 'false', atomically
+  std::atomic<bool> cafanaQuitRequested(false);
   std::atomic_flag cafanaQuitNow = ATOMIC_FLAG_INIT;
 
   bool CAFAnaQuitRequested()
   {
-    // note that std::atomic_flag::test() doesn't exist until C++20,
-    // so we have to always set the flag, then clear it if it wasn't set.
-    if (cafanaQuitRequested.test_and_set())
-      return true;
-    else
-    {
-      cafanaQuitRequested.clear();
-      return false;
-    }
+    return cafanaQuitRequested;
   }
 
   std::string get_argv0()
@@ -68,7 +60,7 @@ namespace ana
       {
         std::cout << "\nReceived SIGINT or SIGTERM -- trying to shut down nicely." << std::endl;
         std::cout << "Interrupt again with Ctrl-C or 'kill <process id>' to exit immediately." << std::endl;
-        cafanaQuitRequested.test_and_set();
+        cafanaQuitRequested.store(true);
         return;
       }
       _exit(sig+128);
