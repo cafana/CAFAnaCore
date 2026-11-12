@@ -581,6 +581,10 @@ namespace ana
   //----------------------------------------------------------------------
   void Spectrum::SaveTo(TDirectory* dir, const std::string& name) const
   {
+    // the temporary histograms below are on the stack, and dir is deleted at the end;
+    // if they were added to dir, deleting it would free them ("double free or corruption")
+    DontAddDirectory guard;
+
     TDirectory* tmp = gDirectory;
 
     dir = dir->mkdir(name.c_str()); // switch to subdir
